@@ -1,0 +1,39 @@
+{
+  "notice_id": "g2b-R26BK01758907-000",
+  "document": {
+    "name": "0. 입찰공고문.pdf",
+    "index": 0,
+    "format": "pdf",
+    "hash": "1a295f529268a194"
+  },
+  "fetched_at": "2026-10-08T03:07:10.553705+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "3. 참가자격",
+    "page_from": 2,
+    "page_to": 2
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "국가를 당사자로 하는 계약에 관한 법률(이하“동 법률”이라 한다)시행령 제12조와 제76조에 의한 결격사유가 없는 업체",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "공고일 기준 2년 이내 우리 대학교의 입찰, 계약 및 계약이행 등에 있어서 물의를 일으킨 업체는 참가할 수 없으며,",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "공고일 현재 당좌거래정지, 청산, 합병, 매각 등 정리절차 중이거나 계획 중인 사업자와 부도, 화의, 워크아웃(워크아웃 대상 또는 진행 중 업체) 또는 법정관리(신청 중 포함)중인 사업자와 퇴출기업은 참가할 수 없음",
+      "page": 2,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

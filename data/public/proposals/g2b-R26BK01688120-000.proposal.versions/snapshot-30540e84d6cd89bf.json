@@ -1,0 +1,358 @@
+{
+  "id": "PROP-g2b-R26BK01688120-000",
+  "title": "사업수행계획 (핵심 섹션)",
+  "sentences": [
+    {
+      "id": "PS-01",
+      "text": "1 본 입찰과 관련하여 입찰목적물의 사양은 한국전기연구원이 규격서에 제시한 사양의 성능 및 제안사항을 반드시 준수하여야 하며, 동등 또는 이상의 성능을 보장하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-001",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-d81cedd42f104c16"
+    },
+    {
+      "id": "PS-02",
+      "text": "2 본 제안요청서, 규격서(사양서, 시방서 등), 과업내용서(과업지시서) 및 입찰공고에 명기되지 않은 사항에 대해서도 낙찰자는 계약목적물의 구매 취지에 맞는 최신 기술 및 자재를 사용하여 납품하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-002",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-421f126fb46e1ee5"
+    },
+    {
+      "id": "PS-03",
+      "text": "입찰에 참여하고자 하는 자는 본 규격에서 정하는 모든 사항을 숙지하여 구매자 요구사항을 충분히 수용할 수 있어야 하고, 입찰시 입찰자는 기술평가를 할 수 있도록 서류 및 자료를 온라인으로 제출하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-003",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-566bb2fe8f89af84"
+    },
+    {
+      "id": "PS-04",
+      "text": "기술제안서에는 일반사항에 규정한 입찰시 자료제출 내용과 규격서에서 규정한 모든 항목의 규격기준에 따라 제안하고자 하는 내용이 명확하고 상세하게 기술된 기술제안서를 작성 제출하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-005",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-d11df95f07504dad"
+    },
+    {
+      "id": "PS-05",
+      "text": "평가는 서면으로 진행하나 필요시 입찰자(회사) 또는 대리인은 수요기관(한국전기연구원)에서 정한 일시에 기술심사 평가에 참석하여 개발 역량 및 계획에 대해 발표하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-008",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-5fe935c479c7068a",
+      "original_requirement_id": "REQ-007"
+    },
+    {
+      "id": "PS-06",
+      "text": "기술제안서 내용의 확인을 위하여 추가 자료 요청 또는 현장 실사를 할 수 있으며, 입찰 참가자는 이에 응하겠습니다. (RFP p.1 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-010",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-8e0934f882b00943",
+      "original_requirement_id": "REQ-009"
+    },
+    {
+      "id": "PS-07",
+      "text": "제출된 제안서의 내용은 변경할 수 없으며, 공급자 선정 시 계약조건으로 간주하고 상기 3)항에 따라 제출 또는 보완된 자료는 계약조건으로 간주합니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-011",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-ccca77ae55a6312a",
+      "original_requirement_id": "REQ-010"
+    },
+    {
+      "id": "PS-08",
+      "text": "제안업체는 본 사업과 관련하여 취득한 업무내용에 대하여 제3자에게 누설할 수 없고, 주관기관이 요구하는 보안사항을 철저히 준수하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-012",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-5a635c012eaf7664",
+      "original_requirement_id": "REQ-011"
+    },
+    {
+      "id": "PS-09",
+      "text": "1 계약상대자는 목적물의 제작, 검사, 운반, 설치 및 시운전에 대한 일체의 책임이 있으며, 모든 부품은 정상동작 상태 하에서 파손 또는 변형이 없이 충분한 강도와 성능을 보장하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-014",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-394c6a223d10b2b6",
+      "original_requirement_id": "REQ-013"
+    },
+    {
+      "id": "PS-10",
+      "text": "3 계약목적물을 납품함에 있어 계약 내용과 비교하여 필요한 부분의 누락 또는 생략이 되었을 경우 계약상대자는 계약사항에 포함된 것으로 간주하고 납품하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-015",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-78a88bdde2aace14"
+    },
+    {
+      "id": "PS-11",
+      "text": "6 과업 수행 중 발주처가 제공하는 시설, 장비 또는 제3자에게 손해가 발생한 경우 계약상대자 부담으로 원상복구 또는 책임 변상하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-017",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-f22ee467b662646e"
+    },
+    {
+      "id": "PS-12",
+      "text": "1 계약상대자의 과업 수행은 본 공고서와 발주처의 요청사항을 바탕으로 시행하며, 임의로 과업을 변경, 시행할 수 없습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-018",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-4c1e23b42df08a43"
+    },
+    {
+      "id": "PS-13",
+      "text": "2 계약상대자는 발주처에서 제공하는 관련 자료를 충분히 검토하여 과업을 수행하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-019",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-088f6f3fba1abf4f"
+    },
+    {
+      "id": "PS-14",
+      "text": "3 계약상대자는 과업이 계약상대자의 귀책사유로 지연될 경우에는 본 과업이 예정대로 추진될 수 있도록 인력, 장비 등을 추가 투입하는 등 필요한 조치를 취하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-020",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-4399f7513adbc13f"
+    },
+    {
+      "id": "PS-15",
+      "text": "6 계약상대자는 본 과업의 성공적인 수행을 위해 과업의 각 단계 및 분야별 위험 요소를 사전에 식별하고 이를 발주처에 보고하여야 한며 위험 요소에 대한 제거/완화 계획 및 진행 상황을 보고하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-021",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-74903ef3b6ca11fd"
+    },
+    {
+      "id": "PS-16",
+      "text": "1 포장은 운반 및 설치현장의 습도, 기후조건 등을 감안하여 목적물 및 부품의 운반 또는 보관 중 손상이 발생하지 않도록 견고한 포장을 하여야 하며, 외부에서 보기 쉬운 곳에 색채 및 기호 등으로 각 목적물의 번호, 명칭 등을 표시하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-022",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-9fe827704a92b73b"
+    },
+    {
+      "id": "PS-17",
+      "text": "2 목적물의 운반중 목적물의 기능 및 성능에 영향을 미치는 손상이 발생한 경우에는 이에 대한 사후처리 및 원형복구는 계약상대자의 책임하에 이행하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-023",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-49292b951c8018af"
+    },
+    {
+      "id": "PS-18",
+      "text": "1 설치작업 이전에 반드시 지정된 설치장소에 대한 기초상태 등 제반여건을 사전 확인한 후에 설치하여야 하며, 설치와 관련되는 모든 비용(장비, 인원, 동력 등)은 계약상대자가 부담합니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-024",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-6ff03063984212ff"
+    },
+    {
+      "id": "PS-19",
+      "text": "2 계약 후 목적물을 납품하여 설치 및 시운전시 계약상대자는 제품의 정상적인 가동에 필요한 모든 기술적인 업무를 지원하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-025",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-5751f15ebd91e82e"
+    },
+    {
+      "id": "PS-20",
+      "text": "2 계약상대자는 한국전기연구원 내에서 계약수행 이전 이행과업 대비 작업환경, 인력, 안전장치 등을 확인하여야 하며, 특이사항 확인 시에는 수요부서 및 안전보안실에 보고 및 조치 후 과업을 이행하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-027",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-d290f01c10f69f1d"
+    },
+    {
+      "id": "PS-21",
+      "text": "4 계약상대자는 계약수행 인력에 대하여 중대재해처벌법, 근로기준법, 산업안전보건법, 산업재해보상보험법, 직업안전법 등 제반 법률상 사용자로서의 책임과 의무를 이행하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-029",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-b58ad5bde7685dd7"
+    },
+    {
+      "id": "PS-22",
+      "text": "1 계약상대자는 공고문, 규격서 등 공개된 문서 내용 외에 계약수행 과정 중 취득한 각종 자료와 정보는 본 과업 이외 다른 목적으로 사용 불가하며, 한국전기연구원의 승인 없이 소유, 타인에게 제공 및 대여하거나 외부에 공개 할 수 없습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-030",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-55d1ca64dbe1fc44"
+    },
+    {
+      "id": "PS-23",
+      "text": "2 보안 유지가 필요한 계약의 경우 보안확약서를 제출하여야 하며 비밀유지 대책, 보안각서 등 한국전기연구원의 보안 요구사항에 응하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-031",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-016f050b2308a882"
+    },
+    {
+      "id": "PS-24",
+      "text": "3 계약상대자가 계약 수행과정에서 취득한 내용을 임의로 사용 또는 보안의무 위반시 한국전기연구원이 손해를 입었을 시에는 이에 대한 손해배상을 하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-032",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-30d198d9c1e6c50f"
+    },
+    {
+      "id": "PS-25",
+      "text": "4 계약상대자는 계약 수행 관련 자료를 납품 전까지 별도 보관함에 구분하여 보관토록 하고, 관리책임자 정․부를 지정하여 관리하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-033",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-3efcaa4560d488a9"
+    },
+    {
+      "id": "PS-26",
+      "text": "1 계약상대자는 필요시, 목적물의 운용이 가능하도록 사용법 및 기타 필요한 사항을 사용 담당자를 대상으로 납품 완료와 동시에 교육을 실시하겠습니다. (RFP p.2 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-035",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-1e078c53e3921810"
+    },
+    {
+      "id": "PS-27",
+      "text": "3 목적물 작동 매뉴얼은 납품 시 제출하여야 하며, 한국전기연구원의 검사담당자의 확인을 받겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-036",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-7a7a67d83ef90370"
+    },
+    {
+      "id": "PS-28",
+      "text": "계약상대자는 시운전에 필요한 모든 사항은 준비한 시운전 계획 및 승인된 시험 점검을 위해 감독관 입회하에 시운전을 시행하여야 하며, 시운전 불합격 시는 즉각 결함부분을 시정하여 재시행하겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-037",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-8e98382e112066f7"
+    },
+    {
+      "id": "PS-29",
+      "text": "1 납품되는 모든 계약목적물에 대하여 하자보증기간은 규격서, 과업내용서 등에 명시된 기간으로 하며 동 기간 안에 설계, 제작, 설치, 공사 및 재결합 등으로 고장 또는 파손되었을 경우 계약상대자는 한국전기연구원에서 지정하는 기일 내에 무상으로 신속한 복구를 하겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-038",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-6142d76ede90e2d8"
+    },
+    {
+      "id": "PS-30",
+      "text": "2 하자보증기간 만료 후에도 계약상대자는 부품, 소모품, 기타 운용에 필요한 모든 목적물에 대한 한국전기연구원의 요구에 협의하겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-039",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-517ad48d76b83189"
+    },
+    {
+      "id": "PS-31",
+      "text": "입찰에 참가를 원하는 업체는 기술평가를 위한 본 심사기준을 열람하겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-043",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-0da4a29431d71d84",
+      "original_requirement_id": "REQ-040"
+    },
+    {
+      "id": "PS-32",
+      "text": "제4조 (제출 서류) 규격평가를 위하여 아래의 서류가 포함되겠습니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-041",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-ff5d1f1f6c7b9c1f"
+    }
+  ],
+  "procurement_id": "g2b-R26BK01688120-000",
+  "generated_at": "2026-09-03T10:36:44.571677Z",
+  "generation_method": "RULE",
+  "mandatory_total": 42,
+  "requirements_with_sentence": 32,
+  "requirements_without_sentence": [
+    "REQ-004",
+    "REQ-006",
+    "REQ-008",
+    "REQ-012",
+    "REQ-014",
+    "REQ-016",
+    "REQ-026",
+    "REQ-028",
+    "REQ-034",
+    "REQ-042"
+  ],
+  "evidence_grounded_count": 0,
+  "rfp_grounded_count": 32,
+  "needs_review_count": 0,
+  "covered_requirement_ids": [
+    "SR-016f050b2308a882",
+    "SR-088f6f3fba1abf4f",
+    "SR-0da4a29431d71d84",
+    "SR-1e078c53e3921810",
+    "SR-30d198d9c1e6c50f",
+    "SR-394c6a223d10b2b6",
+    "SR-3efcaa4560d488a9",
+    "SR-421f126fb46e1ee5",
+    "SR-4399f7513adbc13f",
+    "SR-49292b951c8018af",
+    "SR-4c1e23b42df08a43",
+    "SR-517ad48d76b83189",
+    "SR-55d1ca64dbe1fc44",
+    "SR-566bb2fe8f89af84",
+    "SR-5751f15ebd91e82e",
+    "SR-5a635c012eaf7664",
+    "SR-5fe935c479c7068a",
+    "SR-6142d76ede90e2d8",
+    "SR-6ff03063984212ff",
+    "SR-74903ef3b6ca11fd",
+    "SR-78a88bdde2aace14",
+    "SR-7a7a67d83ef90370",
+    "SR-8e0934f882b00943",
+    "SR-8e98382e112066f7",
+    "SR-9fe827704a92b73b",
+    "SR-b58ad5bde7685dd7",
+    "SR-ccca77ae55a6312a",
+    "SR-d11df95f07504dad",
+    "SR-d290f01c10f69f1d",
+    "SR-d81cedd42f104c16",
+    "SR-f22ee467b662646e",
+    "SR-ff5d1f1f6c7b9c1f"
+  ],
+  "proposal_version": 1,
+  "author": "RULE",
+  "edited_by_human": false,
+  "proposal_hash": "30540e84d6cd89bf"
+}

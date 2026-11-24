@@ -1,0 +1,51 @@
+{
+  "notice_id": "g2b-R26BK01727415-000",
+  "document": {
+    "name": "01_입찰공고문_무선통신망보안시스템_설치공사.pdf",
+    "index": 0,
+    "format": "pdf",
+    "hash": "1bcdcee5f5dc32ea"
+  },
+  "fetched_at": "2026-09-22T18:31:59.102048+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "2. 입찰참가자격",
+    "page_from": 2,
+    "page_to": 3
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「정보통신공사업법」에 따른 정보통신공사업 등록업체",
+      "page": 2,
+      "kind": "industry"
+    },
+    {
+      "id": "QC-02",
+      "text": "공고일 현재 국가를 당사자로 하는 계약에 관한 법률 및 관계 법령에 의하여 입찰참가 제한을 받지 아니한 업체 2",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "무선통신망 보안 시스템, 무선 네트워크 보안 또는 산업용 유·무선 통신망 설치·구축 실적을 보유한 업체",
+      "page": 3,
+      "kind": "track_record"
+    },
+    {
+      "id": "QC-04",
+      "text": "사업 수행에 필요한 기술인력 및 장비를 보유한 업체",
+      "page": 3,
+      "kind": "staff"
+    },
+    {
+      "id": "QC-05",
+      "text": "공동수급 및 공동이행 불허",
+      "page": 3,
+      "kind": "consortium"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

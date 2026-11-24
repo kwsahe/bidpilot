@@ -1,0 +1,51 @@
+{
+  "notice_id": "g2b-R26BK01758267-000",
+  "document": {
+    "name": "공고문_[지역 주도형 AI 대전환 사업] 원화정밀_리사이징 설비라인 자동화 시스템 AI 고도화.pdf",
+    "index": 1,
+    "format": "pdf",
+    "hash": "55978d3f61d2aac1"
+  },
+  "fetched_at": "2026-10-08T03:07:06.193460+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 2
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12 조 및 같은 법 시행규칙 제14 조에 따른 경쟁입찰 참가자격을 갖춘 자.",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」 제27 조 및 제27 조의5 에 따른 부정당업자 및 조세포탈 등에 대한 입찰참가자격 제한 대상에 해당하지 않는 자.",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "최초 입찰공고일(2026. 09. 22.) 전일부터 입찰일(낙찰자는 계약체결일)까지 주된 영업소(법인 본점 / 개인사업자 사업장)가 대구광역시에 소재한 자. 1",
+      "page": 1,
+      "kind": "region"
+    },
+    {
+      "id": "QC-04",
+      "text": "국가종합전자조달시스템(G2B)에 입찰참가자격 등록을 완료하고 입찰서 제출마감일까지 해당 자격을 유지한 자.",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-05",
+      "text": "공동수급(공동이행방식)은 허용하지 않음.",
+      "page": 2,
+      "kind": "consortium"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

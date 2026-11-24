@@ -1,0 +1,19 @@
+# BidPilot 화면(Next.js · 로그인 게이트 · /api 중계) — 서버 사용자 서비스(42차). nginx :443 → 127.0.0.1:18320.
+[Unit]
+Description=BidPilot AI frontend (127.0.0.1:18320)
+After=network-online.target bidpilot-api.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/bidpilot/current/frontend
+EnvironmentFile=%h/bidpilot/.env
+Environment=NODE_ENV=production
+Environment=PATH=%h/.nvm/versions/node/v22.23.4/bin:/usr/local/bin:/usr/bin:/bin
+UMask=0077
+ExecStart=%h/.nvm/versions/node/v22.23.4/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 18320
+Restart=on-failure
+RestartSec=5
+MemoryMax=1500M
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,51 @@
+{
+  "notice_id": "g2b-R26BK01734086-004",
+  "document": {
+    "name": "입찰공고문(선문산단 제2026-16호).hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "b9cbb492a6bcd01e"
+  },
+  "fetched_at": "2026-09-22T18:30:37.810080+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "2. 입찰 참가 자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "『국가를 당사자로 하는 계약에 관한 법률』 제27조의 제한을 받은 사실이 없는 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-02",
+      "text": "『국가를 당사자로 하는 계약에 관한 법률 시행령』 제12조에 의한 유자격 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "『국가를 당사자로 하는 계약에 관한 법률 시행령』 제76조의 제한을 받은 사실이 없는 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-04",
+      "text": "국가종합전자조달시스템 입찰참가자격등록규정에 의하여 G2B(나라장터) 시스템에 입찰참가 등록한 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-05",
+      "text": "소프트웨어산업진흥법 제24조 및 동법시행령 제17조에 따른 소프트웨어사업자",
+      "page": 1,
+      "kind": "industry"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

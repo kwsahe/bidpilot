@@ -1,0 +1,230 @@
+{
+  "id": "PROP-g2b-R26BK01707959-000",
+  "title": "사업수행계획 (핵심 섹션)",
+  "sentences": [
+    {
+      "id": "PS-01",
+      "text": "[가천대학교 부트캠프 사업의 ‘피지컬 AI’ 교육과정 기획] \"가천대학교 부트캠프 사업의 ‘피지컬 AI’ 교육과정 기획\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「AI 심화 커리큘럼(합성)」 p.4, 유사도 0.53 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-001",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-4d7c1ee19923ce2b"
+    },
+    {
+      "id": "PS-02",
+      "text": "[‘피지컬 AI‘ 과목에 적합한 현장 중심 실무 교육 및 기술 경험…] 요구사항 \"‘피지컬 AI‘ 과목에 적합한 현장 중심 실무 교육 및 기술 경험 제공이 가능한 교육과정 기획\" 을 이행합니다. (근거: 「AI 심화 커리큘럼(합성)」 p.4 \"피지컬 AI 입문 모듈: 센서 데이터와 제어 개념을 다루는 피지컬 AI 입문 모듈을 운영하며, 시뮬레이션 환경에서 실습이 가능하도록 구성합니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-002",
+      "evidence_id": "EV-01",
+      "needs_review": false,
+      "stable_requirement_id": "SR-998a3a5dda4c5331"
+    },
+    {
+      "id": "PS-03",
+      "text": "[주말(토요일, 일요일)을 이용한 45시간 내외의 교육 과정 기획] \"주말(토요일, 일요일)을 이용한 45시간 내외의 교육 과정 기획\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「단기집중 부트캠프 운영 자료(합성)」 p.1, 유사도 0.55 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-003",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-74939a12cdcbad1b"
+    },
+    {
+      "id": "PS-04",
+      "text": "[해당 AI 이론을 기반으로 현장 적용이 가능한 균형 잡힌 이론/실습…] \"해당 AI 이론을 기반으로 현장 적용이 가능한 균형 잡힌 이론/실습 병행 교육 과정 기획\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「AI 심화 커리큘럼(합성)」 p.2, 유사도 0.56 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-004",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-dbc74acb0497b3bd"
+    },
+    {
+      "id": "PS-05",
+      "text": "[가천대학교 부트캠프 사업의 ‘피지컬 AI’ 교육과정 운영] \"가천대학교 부트캠프 사업의 ‘피지컬 AI’ 교육과정 운영\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「AI 심화 커리큘럼(합성)」 p.4, 유사도 0.56 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-005",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-f6712ecd32814b58"
+    },
+    {
+      "id": "PS-06",
+      "text": "[가천대학교 부트캠프 사업 홈페이지 기반의 해당 교육 과정 운영] \"가천대학교 부트캠프 사업 홈페이지 기반의 해당 교육 과정 운영\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「단기집중 부트캠프 운영 자료(합성)」 p.3, 유사도 0.51 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-006",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-c7ec0d66d4249899"
+    },
+    {
+      "id": "PS-07",
+      "text": "[해당 교육 과정 및 가천대학교 학점 부여가 가능한 평가 체계 운영] 요구사항 \"해당 교육 과정 및 가천대학교 학점 부여가 가능한 평가 체계 운영\" 을 이행합니다. (근거: 「평가·수료 관리 자료(합성)」 p.2 \"학점 부여가 가능한 평가 체계 운영: 대학 학점 부여가 가능한 수준의 평가 체계를 운영하며, 출석률과 과제 제출, 프로젝트 결과를 합산해 이수 여부를 판정합니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-007",
+      "evidence_id": "EV-02",
+      "needs_review": false,
+      "stable_requirement_id": "SR-fbb116891c23b39f"
+    },
+    {
+      "id": "PS-08",
+      "text": "[교육 인증, 취업 연계 등 이수자 관리를 통해 취업 및 산업 경쟁력…] 요구사항 \"교육 인증, 취업 연계 등 이수자 관리를 통해 취업 및 산업 경쟁력 강화 지원이 이어지는 전주기적 운영\" 을 이행합니다. (근거: 「이수자 관리·취업연계 자료(합성)」 p.2 \"취업 지원 연계 운영: 교육 인증과 취업 지원을 연계하여 이수자의 취업 준비를 지원하는 전주기적 운영 체계를 갖추고 있습니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-008",
+      "evidence_id": "EV-04",
+      "needs_review": false,
+      "stable_requirement_id": "SR-baf312540cdfc403"
+    },
+    {
+      "id": "PS-09",
+      "text": "[교육용 계정 운영·관리] 요구사항 \"교육용 계정 운영·관리\" 을 이행합니다. (근거: 「교육용 클라우드 계정 운영 자료(합성)」 p.1 \"교육용 계정 운영·관리: 교육 개시 전 수강생별 교육용 계정을 일괄 생성하고, 과정 종료 시 회수·비활성화하는 절차를 운영합니다. 계정 발급 대장과 회수 결과를 산출물로 제출합니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-009",
+      "evidence_id": "EV-06",
+      "needs_review": false,
+      "stable_requirement_id": "SR-c37a8da59a65b80d"
+    },
+    {
+      "id": "PS-10",
+      "text": "[실시간 계정 모니터링 및 관리] 요구사항 \"실시간 계정 모니터링 및 관리\" 을 이행합니다. (근거: 「교육용 클라우드 계정 운영 자료(합성)」 p.3 \"실시간 계정 모니터링: 교육 기간 중 계정 사용 현황과 접속 이력을 실시간으로 모니터링하여 미사용 계정과 이상 사용을 확인합니다. 확인 결과는 주간보고에 포함합니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-010",
+      "evidence_id": "EV-06",
+      "needs_review": false,
+      "stable_requirement_id": "SR-02cbc218e15b10d6"
+    },
+    {
+      "id": "PS-11",
+      "text": "[교육 및 현장 체험 프로그램 운영] \"교육 및 현장 체험 프로그램 운영\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「단기집중 부트캠프 운영 자료(합성)」 p.3, 유사도 0.56 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-011",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-6b296fffcaa60974"
+    },
+    {
+      "id": "PS-12",
+      "text": "[전담 운영 매니저 배정] 요구사항 \"전담 운영 매니저 배정\" 을 이행합니다. (근거: 「단기집중 부트캠프 운영 자료(합성)」 p.6 \"전담 운영 매니저 배정: 과정마다 전담 운영 매니저 1명을 배정하여 일정, 교육생 응대, 산출물 관리를 담당하게 합니다. 사업기간 중에는 발주기관 승인 없이 교체하지 않습니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-012",
+      "evidence_id": "EV-03",
+      "needs_review": false,
+      "stable_requirement_id": "SR-63aa23b273eca2eb"
+    },
+    {
+      "id": "PS-13",
+      "text": "[과목별 공정하고 변별력있는 수강생 평가 체계 제시 및 운영] \"과목별 공정하고 변별력있는 수강생 평가 체계 제시 및 운영\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「평가·수료 관리 자료(합성)」 p.1, 유사도 0.56 — 미채택)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-013",
+      "evidence_id": null,
+      "needs_review": true,
+      "stable_requirement_id": "SR-36de9c52ffd39cff"
+    },
+    {
+      "id": "PS-14",
+      "text": "[교육 평가(중간/최종) 진행] 요구사항 \"교육 평가(중간/최종) 진행\" 을 이행합니다. (근거: 「평가·수료 관리 자료(합성)」 p.1 \"단계별 교육 평가 진행: 수강생을 대상으로 중간 평가와 최종 평가를 각각 실시하여 이해도와 실습 수행도를 확인합니다. 평가 기준과 배점은 착수 시 발주기관과 협의해 확정합니다.\")",
+      "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+      "requirement_id": "REQ-014",
+      "evidence_id": "EV-02",
+      "needs_review": false,
+      "stable_requirement_id": "SR-005ed5fd53d70544"
+    },
+    {
+      "id": "PS-15",
+      "text": "사업수행업체는 발주처나 대상업체에서 제공받은 모든 자료를 사업수행 목적 외 용도로 사용해서는 안 되며, 사업수행 중 취득한 기술 및 기밀 등 모든 보안사항과 용역 수행 중 직ㆍ간접적으로 취득한 기밀사항 및 발주처에 불이익을 초래할 가능성이 있는 어떠한 정보도 제3자에게 공개나 누설해서는 안 됩니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-019",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-283acd0de679dade",
+      "original_requirement_id": "REQ-017"
+    },
+    {
+      "id": "PS-16",
+      "text": "사업수행업체는 용역에 참여하는 모든 인력에 대하여 보안성 검사를 필하여야 하고, 대표자는 용역에 투입되는 인력 전체에 대한 보안상 총괄책임을 져야 합니다. (RFP p.3 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-020",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-5e316dc8b945a921",
+      "original_requirement_id": "REQ-018"
+    },
+    {
+      "id": "PS-17",
+      "text": "다음과 같은 사유로 용역수행기관이 용역수행을 계속할 수 없다고 판단될 때 발주처는 계약을 해지할 수 있으며, 이 경우 발주처가 정하는 바에 따라 정산하겠습니다. (RFP p.4 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-021",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-8b8e8552db28e0c9",
+      "original_requirement_id": "REQ-019"
+    },
+    {
+      "id": "PS-18",
+      "text": "발주처와 협의를 거친 사항이라도 용역완료 후 하자가 발생되었을 경우에는 추가 용역비 청구 없이 내용을 수정‧보완하겠습니다. (RFP p.4 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-022",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-7e61b1045c56546e",
+      "original_requirement_id": "REQ-020"
+    },
+    {
+      "id": "PS-19",
+      "text": "제안서는 허위로 작성하지 않아야 하며, 계약 후라도 제안서의 내용을 허위로 작성한 사실이 발견되거나 제안된 내용을 충족시키지 못한 경우 계약파기를 할 수 있으며, 제안업체는 일체의 손해배상 책임을 져야 합니다. (RFP p.5 요구사항 준수)",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-039",
+      "evidence_id": null,
+      "needs_review": false,
+      "stable_requirement_id": "SR-805f5704bde3e8fb",
+      "original_requirement_id": "REQ-029"
+    }
+  ],
+  "procurement_id": "g2b-R26BK01707959-000",
+  "generated_at": "2026-09-04T00:53:11.210436Z",
+  "generation_method": "RULE",
+  "mandatory_total": 32,
+  "requirements_with_sentence": 19,
+  "requirements_without_sentence": [
+    "REQ-015",
+    "REQ-021",
+    "REQ-022",
+    "REQ-023",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026",
+    "REQ-027",
+    "REQ-028",
+    "REQ-030",
+    "REQ-031",
+    "REQ-032",
+    "REQ-033"
+  ],
+  "evidence_grounded_count": 7,
+  "rfp_grounded_count": 12,
+  "needs_review_count": 7,
+  "covered_requirement_ids": [
+    "SR-005ed5fd53d70544",
+    "SR-02cbc218e15b10d6",
+    "SR-283acd0de679dade",
+    "SR-36de9c52ffd39cff",
+    "SR-4d7c1ee19923ce2b",
+    "SR-5e316dc8b945a921",
+    "SR-63aa23b273eca2eb",
+    "SR-6b296fffcaa60974",
+    "SR-74939a12cdcbad1b",
+    "SR-7e61b1045c56546e",
+    "SR-805f5704bde3e8fb",
+    "SR-8b8e8552db28e0c9",
+    "SR-998a3a5dda4c5331",
+    "SR-baf312540cdfc403",
+    "SR-c37a8da59a65b80d",
+    "SR-c7ec0d66d4249899",
+    "SR-dbc74acb0497b3bd",
+    "SR-f6712ecd32814b58",
+    "SR-fbb116891c23b39f"
+  ],
+  "proposal_version": 1,
+  "author": "RULE",
+  "edited_by_human": false,
+  "proposal_hash": "54b538468e5bf499"
+}

@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "frontend",
+      "port": 3110
+    },
+    {
+      "name": "wireframe",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:wireframe"],
+      "cwd": "frontend",
+      "port": 4120
+    },
+    {
+      "name": "backend",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "uvicorn", "app.main:app", "--reload", "--host", "127.0.0.1", "--port", "8110"],
+      "cwd": "backend",
+      "port": 8110
+    }
+  ]
+}

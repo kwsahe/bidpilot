@@ -1,0 +1,33 @@
+{
+  "notice_id": "g2b-R26BK01734024-002",
+  "document": {
+    "name": "로임시스템_용역입찰공고문_수정.pdf",
+    "index": 1,
+    "format": "pdf",
+    "hash": "bafce777985c961e"
+  },
+  "fetched_at": "2026-09-22T18:31:22.908372+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 2,
+    "page_to": 2
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "나라장터 입찰참가자격등록규정에 따라 「소프트웨어개발업」 (또는 정보통신 관련 업종)을 등록 한 업체",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가계약법 등 관계 법령에 따른 입찰참가자격 제한(부정당업자 등)을 받지 아니한 자",
+      "page": 2,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

@@ -1,0 +1,45 @@
+{
+  "notice_id": "g2b-R26BK01758995-000",
+  "document": {
+    "name": "1. 입찰공고문.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "5c605ed71fc631de"
+  },
+  "fetched_at": "2026-10-08T03:07:29.331638+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "2. 참가자격 [제안요청서 파일 참조 필수]",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 및 동시행령에 결격사유가 없어야 함",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가를 당사자로 하는 계약법 시행규칙 제76조의 규정에 의한 부정당업자로 입찰 참가자격 제한을 받은 자는 제외",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "「국가종합전자조달시스템 입찰참가자격등록규정」에 의하여 입찰 마감일 전일까지 국가종합전자조달시스템(나라장터(G2B))에 “국제회의기획업[업종코드 : 5720]”으로 등록된 업체",
+      "page": 1,
+      "kind": "industry"
+    },
+    {
+      "id": "QC-04",
+      "text": "입찰에 참가하는 업체가 퇴직자 등 영입 현황확인서 등의 허위서류를 제출하는 경우에는 입찰 무효 또는 계약을 해제·해지 할 수 있음",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

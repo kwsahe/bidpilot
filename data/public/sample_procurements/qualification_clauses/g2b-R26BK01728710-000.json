@@ -1,0 +1,39 @@
+{
+  "notice_id": "g2b-R26BK01728710-000",
+  "document": {
+    "name": "인덕대학교 입찰 공고.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "0ef55c4cea8f85c2"
+  },
+  "fetched_at": "2026-09-22T18:31:00.590702+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰 참가 자격 (아래 조건을 충족하는 업체만 입찰에 참가할 수 있음)",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조 및 동법 시행규칙 제 14조의 자격요건을 갖춘 사업자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제76조의 부정당업자 입찰 참가 자격 제한을 받지 아니한 사업자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "입찰공고일 전일부터 입찰서 제출일(낙찰자는 계약체결일)까지 법인등기부상 본점 소재지(개인사업자인 경우 사업자등록증상 사업장 소재지)를 서울특별시, 경기도, 인천광역시에 둔 사업자",
+      "page": 1,
+      "kind": "region"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

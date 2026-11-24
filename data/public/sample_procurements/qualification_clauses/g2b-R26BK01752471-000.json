@@ -1,0 +1,51 @@
+{
+  "notice_id": "g2b-R26BK01752471-000",
+  "document": {
+    "name": "1. 입찰공고문.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "2fe1da5c241b97d4"
+  },
+  "fetched_at": "2026-10-08T03:07:00.474829+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "관련 법령과 입찰공고에서 정한 경쟁입찰 참가자격을 갖춘 업체여야 함.",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "입찰공고일 기준 최근 3년 이내 대학 또는 공공기관의 온라인 교육콘텐츠 개발 실적을 보유한 업체여야 함.",
+      "page": 1,
+      "kind": "track_record"
+    },
+    {
+      "id": "QC-03",
+      "text": "K-MOOC 또는 이에 준하는 고품질 온라인 강좌 개발 실적을 보유한 업체를 우대할 수 있음.",
+      "page": 1,
+      "kind": "track_record"
+    },
+    {
+      "id": "QC-04",
+      "text": "교수설계, 영상기획, 촬영, 편집, 그래픽, 번역·자막 및 품질관리 업무를 수행할 수 있는 전문인력을 확보하여야 함.",
+      "page": 1,
+      "kind": "staff"
+    },
+    {
+      "id": "QC-05",
+      "text": "계약업체는 제안서에 제시한 사업내용, 참여인력, 수행일정, 품질관리 및 산출물 제출계획을 성실하게 이행하여야 함.",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

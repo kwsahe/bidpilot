@@ -1,0 +1,53 @@
+# BidPilot AI — 백엔드 이미지 빌드 컨텍스트에서 제외할 것
+#
+# 빌드 컨텍스트는 저장소 루트다(`docker build -f backend/Dockerfile .`). 그래서 규칙도
+# 저장소 루트 기준으로 쓴다.
+#
+# ※ BuildKit 은 `-f backend/Dockerfile` 로 빌드할 때 **backend/Dockerfile.dockerignore**
+#    를 먼저 읽는다. 두 파일은 같은 내용을 유지한다 (한쪽만 고치지 말 것).
+#    이 파일은 사람이 먼저 찾는 이름이고, 컨텍스트를 backend/ 로 잡고 빌드할 때 쓰인다.
+#
+# 이미지 안전은 이 파일에만 기대지 않는다. Dockerfile 자체가 실제 회사자료 경로
+# (data/private, data/company)를 아예 COPY 하지 않는다.
+
+# 기본은 전부 제외하고, 이미지에 필요한 것만 되돌린다.
+# (frontend/node_modules 625MB, .git 141MB, backend/.venv 142MB 가 컨텍스트로 올라가지 않는다)
+*
+
+# ── 백엔드 소스 · 실행 스크립트 ──
+!backend/pyproject.toml
+!backend/app
+!backend/docker-entrypoint.sh
+
+# ── 씨앗 데이터: 공개 샘플 + 합성 회사자료만 ──
+# data/private(조직별 실제자료)와 data/company(레거시 실제자료)는 되돌리지 않는다.
+!data/public
+!data/synthetic_company
+
+# ── 되돌린 경로 안에서 다시 제외 ──
+# 실행할 때마다 쌓이는 산출물 (볼륨에 남아야 할 것들, 이미지에 굽지 않는다)
+data/public/real_rfp
+data/public/audit_runs
+data/public/reviews
+data/public/conditions
+data/public/actions
+data/public/decisions
+data/public/corrections
+data/public/notice_versions
+data/public/exports
+# 로컬 백업 · 재생성 가능한 임베딩 캐시(6MB+)
+data/synthetic_company/docs_backup_before_import
+data/synthetic_company/index/requirement_vectors.json
+
+# ── 어디에 있든 제외 ──
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.env
+**/.env.*
+**/.DS_Store
+**/Thumbs.db
+**/*.log

@@ -1,0 +1,22 @@
+# BidPilot 백엔드(FastAPI) — 서버 사용자 서비스(42차). 127.0.0.1 에만 연다(nginx 는 화면 18320 으로만 온다).
+# 설치: deploy_server.ps1 이 ~/.config/systemd/user/ 로 복사 → systemctl --user daemon-reload · enable --now
+[Unit]
+Description=BidPilot AI backend (127.0.0.1:18310)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/bidpilot/current/backend
+EnvironmentFile=%h/bidpilot/.env
+# DEMO_USER/PASSWORD 는 화면 서버의 로그인 게이트 스위치일 뿐이다 — 백엔드가 보면 그 값을 관리자 공용 계정으로 받아 준다(user_service._demo_outcome).
+# 회사 서버는 개인 계정(users.json)만 쓴다.
+UnsetEnvironment=DEMO_USER DEMO_PASSWORD
+Environment=PATH=%h/.nvm/versions/node/v22.23.4/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+UMask=0077
+ExecStart=%h/bidpilot/current/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 18310 --workers 1 --no-access-log
+Restart=on-failure
+RestartSec=5
+MemoryMax=3G
+
+[Install]
+WantedBy=default.target

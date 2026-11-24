@@ -1,0 +1,78 @@
+{
+  "_note": "가상 예시 샘플. 실제 기업마당(bizinfo.go.kr) 응답이 아니다. BIZINFO_API_KEY가 없을 때 화면 형태를 확인하기 위한 것이며, 필드명은 기업마당 지원사업정보 OpenAPI 문서(jsonArray 항목)를 따랐다. 실응답 확인 전까지 매핑은 미검증이다.",
+  "source": "sample",
+  "fetched_at": null,
+  "total_fetched": 5,
+  "items": [
+    {
+      "pblancId": "SAMPLE-2026-0001",
+      "pblancNm": "[가상 예시] 2026년 중소기업 생성형 AI 활용 역량강화 교육 바우처 지원사업",
+      "jrsdInsttNm": "광주광역시(가상 예시)",
+      "excInsttNm": "광주테크노파크(가상 예시)",
+      "bsnsSumryCn": "광주 소재 중소기업 재직자를 대상으로 생성형 AI 활용 실무교육 비용의 일부를 바우처로 지원한다. 교육 공급기관은 별도 등록 절차를 거친다.",
+      "reqstBeginEndDe": "20260901 ~ 20260930",
+      "pldirSportRealmLclasCodeNm": "인력",
+      "pldirSportRealmMlsfcCodeNm": "교육",
+      "hashtags": "AI,교육,바우처,광주",
+      "trgetNm": "중소기업",
+      "pblancUrl": "https://www.bizinfo.go.kr/",
+      "creatPnttm": "2026-08-25 09:00:00"
+    },
+    {
+      "pblancId": "SAMPLE-2026-0002",
+      "pblancNm": "[가상 예시] 전남 디지털 전환(DX) 컨설팅 지원사업",
+      "jrsdInsttNm": "전라남도(가상 예시)",
+      "excInsttNm": "전남정보문화산업진흥원(가상 예시)",
+      "bsnsSumryCn": "전남 소재 기업의 디지털 전환 진단·컨설팅 비용을 지원한다. 컨설팅 수행기관 풀을 모집한다.",
+      "reqstBeginEndDe": "20260815 ~ 20261015",
+      "pldirSportRealmLclasCodeNm": "경영",
+      "pldirSportRealmMlsfcCodeNm": "컨설팅",
+      "hashtags": "DX,컨설팅,전남",
+      "trgetNm": "중소기업,소상공인",
+      "pblancUrl": "https://www.bizinfo.go.kr/",
+      "creatPnttm": "2026-08-10 10:00:00"
+    },
+    {
+      "pblancId": "SAMPLE-2026-0003",
+      "pblancNm": "[가상 예시] 스마트공장 설비 고도화 지원",
+      "jrsdInsttNm": "중소벤처기업부(가상 예시)",
+      "excInsttNm": "스마트제조혁신추진단(가상 예시)",
+      "bsnsSumryCn": "제조 중소기업의 생산설비 자동화·센서 구축 비용을 지원한다.",
+      "reqstBeginEndDe": "20260701 ~ 20260731",
+      "pldirSportRealmLclasCodeNm": "기술",
+      "pldirSportRealmMlsfcCodeNm": "설비",
+      "hashtags": "스마트공장,제조",
+      "trgetNm": "제조 중소기업",
+      "pblancUrl": "https://www.bizinfo.go.kr/",
+      "creatPnttm": "2026-06-20 09:00:00"
+    },
+    {
+      "pblancId": "SAMPLE-2026-0004",
+      "pblancNm": "[가상 예시] 청년 창업기업 AI 서비스 개발 지원",
+      "jrsdInsttNm": "창업진흥원(가상 예시)",
+      "excInsttNm": null,
+      "bsnsSumryCn": "창업 3년 이내 청년기업의 AI 기반 서비스 개발비를 지원한다. 전국 대상.",
+      "reqstBeginEndDe": "20260901 ~ 20261031",
+      "pldirSportRealmLclasCodeNm": "창업",
+      "pldirSportRealmMlsfcCodeNm": "사업화",
+      "hashtags": "AI,창업,전국",
+      "trgetNm": "창업기업",
+      "pblancUrl": "https://www.bizinfo.go.kr/",
+      "creatPnttm": "2026-08-28 14:00:00"
+    },
+    {
+      "pblancId": "SAMPLE-2026-0005",
+      "pblancNm": "[가상 예시] 부산 해양 물류 장비 구매 지원",
+      "jrsdInsttNm": "부산광역시(가상 예시)",
+      "excInsttNm": null,
+      "bsnsSumryCn": "부산 소재 물류기업의 장비 구매를 지원한다.",
+      "reqstBeginEndDe": "20260901 ~ 20260920",
+      "pldirSportRealmLclasCodeNm": "금융",
+      "pldirSportRealmMlsfcCodeNm": "융자",
+      "hashtags": "물류,부산",
+      "trgetNm": "물류기업",
+      "pblancUrl": "https://www.bizinfo.go.kr/",
+      "creatPnttm": "2026-08-30 09:00:00"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "notice_id": "g2b-R26BK01728220-000",
+  "document": {
+    "name": "붙임1. 입찰공고문_[앵커] 생성형 AI 융합 K-pop 송캠프 운영 용역.hwp",
+    "index": 2,
+    "format": "hwp",
+    "hash": "06ce6762c1d351c9"
+  },
+  "fetched_at": "2026-09-22T18:31:25.910784+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "4. 입찰참가자격[아래의 조건을 모두 충족(낙찰자는 계약체결일까지)해야 함, 공동수급불가]",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」 시행령 제12조 및 시행규칙 제14조에 의한 유자격자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "공고일 기준 동법 시행령 제76조에 의한 부정당업자에 해당하지 않는 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "「대중문화예술산업발전법」 제26조에 따른 대중문화예술기획업 등록을 필하고, 음반·음악영상물제작업으로 신고된 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-04",
+      "text": "최근 3년 이내 지자체 관내 지역 주민 및 대학생(또는 고등학생)을 대상으로 'K-pop 관련 캠프' 또는 유사한 음악·영상 콘텐츠 창작 교육 프로그램을 성공적으로 운영한 실적을 보유한 업체",
+      "page": 1,
+      "kind": "track_record"
+    },
+    {
+      "id": "QC-05",
+      "text": "본 사업의 성격상 단독 진행이 가능하며, 본 대학의 선정 및 평가 방식에 이의가 없음을 확인한 업체",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

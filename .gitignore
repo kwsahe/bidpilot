@@ -1,0 +1,135 @@
+# Environment / secrets
+.env
+.env.local
+.env.*
+!.env.example
+
+# Node / Next.js
+node_modules/
+.next/
+.next-wireframe/
+out/
+next-env.d.ts
+npm-debug.log*
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+# 발표 덱 생성기는 **빌드 산출물이 아니라 소스**다. 위 `build/` 는 파이썬 패키징 산출물을
+# 노리는 규칙인데, 폴더 이름이 같다는 이유만으로 `docs/presentation/build/` 를 통째로
+# 삼키고 있었다. 그래서 덱을 만드는 `build_deck.js`(수치가 여기 박혀 있다)가 저장소에
+# 없었고, 새로 복제하면 덱을 다시 만들 수 없었다 (2026-09-18 발견).
+#
+# 디렉터리 자체를 되살려야 한다 — git 은 «부모가 제외된» 파일을 다시 넣지 못한다.
+# 안의 `img/`·`node_modules/` 는 그 폴더의 .gitignore 와 아래 101행이 계속 막는다.
+!docs/presentation/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp
+*.log
+tmp/
+
+# 참가 신청서 등 개인정보가 포함된 문서는 저장소에 올리지 않는다
+docs/*.hwpx
+docs/*.hwp
+
+# 나라장터에서 내려받은 실제 첨부(제안요청서 원본)는 저장소에 올리지 않는다
+data/public/real_rfp/
+
+# Auditor 실행 산출물(실행할 때마다 생성되는 검사 결과 JSON)
+data/public/audit_runs/
+
+# 요구사항 임베딩 캐시(재생성 가능, 6MB+). 인덱스는 scripts/build_company_index.py로 다시 만든다
+data/synthetic_company/index/requirement_vectors.json
+
+# 담당자 최종 검토 결과(실행할 때마다 생성되는 결정 JSON)
+data/public/reviews/
+
+# 회사자료 교체 전 로컬 백업 (scripts/import_company_docs.py가 만든다)
+data/synthetic_company/docs_backup_before_import/
+
+# Gold 검수 페이지는 작업지에서 생성한다 (scripts/gold_review_page.py)
+data/public/sample_rfp/worksheets/*.review.html
+
+# Office 임시 잠금 파일
+~$*
+
+# 회사자료 등록 파이프라인 — 실제 자료·등록부·후보·회사 인덱스는 내부 전용 (공개 저장소에 올리지 않는다)
+# company_identity.json(공개 사업자 정보)만 저장소에 둔다.
+data/company/uploads/
+data/company/candidates/
+data/company/index/
+data/company/documents.json
+data/company/company_profile.json
+data/company/performance_ledger.json
+data/company/ledger_docs/
+
+# 공고별 조건·체크리스트·결정·정정 기록과 서식 렌더링 산출물 (실행할 때마다 생성)
+data/public/conditions/*
+data/public/actions/*
+data/public/decisions/
+data/public/corrections/
+data/public/notice_versions/
+data/public/exports/
+
+# 예외: 데모 공고의 조건·체크리스트는 «시연용 고정 자료»다.
+#
+# 발표 동선이 이 두 파일의 내용에 그대로 달려 있다(4장면의 조건 목록·할 일 목록).
+# 생성물이라 원칙적으로는 무시 대상이지만, 저장소에 없으면 새 컴퓨터에서 연 시연이
+# 규칙을 다시 돌린 «다른» 결과를 보여 준다 — 큐시트의 숫자와 어긋난다.
+# 실제 공고의 분석 결과는 계속 무시한다. 여기 예외는 합성 데모 공고 하나뿐이다.
+!data/public/conditions/synthetic-rfp-0001.conditions.json
+!data/public/actions/synthetic-rfp-0001.actions.json
+
+# 회사 실제 자료 — 내부 전용, 저장소에 올리지 않는다
+
+# 조직(회사)별 실제자료 저장공간 전체 — 등록부·프로필·원본·후보·인덱스·분석 결과 (다회사 구조, 2026-09-07)
+data/private/
+
+# 발표 자료 빌드 산출물 (npm 의존성 — 소스가 아니다)
+docs/presentation/build/node_modules/
+
+# 임시 마킹 파일
+.tmp-marks/
+
+# 발표용 4K 스크린샷 원본 (zip 과 압축 푼 폴더가 같은 내용 · 각 30MB) — 로컬·드라이브 보관
+docs/PPT_스크린샷_가천대_3840x2160.zip
+docs/PPT_스크린샷_가천대_3840x2160/
+
+# 나라장터 사업분석 원본 (회사 내부자료일 수 있어 저장소에 두지 않는다)
+docs/SampleEdu_AI교육_나라장터_사업분석_2026-09-03.xlsx
+
+# 33차 — 자격(면허 · 지역 제한) 하루치는 매일 아침 자동 받기로 늘어난다. 이미 추적 중인 날 파일은 그대로 · 기준본을 바꿀 때만 git add -f
+data/public/sample_procurements/qualifications/
+
+# 44차 S12 — 실공고 요구사항 정리표는 매일 쓰면서 생긴다(Git 밖 · 이미 추적하던 시연 30건은 그대로 추적)
+data/public/sample_rfp/generated/*
+
+# 사내 자료는 저장소에 두지 않는다(2026-11-21). 회사 자료는 data/private(Git 밖)에.
+docs/
+CLAUDE.md
+BidPilot_AI_G-Solverthon_FINAL.html
+data/company/
+data/synthetic_company/index/
+data/synthetic_company/docs_backup_before_import/
+deploy/nginx/
+scripts/deploy_server.ps1
+scripts/film_rig.ps1

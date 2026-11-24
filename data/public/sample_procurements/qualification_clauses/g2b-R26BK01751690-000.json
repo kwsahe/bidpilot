@@ -1,0 +1,27 @@
+{
+  "notice_id": "g2b-R26BK01751690-000",
+  "document": {
+    "name": "AI 기반 주차 수요예측·자동감면 서비스 개발 용역_입찰공고서_260930.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "61257de7cc3f2650"
+  },
+  "fetched_at": "2026-10-08T03:08:11.813957+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "2. 입찰 참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "소프트웨어사업자 등록은 입찰참가등록 마감일 이전까지 완료된 경우에 한하여 인정함.",
+      "page": 1,
+      "kind": "industry"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

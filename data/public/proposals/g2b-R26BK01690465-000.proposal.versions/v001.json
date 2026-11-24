@@ -1,0 +1,276 @@
+{
+  "id": "PROP-g2b-R26BK01690465-000",
+  "title": "사업수행계획 (핵심 섹션)",
+  "sentences": [
+    {
+      "id": "PS-01",
+      "text": "감리 세부 일정, 감리원 편성, 투입감리원별 실적 및 경력 부분은 제시된 서식을 준용하여 작성하겠습니다만, 해당 사항에 대한 구체적 근거자료는 확인이 필요합니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-005",
+      "evidence_id": null,
+      "needs_review": true
+    },
+    {
+      "id": "PS-02",
+      "text": "점검방법, 과업이행여부, 기술적용계획표 등 필수점검사항에 대한 점검방법을 구체적으로 제시하였는지 여부는 확인이 필요합니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-045",
+      "evidence_id": null,
+      "needs_review": true
+    },
+    {
+      "id": "PS-03",
+      "text": "감리 세부일정, 감리원 편성내역, 비상근 감리원 및 전문인력 참여동의서, 투입감리원별 실적 및 경력 부분은 양식을 준용하여 작성하겠습니다만, 관련 근거자료는 확인이 필요합니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-051",
+      "evidence_id": null,
+      "needs_review": true
+    },
+    {
+      "id": "PS-04",
+      "text": "사업 수행에 사용되는 문서, 인원, 장비 등에 대하여 물리적, 관리적, 기술적 보안대책 및 ‘누출금지 대상정보’와 ‘사업자 보안관리 준수사항’에 대한 보안관리계획을 사업제안서에 기재하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-061",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-05",
+      "text": "사업 수행과정에서 취득한 자료와 정보는 사업수행 중은 물론 사업 완료 후에도 외부에 유출하지 않으며, 사업종료 시 정보보호담당자의 입회하에 완전 폐기 또는 반납하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-062",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-06",
+      "text": "사업 최종 산출물에 대해 정보보호담당자 또는 보안 점검도구를 활용하여 보안 취약점을 점검하고, 도출된 취약점에 대한 개선을 완료하여 그 결과를 제출하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-063",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-07",
+      "text": "사업 참여인원에 대해 사업투입 전 자체 보안 교육을 실시하고, 보안서약서 및 기본보안교육 내용을 제출하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-068",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-08",
+      "text": "보안인식 제고를 위해 주기적으로 자체 보안 교육을 실시하며, 한국과학기술정보연구원이 요구하는 보안교육에 참석하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-069",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-09",
+      "text": "시스템 접근 권한을 승인받은 인력 또는 해당 인력의 업무 변동이 발생한 경우, 해당 사유 발생 후 1일 내에 신고하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-070",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-10",
+      "text": "비밀을 철저히 유지하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-071",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-11",
+      "text": "중요정보 관리를 위하여 자료명과 인계자 및 인수자의 서명이 포함된 자료 제공대장을 작성하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-073",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-12",
+      "text": "PC, 노트북 등 전산장비를 반출입할 경우 관련 사항을 사전에 확인하고 조치하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-076",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-13",
+      "text": "보안USB 외의 기타 보조기억매체는 사용하지 않으며, 보안USB 외에는 자료를 저장하지 않겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-077",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-14",
+      "text": "정보시스템 사용자 계정 이용 시 부여된 권한 및 목적 이외의 접근을 하지 않으며, 승인된 사용자만 접근하도록 하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-078",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-15",
+      "text": "공용계정을 사용하지 않으며, 사용하지 않는 계정은 주기적으로 삭제하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-079",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-16",
+      "text": "공유 폴더는 사용하지 않겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-080",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-17",
+      "text": "보안관리 준수사항 중 예외적 허용이 필요한 경우에는 정보보안담당자에게 예외 허용사항에 대한 보안성 검토를 요청하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-081",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-18",
+      "text": "사업장은 업무망과 인터넷망을 분리하며, PC는 업무망과 인터넷망을 혼용하지 않겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-083",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-19",
+      "text": "발주기관 내부망 접속은 반드시 발주기관의 승인을 득한 후 사용하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-084",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-20",
+      "text": "사업수행 목적의 PC는 인터넷 연결을 금지하며, 불가피한 경우 보안책임관이 접속 사이트 목록을 작성하여 발주기관 승인을 득한 후 사용하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-085",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-21",
+      "text": "P2P, 웹하드 등 인터넷 자료공유사이트 접속은 허용하지 않으며, 기술적으로 차단하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-086",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-22",
+      "text": "사용자 계정은 하나의 그룹으로 등록하고 계정별로 접근권한을 차등 부여하되 기관 내부 문서 접근은 금지하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-087",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-23",
+      "text": "계정별 부여된 접근 권한은 불필요 시 즉시 해지하거나 계정을 폐기하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-088",
+      "evidence_id": null,
+      "needs_review": false
+    },
+    {
+      "id": "PS-24",
+      "text": "계정별 패스워드는 보안정책에 부합하도록 관리하며, 보안책임자가 변경 이력을 기록·관리하고 수시로 확인하겠습니다.",
+      "grounding_type": "RFP_GROUNDED",
+      "requirement_id": "REQ-089",
+      "evidence_id": null,
+      "needs_review": false
+    }
+  ],
+  "procurement_id": "g2b-R26BK01690465-000",
+  "generated_at": "2026-09-03T10:59:36.334891Z",
+  "generation_method": "LLM",
+  "mandatory_total": 92,
+  "requirements_with_sentence": 24,
+  "requirements_without_sentence": [
+    "REQ-001",
+    "REQ-002",
+    "REQ-003",
+    "REQ-006",
+    "REQ-007",
+    "REQ-008",
+    "REQ-009",
+    "REQ-010",
+    "REQ-011",
+    "REQ-012",
+    "REQ-013",
+    "REQ-014",
+    "REQ-015",
+    "REQ-016",
+    "REQ-017",
+    "REQ-018",
+    "REQ-019",
+    "REQ-020",
+    "REQ-021",
+    "REQ-022",
+    "REQ-023",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026",
+    "REQ-027",
+    "REQ-028",
+    "REQ-029",
+    "REQ-030",
+    "REQ-031",
+    "REQ-032",
+    "REQ-033",
+    "REQ-034",
+    "REQ-035",
+    "REQ-036",
+    "REQ-037",
+    "REQ-038",
+    "REQ-039",
+    "REQ-040",
+    "REQ-041",
+    "REQ-042",
+    "REQ-043",
+    "REQ-044",
+    "REQ-047",
+    "REQ-048",
+    "REQ-049",
+    "REQ-050",
+    "REQ-052",
+    "REQ-053",
+    "REQ-054",
+    "REQ-055",
+    "REQ-056",
+    "REQ-057",
+    "REQ-058",
+    "REQ-059",
+    "REQ-060",
+    "REQ-064",
+    "REQ-065",
+    "REQ-066",
+    "REQ-067",
+    "REQ-072",
+    "REQ-074",
+    "REQ-075",
+    "REQ-082",
+    "REQ-090",
+    "REQ-091",
+    "REQ-092",
+    "REQ-093",
+    "REQ-094"
+  ],
+  "evidence_grounded_count": 0,
+  "rfp_grounded_count": 24,
+  "needs_review_count": 3
+}

@@ -1,0 +1,101 @@
+{
+  "notice_id": "g2b-R26BK01718694-000",
+  "document": {
+    "name": "산단26-09-1호_경성대학교 소방공무원 맞춤형 AI 다중모달 심리진단 및 통합 데이터 관리 시스템 개발 용역_입찰 재공고문.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "b0c7a4dfad788f71"
+  },
+  "fetched_at": "2026-09-22T18:30:48.451316+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "2. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조 및같은 법 시행규칙 제14조의 규정에 의한 입찰참가자격을 갖춘 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」 제27조 및 같은 법 시행령 제76조에 의한 부정당업자의 입찰참가자격 제한을 받지 아니한 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조에 따라 사업자등록증 또는 법인등기부등본상 소프트웨어 개발 기관으로 등록된 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-04",
+      "text": "국가종합전자조달시스템(나라장터) 입찰참가자격 등록 및 전자입찰(투찰)을 완료한 업체",
+      "page": 1,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": {
+    "document": {
+      "name": "산단26-09-1호_경성대학교 소방공무원 맞춤형 AI 다중모달 심리진단 및 통합 데이터 관리 시스템 개발 용역_제안요청서.pdf",
+      "index": 2,
+      "format": "pdf"
+    },
+    "page_is_approximate": false,
+    "section": {
+      "heading": "□ 입찰 참가자격",
+      "page_from": 9,
+      "page_to": 9
+    },
+    "clauses": [
+      {
+        "id": "QC-01",
+        "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조 및 같은 법 시행규칙 제14조에 따른 입찰참가자격을 갖춘 자",
+        "page": 9,
+        "kind": "disqualification"
+      },
+      {
+        "id": "QC-02",
+        "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제76조에 해당하지 아니한 자",
+        "page": 9,
+        "kind": "disqualification"
+      },
+      {
+        "id": "QC-03",
+        "text": "기술 및 실적요건",
+        "page": 9,
+        "kind": "track_record"
+      },
+      {
+        "id": "QC-04",
+        "text": "본 사업은 「국가를 당사자로 하는 계약에 관한 법률 시행령」 제21조 제1항 제1호 에 따라 계약의 성질 및 목적 달성을 위하여 필요한 범위 내에서 기술능력 및 수행 실적을 기준으로 입찰참가자격을 제한함",
+        "page": 9,
+        "kind": "track_record"
+      },
+      {
+        "id": "QC-05",
+        "text": "최근 3년 이내 AI 기반 소프트웨어 개발 또는 정신건강·의료·심리진단 분야 디지털 시스템 개발 실적이 30,000천 원 이상인 업체",
+        "page": 9,
+        "kind": "track_record"
+      },
+      {
+        "id": "QC-06",
+        "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조에 따라 사업자등록증 또 는 법인등기부등본상 소프트웨어 개발 기관으로 등록된 업체",
+        "page": 9,
+        "kind": "disqualification"
+      },
+      {
+        "id": "QC-07",
+        "text": "자연어처리(NLP), 음성인식·분석, 컴퓨터 비전(표정분석) 중 2개 이상 관련 기술 수행 경험을 보유한 업체 우대",
+        "page": 9,
+        "kind": "track_record"
+      }
+    ]
+  },
+  "note": null
+}

@@ -1,0 +1,45 @@
+{
+  "notice_id": "g2b-R26BK01745873-000",
+  "document": {
+    "name": "유첨1_입찰공고문_AI·SW마에스트로 제17기 우수자(팀) 글로벌 AI·창업 역량 강화 교육 기획 및 운영.hwp",
+    "index": 1,
+    "format": "hwp",
+    "hash": "93a14112fe16c4a7"
+  },
+  "fetched_at": "2026-10-08T03:08:21.231749+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 2
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "[국가를 당사자로 하는 계약에 관한 법률 시행령 제12조 및 동법 시행 규칙 제14조]에 의한 유자격자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 시행령 제76조에 해당하지 않는 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "입찰참가 신청시 본회의 선정방식에 이의가 없음을 확약한 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-04",
+      "text": "국가종합전자조달시스템 입찰참가자격등록규정에 따라 반드시 전자입찰서 제출 마감일 전일까지 나라장터(G2B시스템)에 아래 업종중 하나를 입찰참가자격으로 등록한 자 자격 업종명 분류코드 필수 (중 1개) 종합여행업 1261 국내외여행업 1262",
+      "page": 1,
+      "kind": "industry"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

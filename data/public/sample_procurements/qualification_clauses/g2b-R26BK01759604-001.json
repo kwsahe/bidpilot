@@ -1,0 +1,27 @@
+{
+  "notice_id": "g2b-R26BK01759604-001",
+  "document": {
+    "name": "(입찰공고문) AI 서비스 실증지원 클라우드 플랫폼 고도화.pdf",
+    "index": 0,
+    "format": "pdf",
+    "hash": "1d82220d62ba6e94"
+  },
+  "fetched_at": "2026-10-08T03:08:05.245299+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "2. 입찰 참가자격 (아래 요건을 모두 충족한 자)",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "ㅇ 국가를 당사자로 하는 계약에 관한 법률 시행령(약칭: 국가계약법 시행령) 제12조(경쟁입찰의 참가자격) 및 동법시행규칙 제14조(입찰 참가자격 요건의 증명)에 의한 입찰 참가자격을 갖춘 사업자 ㅇ 국가를 당사자로 하는 계약에 관한 법률 제27조(부정당업자의 입찰 참가 자격 제한 등) 및 동법시행령 제76조(부정당업자의 입찰참가자격 제한)에 의거 제한받지 않는 자",
+      "page": 1,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

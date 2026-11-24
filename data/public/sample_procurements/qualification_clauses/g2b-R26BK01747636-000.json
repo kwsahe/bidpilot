@@ -1,0 +1,45 @@
+{
+  "notice_id": "g2b-R26BK01747636-000",
+  "document": {
+    "name": "1. (재공고)입찰공고문(2026년 동아보건대학교 수요자 맞춤형 AI 기반 통합 디지털 캠퍼스 포털 구축 입찰).hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "359d2069ff3657a0"
+  },
+  "fetched_at": "2026-10-08T03:07:34.992259+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "8. 입찰 참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "｢국가를 당사자로 하는 계약에 관한 법률 시행령｣ 제12조 및 동법 시행규칙 제14조에 따라 입찰참가자격을 갖춘 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "｢국가를 당사자로하는 계약에 관한 법률｣ 제27조 및 동법 시행령 제76조(부정당업자의 입찰참가자격 제한)에 해당되지 않은 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "공고일 현재 「소프트웨어진흥법」에 따른 소프트웨어사업자 신고를 필한 업체(소프트웨어사업자 신고/등록증 사본 1부 제출)",
+      "page": 1,
+      "kind": "industry"
+    },
+    {
+      "id": "QC-04",
+      "text": "공고일 전일 기준으로 등록취소, 휴업, 폐업, 부정당업체 지정 및 자격정지 등 관련 규정에 위반 조치된 자는 공모에 참가할 수 없으며, 자격심사 후라도 해당 사유 발생 시 공모 참가자격 및 권리 일체를 박탈함",
+      "page": 1,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

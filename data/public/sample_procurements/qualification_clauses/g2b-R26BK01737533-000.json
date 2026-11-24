@@ -1,0 +1,57 @@
+{
+  "notice_id": "g2b-R26BK01737533-000",
+  "document": {
+    "name": "취업역량강화 AI역량검사 및 취업지원플랫폼 운영 용역 공고문.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "b58dbcf2e1762c24"
+  },
+  "fetched_at": "2026-10-08T03:08:25.739818+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰 참가 자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조 및 「동법 시행규칙」 제14조, 제15조 규정에 의한 경쟁 입찰의 참가자격을 갖춘 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」 시행령 제76조(부정당업자의 입찰참가자격 제한)에 의거 제한을 받지 않는 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」제 43조의 규정에 따른 협상 절차를 거쳐 계약이 가능한 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-04",
+      "text": "「중소기업제품 구매촉진 및 판로지원에 관한 법률 시행령｣ 제2조의2 (중소기업자와의 우선조달계약)에 따른 중·소기업·소상공인",
+      "page": 1,
+      "kind": "company_type"
+    },
+    {
+      "id": "QC-05",
+      "text": "「중소기업제품 구매촉진 및 판로지원에 관한 법률」시행령 제2조의 3 제2호에 해당하는 비영리법인 입찰 참가 가능(비영리법인증 또는 중, 소기업, 소상공인확인서 中 1개 제출 필수)",
+      "page": 1,
+      "kind": "company_type"
+    },
+    {
+      "id": "QC-06",
+      "text": "공동수급 및 하도급 불허",
+      "page": 1,
+      "kind": "consortium"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

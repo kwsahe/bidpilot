@@ -1,0 +1,45 @@
+{
+  "notice_id": "g2b-R26BK01757670-000",
+  "document": {
+    "name": "1.입찰공고문(2026-50호).hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "fafb54e60a2f75ff"
+  },
+  "fetched_at": "2026-10-08T03:07:20.362233+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "4. 입찰 참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "본교에서 제시하는 과업의 이행이 가능하고 기일 내 입찰 등록을 필한 자.",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률 시행령」 제12조에 의한 자격을 갖춘 사업자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "입찰공고일 현재 본교를 상대로 소송한 이력이 있거나(소송 중 포함) 당좌거래정지, 청산, 합병, 매각 등 정리절차 중이거나 계획 중인 사업자, 법원에 화의 또는 법정관리(신청 중 포함) 중인 사업자의 입찰참가는 불가함.",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-04",
+      "text": "「대구대학교 재무·회계규정」 또는 「국가를 당사자로 하는 계약에 관한 법률」에 의한 부정당업자의 입찰참가는 불가함.",
+      "page": 1,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

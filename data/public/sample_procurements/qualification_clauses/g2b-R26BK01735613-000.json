@@ -1,0 +1,27 @@
+{
+  "notice_id": "g2b-R26BK01735613-000",
+  "document": {
+    "name": "[붙임] 입찰공고서.hwp",
+    "index": 1,
+    "format": "hwp",
+    "hash": "4271c1bfe998e6a2"
+  },
+  "fetched_at": "2026-09-22T18:31:58.127116+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "협회 주차 공간이 부족하오니 입찰설명회 등 협회 내원 시 되도록 대중교통을 이용하여 주시기 바랍니다.",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

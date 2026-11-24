@@ -1,0 +1,28 @@
+# Vercel CLI 업로드 제외 목록.
+#
+# Vercel CLI 는 .gitignore 를 따르지 않는다 — 이 파일이 없으면 로컬 빌드 산출물과
+# dev 캐시(.next/dev/cache/turbopack/*.sst 는 개당 100MB 를 넘는다)까지 올라가
+# "File size limit exceeded (100 MB)" 로 배포가 실패한다. 빌드는 Vercel 에서 다시 한다.
+
+# 의존성 (Vercel 이 직접 설치한다)
+node_modules
+
+# 로컬 빌드 산출물·캐시
+.next
+.next-wireframe
+out
+build
+coverage
+*.tsbuildinfo
+
+# 로컬 전용 설정·자격증명 (환경변수는 Vercel 프로젝트 설정에서 주입된다)
+.env
+.env.*
+.vercel
+
+# 잡파일
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*

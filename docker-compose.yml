@@ -1,0 +1,54 @@
+# BidPilot AI — 사내 서버 자체 호스팅용 compose 설정
+#
+#   docker compose up -d --build
+#
+# 값(인증키·토큰)은 이 파일에 적지 않는다. 저장소 루트의 `.env` 에서 읽는다
+# (`.env` 는 .gitignore 대상이다). 필요한 변수 목록은 docs/deploy_backend.md 참고.
+#
+# 기본은 127.0.0.1 에만 포트를 연다. 백엔드는 회사자료를 읽고 쓰므로 공인 IP에
+# 바로 노출하지 않는다 — 앞단에 리버스 프록시(HTTPS)나 터널을 둔다.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: bidpilot-api:latest
+    container_name: bidpilot-api
+    restart: unless-stopped
+
+    # 인증키·토큰은 파일에서만 들어온다 (값을 여기 적지 말 것).
+    env_file:
+      - .env
+
+    environment:
+      # 컨테이너 안에서 고정되는 값들 — 볼륨 마운트 지점과 일치해야 한다.
+      DATA_DIR: /data
+      PORT: "8000"
+      APP_ENV: ${APP_ENV:-production}
+      # 백엔드 API 토큰. 없으면 컨테이너를 올리지 않는다 (무인증 노출 방지).
+      # 프론트(Next.js) 서버가 중계할 때 같은 값을 쓴다.
+      API_TOKEN: '${API_TOKEN:?.env 에 API_TOKEN 을 설정하세요 - 임의의 긴 난수 문자열}'
+      # 브라우저 요청을 직접 받을 출처 목록(쉼표 구분). 중계 구조에서는 보통 비워 둔다.
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      DEFAULT_ORGANIZATION_ID: ${DEFAULT_ORGANIZATION_ID:-org-sample}
+      # 외부 API 키 — 없으면 캐시/합성 샘플로 동작한다 (기능이 죽지는 않는다).
+      BIZINFO_API_KEY: ${BIZINFO_API_KEY:-}
+      DATA_GO_KR_SERVICE_KEY: ${DATA_GO_KR_SERVICE_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+
+    ports:
+      # 호스트 127.0.0.1:8000 → 컨테이너 8000
+      - "127.0.0.1:${HOST_PORT:-8000}:8000"
+
+    volumes:
+      # 업로드 원본·후보 문단·임베딩 인덱스·분석 결과가 전부 여기 쌓인다.
+      # 이 볼륨을 지우면 회사자료가 사라진다. 백업 대상이다.
+      - bidpilot-data:/data
+
+    # HEALTHCHECK 는 이미지에 들어 있다 (/health 200 확인).
+    stop_grace_period: 20s
+
+volumes:
+  bidpilot-data:
+    name: bidpilot-data

@@ -1,0 +1,16 @@
+{
+  "notice_id": "g2b-R26BK01745574-000",
+  "document": {
+    "name": "입찰공고문최종본9.29게시용.docx",
+    "index": 0,
+    "format": null,
+    "hash": "1873c34e2af140e2"
+  },
+  "fetched_at": "2026-10-08T03:07:37.304070+00:00",
+  "status": "error",
+  "page_is_approximate": false,
+  "section": null,
+  "clauses": [],
+  "second_source": null,
+  "note": "압축 안에서 제안요청서로 볼 파일을 찾지 못했습니다 (들어 있는 파일: word/, word/header1.xml, word/styles.xml, word/document.xml, word/footer2.xml, word/theme/, word/theme/theme1.xml, word/settings.xml)"
+}

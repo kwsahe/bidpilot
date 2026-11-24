@@ -1,0 +1,1162 @@
+{
+  "_note": "Gold Requirement Set 검수 작업지. is_requirement 에 true/false 를 채우세요. extracted 는 추출기 판정이며 정답이 아닙니다.",
+  "procurement_id": "g2b-R26BK01699556-000",
+  "document": "1_2. 제안요청서(생성형 AI 활용).hwp",
+  "page_count": 11,
+  "candidate_count": 144,
+  "extracted_count": 30,
+  "rows": [
+    {
+      "line_id": "L-001",
+      "page": 1,
+      "text": "[가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)]",
+      "raw": "[가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)]",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-002",
+      "page": 1,
+      "text": "용역수행 관련 주의사항",
+      "raw": "3. 용역수행 관련 주의사항",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-003",
+      "page": 1,
+      "text": "입찰 참가자격 및 사업자 선정 방법囖",
+      "raw": "Ⅲ. 입찰 참가자격 및 사업자 선정 방법囖",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-004",
+      "page": 1,
+      "text": "제안서 작성지침 및 목차",
+      "raw": "3. 제안서 작성지침 및 목차",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-005",
+      "page": 1,
+      "text": "제안서 평가항목 및 배점 기준표",
+      "raw": "4. 제안서 평가항목 및 배점 기준표",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-006",
+      "page": 1,
+      "text": "용 역 명 : 가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)",
+      "raw": "가. 용 역 명 : 가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-007",
+      "page": 1,
+      "text": "용역기간 : 계약체결일 ~ 6주 이내",
+      "raw": "나. 용역기간 : 계약체결일 ~ 6주 이내",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-008",
+      "page": 1,
+      "text": "최근 생성형 AI의 등장 이후 글로벌 AI 기술 패권 경쟁이 심화되어 다양한 분야에 접목가능한 AI 인재 확보 집중",
+      "raw": "가. 최근 생성형 AI의 등장 이후 글로벌 AI 기술 패권 경쟁이 심화되어 다양한 분야에 접목가능한 AI 인재 확보 집중",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-009",
+      "page": 1,
+      "text": "단순한 AI 기술 개발을 넘어 전 학문·산업 분야에서 AI를 활용한 새로운 가치 창출 요구 증대",
+      "raw": "◦ 단순한 AI 기술 개발을 넘어 전 학문·산업 분야에서 AI를 활용한 새로운 가치 창출 요구 증대",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-010",
+      "page": 1,
+      "text": "이에 교육부에서는 대학이 기업과 공동으로 취업희망자 대상 단기 집중교육프로그램을 개발·운영하고, 인증 등 취업 연계 지원을 하는 첨단산업 인재양성 부트캠프 사업을 진행",
+      "raw": "◦ 이에 교육부에서는 대학이 기업과 공동으로 취업희망자 대상 단기 집중교육프로그램을 개발·운영하고, 인증 등 취업 연계 지원을 하는 첨단산업 인재양성 부트캠프 사업을 진행",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-011",
+      "page": 1,
+      "text": "가천대학교 AI 부트캠프 사업 선정",
+      "raw": "나. 가천대학교 AI 부트캠프 사업 선정",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-012",
+      "page": 1,
+      "text": "가천대학교는 2026년 2월 첨단산업 인재양성 부트캠프 사업에 신규 선정되었음",
+      "raw": "◦ 가천대학교는 2026년 2월 첨단산업 인재양성 부트캠프 사업에 신규 선정되었음",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-013",
+      "page": 2,
+      "text": "가천대학교 부트캠프 교육과정은 생성형 AI, 피지컬 AI 분야를 중심으로 11개 과목을 통해 1년 이내 단기 집중교육을 통하여 실무역량을 갖춘 첨단 인재를 양성하고자 함",
+      "raw": "◦ 가천대학교 부트캠프 교육과정은 생성형 AI, 피지컬 AI 분야를 중심으로 11개 과목을 통해 1년 이내 단기 집중교육을 통하여 실무역량을 갖춘 첨단 인재를 양성하고자 함",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-014",
+      "page": 2,
+      "text": "가천대학교 부트캠프 사업의 ‘생성형 AI 활용’ 교육과정 기획 및 운영",
+      "raw": "가. 가천대학교 부트캠프 사업의 ‘생성형 AI 활용’ 교육과정 기획 및 운영",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-015",
+      "page": 2,
+      "text": "‘생성형 AI 활용‘ 과목에 적합한 현장 중심 실무 교육 및 기술 경험 제공이 가능한 교육과정 기획",
+      "raw": "◦ ‘생성형 AI 활용‘ 과목에 적합한 현장 중심 실무 교육 및 기술 경험 제공이 가능한 교육과정 기획",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-016",
+      "page": 2,
+      "text": "교육과정 이수 후 교육 인증, 취업 지원 등 이수자 관리를 통해 취업 및 산업 경쟁력 강화 지원이 이어지는 전주기적 운영",
+      "raw": "◦ 교육과정 이수 후 교육 인증, 취업 지원 등 이수자 관리를 통해 취업 및 산업 경쟁력 강화 지원이 이어지는 전주기적 운영",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-017",
+      "page": 2,
+      "text": "학생 전공 역량 강화 및 실무 능력 배양",
+      "raw": "가. 학생 전공 역량 강화 및 실무 능력 배양",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-018",
+      "page": 2,
+      "text": "생성형AI의 이론적 이해를 넘어 실질적인 기술 활용 능력을 확보함으로써 전공분야의 문제 해결 능력 극대화",
+      "raw": "◦ 생성형AI의 이론적 이해를 넘어 실질적인 기술 활용 능력을 확보함으로써 전공분야의 문제 해결 능력 극대화",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-019",
+      "page": 2,
+      "text": "최신 클라우드 및 AI 기술을 직접 실습하며 산업 트렌드에 유연하게 대응할 수 있는 디지털 리터러시 함양",
+      "raw": "◦ 최신 클라우드 및 AI 기술을 직접 실습하며 산업 트렌드에 유연하게 대응할 수 있는 디지털 리터러시 함양",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-020",
+      "page": 2,
+      "text": "취업 경쟁력 제고 및 진로 스펙트럼 확대",
+      "raw": "나. 취업 경쟁력 제고 및 진로 스펙트럼 확대",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-021",
+      "page": 2,
+      "text": "관련 자격증 취득 및 교육 이수를 통해 공신력 있는 포트폴리오를 확보하고, AI 활용 능력을 요구하는 기업체로의 취업 기회 확대",
+      "raw": "◦ 관련 자격증 취득 및 교육 이수를 통해 공신력 있는 포트폴리오를 확보하고, AI 활용 능력을 요구하는 기업체로의 취업 기회 확대",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-022",
+      "page": 2,
+      "text": "현직자 특강 및 현장 체험을 통해 생태계를 조기에 경험함으로써 구체적인 진로 설계 및 직무 몰입도 향상",
+      "raw": "◦ 현직자 특강 및 현장 체험을 통해 생태계를 조기에 경험함으로써 구체적인 진로 설계 및 직무 몰입도 향상",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-023",
+      "page": 2,
+      "text": "대학의 교육 혁신 및 대외 이미지 제고",
+      "raw": "다. 대학의 교육 혁신 및 대외 이미지 제고",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-024",
+      "page": 2,
+      "text": "국내 AI 기업과의 협력 모델을 성공적으로 운영하여 가천대학교의 첨단 산업 교육 선도 이미지 구축",
+      "raw": "◦ 국내 AI 기업과의 협력 모델을 성공적으로 운영하여 가천대학교의 첨단 산업 교육 선도 이미지 구축",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-025",
+      "page": 2,
+      "text": "최첨단 AI 교육 인프라 제공을 통해 재학생들의 교육 만족도를 높이고 대학의 비교과 프로그램 질적 수준 향상",
+      "raw": "◦ 최첨단 AI 교육 인프라 제공을 통해 재학생들의 교육 만족도를 높이고 대학의 비교과 프로그램 질적 수준 향상",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-026",
+      "page": 2,
+      "text": "가천대학교 부트캠프 사업의 ’생성형 AI 활용’ 교육과정 기획",
+      "raw": "가. 가천대학교 부트캠프 사업의 ’생성형 AI 활용’ 교육과정 기획",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-027",
+      "page": 2,
+      "text": "주말(토요일, 일요일)을 이용한 40시간 내외의 교육 과정 기획",
+      "raw": "◦ 주말(토요일, 일요일)을 이용한 40시간 내외의 교육 과정 기획",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-028",
+      "page": 2,
+      "text": "생성형 AI 이론을 기반으로 현장 적용이 가능한 균형 잡힌 이론/실습 병행 교육 과정 기획",
+      "raw": "◦ 생성형 AI 이론을 기반으로 현장 적용이 가능한 균형 잡힌 이론/실습 병행 교육 과정 기획",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-029",
+      "page": 2,
+      "text": "가천대학교 부트캠프 사업의 ’생성형 AI 활용’ 교육과정 운영",
+      "raw": "나. 가천대학교 부트캠프 사업의 ’생성형 AI 활용’ 교육과정 운영",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-030",
+      "page": 2,
+      "text": "가천대학교 부트캠프 사업 홈페이지 기반의 해당 교육 과정 운영",
+      "raw": "◦ 가천대학교 부트캠프 사업 홈페이지 기반의 해당 교육 과정 운영",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-031",
+      "page": 2,
+      "text": "해당 교육 과정 및 가천대학교 학점 부여가 가능한 평가 체계 운영",
+      "raw": "◦ 해당 교육 과정 및 가천대학교 학점 부여가 가능한 평가 체계 운영",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-032",
+      "page": 2,
+      "text": "교육 인증, 취업 지원 등 이수자 관리를 통해 취업 및 산업 경쟁력 강화 지원이 이어지는 전주기적 운영",
+      "raw": "◦ 교육 인증, 취업 지원 등 이수자 관리를 통해 취업 및 산업 경쟁력 강화 지원이 이어지는 전주기적 운영",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-033",
+      "page": 2,
+      "text": "2주차: RAG 심화 기술의 이해 및 활용",
+      "raw": "- 2주차: RAG 심화 기술의 이해 및 활용",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-034",
+      "page": 2,
+      "text": "3주차: AI Agent 워크플로(Workflow)의 이해 및 활용",
+      "raw": "- 3주차: AI Agent 워크플로(Workflow)의 이해 및 활용",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-035",
+      "page": 2,
+      "text": "5주차: AI Agent 프로젝트 설계·구현 및 발표",
+      "raw": "- 5주차: AI Agent 프로젝트 설계·구현 및 발표",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-036",
+      "page": 3,
+      "text": "오프라인 강의, 핸즈온 실습, 미니 프로젝트, 결과 발표 방식으로 운영",
+      "raw": "오프라인 강의, 핸즈온 실습, 미니 프로젝트, 결과 발표 방식으로 운영",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-037",
+      "page": 3,
+      "text": "교육 강사진 배정 및 운영",
+      "raw": "교육 강사진 배정 및 운영",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-038",
+      "page": 3,
+      "text": "교육용 클라우드 플랫폼 계정 크레딧 발급",
+      "raw": "교육용 클라우드 플랫폼 계정 크레딧 발급",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-039",
+      "page": 3,
+      "text": "실시간 계정 모니터링 및 관리",
+      "raw": "실시간 계정 모니터링 및 관리",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-040",
+      "page": 3,
+      "text": "과정 전담 운영 매니저 배정",
+      "raw": "과정 전담 운영 매니저 배정",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-041",
+      "page": 3,
+      "text": "프로젝트 단계별 점검 운영: 중간 점검 및 피드백, 최종 점검·시연·발표 및 상호 피드백을 통한 과정 정리",
+      "raw": "프로젝트 단계별 점검 운영: 중간 점검 및 피드백, 최종 점검·시연·발표 및 상호 피드백을 통한 과정 정리",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-042",
+      "page": 3,
+      "text": "관련 공인 자격증 준비 및 학습 지원(메인 교육과정과 병행 운영)",
+      "raw": "관련 공인 자격증 준비 및 학습 지원(메인 교육과정과 병행 운영)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-043",
+      "page": 3,
+      "text": "수강생 단계별(중간/최종) 교육 평가 진행",
+      "raw": "수강생 단계별(중간/최종) 교육 평가 진행",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-044",
+      "page": 3,
+      "text": "교육 내용과 연계된 공인 자격증 취득 지원 프로그램 운영",
+      "raw": "교육 내용과 연계된 공인 자격증 취득 지원 프로그램 운영",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-045",
+      "page": 3,
+      "text": "이외 전주기적 지원을 위한 추가 제안",
+      "raw": "이외 전주기적 지원을 위한 추가 제안",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-046",
+      "page": 3,
+      "text": "전주기적 교육 과정 운영",
+      "raw": "전주기적 교육 과정 운영",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-047",
+      "page": 3,
+      "text": "사업수행업체는 발주처나 대상업체에서 제공받은 모든 자료를 사업수행 목적 외 용도로 사용해서는 안 되며, 사업수행 중 취득한 기술 및 기밀 등 모든 보안사항과 용역 수행 중 직ㆍ간접적으로 취득한 기밀사항 및 발주처에 불이익을 초래할 가능성이 있는 어떠한 정보도 제3자에게 공개나 누설해서는 안 된다.",
+      "raw": "◦ 사업수행업체는 발주처나 대상업체에서 제공받은 모든 자료를 사업수행 목적 외 용도로 사용해서는 안 되며, 사업수행 중 취득한 기술 및 기밀 등 모든 보안사항과 용역 수행 중 직ㆍ간접적으로 취득한 기밀사항 및 발주처에 불이익을 초래할 가능성이 있는 어떠한 정보도 제3자에게 공개나 누설해서는 안 된다.",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-048",
+      "page": 3,
+      "text": "사업수행업체는 용역에 참여하는 모든 인력에 대하여 보안성 검사를 필하여야 하고, 대표자는 용역에 투입되는 인력 전체에 대한 보안상 총괄책임을 져야 한다.",
+      "raw": "◦ 사업수행업체는 용역에 참여하는 모든 인력에 대하여 보안성 검사를 필하여야 하고, 대표자는 용역에 투입되는 인력 전체에 대한 보안상 총괄책임을 져야 한다.",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-049",
+      "page": 3,
+      "text": "사업수행업체는 보안사항의 누설로 인한 문제 발생 시 사업자는 민·형사상 모든 책임을 진다.",
+      "raw": "◦ 사업수행업체는 보안사항의 누설로 인한 문제 발생 시 사업자는 민·형사상 모든 책임을 진다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-050",
+      "page": 3,
+      "text": "사업 수행 시 활용되는 자료 등에 대한 저작권 문제는 저작물 책임법에 따라 사업수행업체가 책임을 진다.",
+      "raw": "◦ 사업 수행 시 활용되는 자료 등에 대한 저작권 문제는 저작물 책임법에 따라 사업수행업체가 책임을 진다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-051",
+      "page": 3,
+      "text": "다음과 같은 사유로 용역수행기관이 용역수행을 계속할 수 없다고 판단될 때 발주처는 계약을 해지할 수 있으며, 이 경우 발주처가 정하는 바에 따라 정산하여야 한다.",
+      "raw": "◦ 다음과 같은 사유로 용역수행기관이 용역수행을 계속할 수 없다고 판단될 때 발주처는 계약을 해지할 수 있으며, 이 경우 발주처가 정하는 바에 따라 정산하여야 한다.",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-052",
+      "page": 3,
+      "text": "용역을 기한 내에 이행하지 못했을 경우",
+      "raw": "- 용역을 기한 내에 이행하지 못했을 경우",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-053",
+      "page": 3,
+      "text": "계약 기간 내 완료할 능력 및 공정이 현저히 미달된다고 판단되는 경우",
+      "raw": "- 계약 기간 내 완료할 능력 및 공정이 현저히 미달된다고 판단되는 경우",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-054",
+      "page": 3,
+      "text": "용역수행 중 부주의로 인해 중대한 과실이 발생 되었을 경우",
+      "raw": "- 용역수행 중 부주의로 인해 중대한 과실이 발생 되었을 경우",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-055",
+      "page": 3,
+      "text": "용역에 대해 부당한 하도급을 주거나 계약조건에 위반되었을 경우",
+      "raw": "- 용역에 대해 부당한 하도급을 주거나 계약조건에 위반되었을 경우",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-056",
+      "page": 3,
+      "text": "용역수행 결과에 대한 보완 의무",
+      "raw": "다. 용역수행 결과에 대한 보완 의무",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-057",
+      "page": 3,
+      "text": "발주처와 협의를 거친 사항이라도 용역완료 후 하자가 발생되었을 경우에는 추가 용역비 청구 없이 내용을 수정‧보완하여야 한다.",
+      "raw": "◦ 발주처와 협의를 거친 사항이라도 용역완료 후 하자가 발생되었을 경우에는 추가 용역비 청구 없이 내용을 수정‧보완하여야 한다.",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-143",
+      "page": 3,
+      "text": "교육용 계정 운영·관리",
+      "raw": "교육용 계정 운영·관리",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-058",
+      "page": 4,
+      "text": "용역수행자는 성과품 납품 후 1년 내 발주처에서 자문을 요청할 경우 이에 성실히 응하여야 하며, 각종 행정절차 등의 이행이 완료되어야 본 용역이 완료된 것으로 본다.",
+      "raw": "◦ 용역수행자는 성과품 납품 후 1년 내 발주처에서 자문을 요청할 경우 이에 성실히 응하여야 하며, 각종 행정절차 등의 이행이 완료되어야 본 용역이 완료된 것으로 본다.",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-059",
+      "page": 4,
+      "text": "용역수행 상 용역내용의 조정이 불가피한 경우 발주처와 협의하여 재조정할 수 있다.",
+      "raw": "◦ 용역수행 상 용역내용의 조정이 불가피한 경우 발주처와 협의하여 재조정할 수 있다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-060",
+      "page": 4,
+      "text": "용역비는 용역수행결과 용역물량의 증감이 발생되었을 경우 발주처와 협의 하에 용역비를 변경 신청할 수 있다.",
+      "raw": "◦ 용역비는 용역수행결과 용역물량의 증감이 발생되었을 경우 발주처와 협의 하에 용역비를 변경 신청할 수 있다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-061",
+      "page": 4,
+      "text": "본 용역의 수행 중 발주처의 사정에 의한 행정 절차상 용역기간이 추가 소요될 경우에는 용역기간을 조정할 수 있으며, 용역수행 중 부득이한 사유로 당초 예정대로 수행이 어려울 경우, 계약 만료일 20일 전에 관계사유를 명시하여 연기원을 제출하여야 하며, 그 사유가 타당하다고 인정될 때에는 계약기간을 조정할 수 있다.",
+      "raw": "◦ 본 용역의 수행 중 발주처의 사정에 의한 행정 절차상 용역기간이 추가 소요될 경우에는 용역기간을 조정할 수 있으며, 용역수행 중 부득이한 사유로 당초 예정대로 수행이 어려울 경우, 계약 만료일 20일 전에 관계사유를 명시하여 연기원을 제출하여야 하며, 그 사유가 타당하다고 인정될 때에는 계약기간을 조정할 수 있다.",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-062",
+      "page": 4,
+      "text": "사업 착수계(착수 보고서, 기획안 등)",
+      "raw": "○ 사업 착수계(착수 보고서, 기획안 등)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-063",
+      "page": 4,
+      "text": "과업 검토결과, 추진체계, 추진일정, 참여인력 명단 등",
+      "raw": "- 과업 검토결과, 추진체계, 추진일정, 참여인력 명단 등",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-064",
+      "page": 4,
+      "text": "최종산출물(종합보고서 등)",
+      "raw": "○ 최종산출물(종합보고서 등)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-065",
+      "page": 4,
+      "text": "입찰 참가자격 및 사업자 선정 방법",
+      "raw": "Ⅲ. 입찰 참가자격 및 사업자 선정 방법",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-066",
+      "page": 4,
+      "text": "본 건을 수행하기 위해서 허가·인가·면허·등록·신고 등을 요하거나 자격요건을 갖추어야 할 경우에는 당해 허가·인가·면허·등록·신고 등을 받았거나 당해 자격요건에 적합하고, 입찰참가 등록을 정해진 기한 내에 완료한 자",
+      "raw": "가. 본 건을 수행하기 위해서 허가·인가·면허·등록·신고 등을 요하거나 자격요건을 갖추어야 할 경우에는 당해 허가·인가·면허·등록·신고 등을 받았거나 당해 자격요건에 적합하고, 입찰참가 등록을 정해진 기한 내에 완료한 자",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-067",
+      "page": 4,
+      "text": "입찰공고일 기준 다음 각 호의 자격을 모두 갖춘 자이어야 하며, 공동 수급(컨소시엄)은 허용하지 않음",
+      "raw": "나. 입찰공고일 기준 다음 각 호의 자격을 모두 갖춘 자이어야 하며, 공동 수급(컨소시엄)은 허용하지 않음",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-068",
+      "page": 4,
+      "text": "국가공인 민간자격, 국가기술자격 또는 국내외 클라우드·AI 사업자가 공식 인증하는 자격 취득 과정을 자사 교육과정으로 보유·운영 중인 자",
+      "raw": "① 국가공인 민간자격, 국가기술자격 또는 국내외 클라우드·AI 사업자가 공식 인증하는 자격 취득 과정을 자사 교육과정으로 보유·운영 중인 자",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-069",
+      "page": 4,
+      "text": "최근 3년 내 대학 대상 AI·SW 분야 교육 수행 실적이 3건 이상이거나 누적 수료 인원을 100명 이상 보유한 자 (단, 2.5천만원 이상의 건만 인정)",
+      "raw": "② 최근 3년 내 대학 대상 AI·SW 분야 교육 수행 실적이 3건 이상이거나 누적 수료 인원을 100명 이상 보유한 자 (단, 2.5천만원 이상의 건만 인정)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-070",
+      "page": 4,
+      "text": "최근 3년 내 4년제 대학이 발주한 정규 학점 과정 또는 비교과 몰입형 부트캠프 과정을 수탁 운영한 실적을 3건 이상 보유한 자",
+      "raw": "③ 최근 3년 내 4년제 대학이 발주한 정규 학점 과정 또는 비교과 몰입형 부트캠프 과정을 수탁 운영한 실적을 3건 이상 보유한 자",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-071",
+      "page": 4,
+      "text": "현장설명에 참석하고, 입찰에 필요한 구비서류를 제출하여 정해진 기일 내 입찰등록을 필한 업체",
+      "raw": "다. 현장설명에 참석하고, 입찰에 필요한 구비서류를 제출하여 정해진 기일 내 입찰등록을 필한 업체",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-072",
+      "page": 4,
+      "text": "입찰공고일 현재 청산, 합병, 매각 등 정리절차 중이거나 계획 중인 업체, 법원에 화의 또는 법정관리(신청 중) 중인 업체, Work-out 대상기업 및 영업정지 업체는 입찰에 참가 할 수 없음",
+      "raw": "라. 입찰공고일 현재 청산, 합병, 매각 등 정리절차 중이거나 계획 중인 업체, 법원에 화의 또는 법정관리(신청 중) 중인 업체, Work-out 대상기업 및 영업정지 업체는 입찰에 참가 할 수 없음",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-073",
+      "page": 4,
+      "text": "2개 이상의 업체가 컨소시엄을 구성하는 등 공동도급의 방식은 일체 허용하지 않으며, 단일업체여야 함",
+      "raw": "마. 2개 이상의 업체가 컨소시엄을 구성하는 등 공동도급의 방식은 일체 허용하지 않으며, 단일업체여야 함",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-074",
+      "page": 4,
+      "text": "국가를 당사자로 하는 계약에 관련법률 시행령 제76조에 의한 부정당업자는 입찰 참가 자격을 제한함",
+      "raw": "바. 국가를 당사자로 하는 계약에 관련법률 시행령 제76조에 의한 부정당업자는 입찰 참가 자격을 제한함",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-075",
+      "page": 4,
+      "text": "입찰방법 : 제한경쟁입찰, 2단계(규격, 가격 동시)",
+      "raw": "가. 입찰방법 : 제한경쟁입찰, 2단계(규격, 가격 동시)",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-076",
+      "page": 4,
+      "text": "낙찰자 결정방법 : 입찰공고문 8. 참조",
+      "raw": "나. 낙찰자 결정방법 : 입찰공고문 8. 참조",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-077",
+      "page": 4,
+      "text": "평가기준 및 방법 : 아래 Ⅳ의 4. 제안서 평가항목 및 배점 기준표 참조",
+      "raw": "다. 평가기준 및 방법 : 아래 Ⅳ의 4. 제안서 평가항목 및 배점 기준표 참조",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-078",
+      "page": 5,
+      "text": "제안서를 제출받아 평가 후 평가점수 85점 이상을 적격업체로 선정하고, 적격업체를 대상으로 가격입찰(개찰)을 실시",
+      "raw": "◦ 제안서를 제출받아 평가 후 평가점수 85점 이상을 적격업체로 선정하고, 적격업체를 대상으로 가격입찰(개찰)을 실시",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-079",
+      "page": 5,
+      "text": "평가결과에 대하여 제안업체는 이의를 제기할 수 없음",
+      "raw": "◦ 평가결과에 대하여 제안업체는 이의를 제기할 수 없음",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-080",
+      "page": 5,
+      "text": "평가점수는 대외비로 처리함",
+      "raw": "◦ 평가점수는 대외비로 처리함",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-081",
+      "page": 5,
+      "text": "낙찰자로 결정된 자는 낙찰일로부터 7일 이내에 제반서류를 갖추어 계약을 체결",
+      "raw": "가. 낙찰자로 결정된 자는 낙찰일로부터 7일 이내에 제반서류를 갖추어 계약을 체결",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-082",
+      "page": 5,
+      "text": "국가를 당사자로 하는 계약에 관한 법률 및 동법 관련 규정에 의한 계약일반조건 등을 준용",
+      "raw": "나. 국가를 당사자로 하는 계약에 관한 법률 및 동법 관련 규정에 의한 계약일반조건 등을 준용",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-083",
+      "page": 5,
+      "text": "본 용역의 대금은 선금 지급 없이 용역 완료(결과보고서 제출 및 검수) 후, 세금계산서 청구 시 전액 지급하는 것을 원칙으로 함",
+      "raw": "◦ 본 용역의 대금은 선금 지급 없이 용역 완료(결과보고서 제출 및 검수) 후, 세금계산서 청구 시 전액 지급하는 것을 원칙으로 함",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-084",
+      "page": 5,
+      "text": "본 용역 수행의 결과로 산출되는 모든 성과물(학생결과물, 결과보고서 등)에 대한 소유권 및 지식재산권은 발주처(가천대학교 산학협력단)에 귀속됨",
+      "raw": "◦ 본 용역 수행의 결과로 산출되는 모든 성과물(학생결과물, 결과보고서 등)에 대한 소유권 및 지식재산권은 발주처(가천대학교 산학협력단)에 귀속됨",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-085",
+      "page": 5,
+      "text": "전체 목차는 제안 요청서에서 제시된 제안서 작성지침을 준수하되 세분화하는 경우 제안 업체의 의도대로 재구성해도 무방하나 요구된 내용을 반드시 포함시켜야 함",
+      "raw": "가. 전체 목차는 제안 요청서에서 제시된 제안서 작성지침을 준수하되 세분화하는 경우 제안 업체의 의도대로 재구성해도 무방하나 요구된 내용을 반드시 포함시켜야 함",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-086",
+      "page": 5,
+      "text": "목차의 항목 중 해당내용이 없는 경우는 해당 항목에 “해당사항 없음”으로 작성",
+      "raw": "나. 목차의 항목 중 해당내용이 없는 경우는 해당 항목에 “해당사항 없음”으로 작성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-087",
+      "page": 5,
+      "text": "제안업체의 제안서는 다음의 제안서 작성지침을 준용하여 제반 요구사항의 만족여부를 명확하고 간결하게 기술",
+      "raw": "다. 제안업체의 제안서는 다음의 제안서 작성지침을 준용하여 제반 요구사항의 만족여부를 명확하고 간결하게 기술",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-088",
+      "page": 5,
+      "text": "매수: 20page 내외로 작성(별지 제외)",
+      "raw": "◦ 매수: 20page 내외로 작성(별지 제외)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-089",
+      "page": 5,
+      "text": "제안서에 제시된 내용과 발주기관의 요구에 의하여 수정ㆍ보완ㆍ변경된 제안내용은 계약서에 명시하지 않더라도 계약서와 동일한 효력을 가짐",
+      "raw": "가. 제안서에 제시된 내용과 발주기관의 요구에 의하여 수정ㆍ보완ㆍ변경된 제안내용은 계약서에 명시하지 않더라도 계약서와 동일한 효력을 가짐",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-090",
+      "page": 5,
+      "text": "발주기관은 필요 시 입찰 참가자에 대하여 추가 제안이나 추가 자료를 요청할 수 있으며, 이에 따라 제출된 자료는 제안서와 동일한 효력을 갖고, 제출된 제안서의 내용은 발주기관이 요청하지 않는 한 변경할 수 없음",
+      "raw": "나. 발주기관은 필요 시 입찰 참가자에 대하여 추가 제안이나 추가 자료를 요청할 수 있으며, 이에 따라 제출된 자료는 제안서와 동일한 효력을 갖고, 제출된 제안서의 내용은 발주기관이 요청하지 않는 한 변경할 수 없음",
+      "extracted": true,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-091",
+      "page": 5,
+      "text": "제안서는 허위로 작성하지 않아야 하며, 계약 후라도 제안서의 내용을 허위로 작성한 사실이 발견되거나 제안된 내용을 충족시키지 못한 경우 계약파기를 할 수 있으며, 제안업체는 일체의 손해배상 책임을 져야 한다.",
+      "raw": "다. 제안서는 허위로 작성하지 않아야 하며, 계약 후라도 제안서의 내용을 허위로 작성한 사실이 발견되거나 제안된 내용을 충족시키지 못한 경우 계약파기를 할 수 있으며, 제안업체는 일체의 손해배상 책임을 져야 한다.",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-092",
+      "page": 5,
+      "text": "작성지침의 작성항목 순서 준수",
+      "raw": "작성지침의 작성항목 순서 준수",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-093",
+      "page": 5,
+      "text": "서식 1,2호 양식을 활용하여 제안사의 일반현황 및 연혁, 강점과 사업 수행 역량 등에 대해 기술",
+      "raw": "서식 1,2호 양식을 활용하여 제안사의 일반현황 및 연혁, 강점과 사업 수행 역량 등에 대해 기술",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-094",
+      "page": 5,
+      "text": "서식 3호 양식을 활용하여 제안사의 전문인력 보유 현황 및 구성을 작성",
+      "raw": "서식 3호 양식을 활용하여 제안사의 전문인력 보유 현황 및 구성을 작성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-095",
+      "page": 5,
+      "text": "서식 4,5호 양식에 맞춰 본 입찰과 관련한 AI 교육 및 운영 관련 실적 제시",
+      "raw": "서식 4,5호 양식에 맞춰 본 입찰과 관련한 AI 교육 및 운영 관련 실적 제시",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-096",
+      "page": 6,
+      "text": "해당 용역의 제안요청 내용을 명확하게 이해하고, 제안을 통해 달성하고자 하는 목적 및 최종성과를 명확히 작성",
+      "raw": "해당 용역의 제안요청 내용을 명확하게 이해하고, 제안을 통해 달성하고자 하는 목적 및 최종성과를 명확히 작성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-097",
+      "page": 6,
+      "text": "주요 사업 수행 업무에 대한 제안사가 생각하는 추진 범위를 간략히 작성",
+      "raw": "주요 사업 수행 업무에 대한 제안사가 생각하는 추진 범위를 간략히 작성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-098",
+      "page": 6,
+      "text": "제안내용의 적절성·전문성·차별성",
+      "raw": "◦ 제안내용의 적절성·전문성·차별성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-099",
+      "page": 6,
+      "text": "제안 내용의 특징 및 장점을 요약하여 기술",
+      "raw": "제안 내용의 특징 및 장점을 요약하여 기술",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-100",
+      "page": 6,
+      "text": "과업 수행 세부 추진 전략",
+      "raw": "◦ 과업 수행 세부 추진 전략",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-101",
+      "page": 6,
+      "text": "각 항목별 용역수행을 위한 교육 내용 상세 초안 제시",
+      "raw": "- 각 항목별 용역수행을 위한 교육 내용 상세 초안 제시",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-102",
+      "page": 6,
+      "text": "교육 용역 달성을 위한 접근법 등 작성",
+      "raw": "- 교육 용역 달성을 위한 접근법 등 작성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-103",
+      "page": 6,
+      "text": "기대되는 정량/정성적 산출물 제시",
+      "raw": "- 기대되는 정량/정성적 산출물 제시",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-104",
+      "page": 6,
+      "text": "상기 용역 수행에 있어 주어진 기간 동안 수행하고자 하는 교육 세부 계획을 작성",
+      "raw": "상기 용역 수행에 있어 주어진 기간 동안 수행하고자 하는 교육 세부 계획을 작성",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-105",
+      "page": 6,
+      "text": "과업수행과 관련된 제안업체만의 특장점",
+      "raw": "◦ 과업수행과 관련된 제안업체만의 특장점",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-106",
+      "page": 6,
+      "text": "용역 수행 결과 제고를 위한 제안사만이 적용할 수 있는 차별화된 수단, 수행기법 등이 있을 시 해당 내용을 상세히 작성",
+      "raw": "용역 수행 결과 제고를 위한 제안사만이 적용할 수 있는 차별화된 수단, 수행기법 등이 있을 시 해당 내용을 상세히 작성",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-107",
+      "page": 6,
+      "text": "결과물 사후관리 및 활용방안",
+      "raw": "◦ 결과물 사후관리 및 활용방안",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-108",
+      "page": 6,
+      "text": "최근 3년 이내 유사 사업 수행 실적",
+      "raw": "최근 3년 이내 유사 사업 수행 실적",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-109",
+      "page": 6,
+      "text": "과업 및 발주기관에 대한 이해도",
+      "raw": "과업 및 발주기관에 대한 이해도",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-110",
+      "page": 6,
+      "text": "제안내용 달성 가능성 및 요구사항의 부합성",
+      "raw": "제안내용 달성 가능성 및 요구사항의 부합성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-111",
+      "page": 7,
+      "text": "교육 과정 초안의 구체성 및 적합성",
+      "raw": "교육 과정 초안의 구체성 및 적합성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-112",
+      "page": 7,
+      "text": "교육 내용의 적절성 및 실현가능성",
+      "raw": "교육 내용의 적절성 및 실현가능성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-113",
+      "page": 7,
+      "text": "전주기적 지원방안의 적정성",
+      "raw": "전주기적 지원방안의 적정성",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-114",
+      "page": 7,
+      "text": "최근연도 자기자본 비율(3점) : 기준비율 50% 이상 3점, 미만 2점",
+      "raw": "◦ 최근연도 자기자본 비율(3점) : 기준비율 50% 이상 3점, 미만 2점",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-115",
+      "page": 7,
+      "text": "최근연도 유동비율(2점) : 기준비율 200% 이상 2점, 미만 1점",
+      "raw": "◦ 최근연도 유동비율(2점) : 기준비율 200% 이상 2점, 미만 1점",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-116",
+      "page": 7,
+      "text": "국세청 발행 표준재무제표 자료 기준",
+      "raw": "① 국세청 발행 표준재무제표 자료 기준",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-117",
+      "page": 7,
+      "text": "신설업체는 최저점수를 각각 부여 한다",
+      "raw": "② 신설업체는 최저점수를 각각 부여 한다",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-118",
+      "page": 7,
+      "text": "최근 3년 이내 유사 사업 수행실적 평가기준 (5점)",
+      "raw": "다. 최근 3년 이내 유사 사업 수행실적 평가기준 (5점)",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-119",
+      "page": 7,
+      "text": "계약 금액이 건당 2.5천만원(VAT포함) 이상인 경우만 인정",
+      "raw": "① 계약 금액이 건당 2.5천만원(VAT포함) 이상인 경우만 인정",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-120",
+      "page": 7,
+      "text": "수행실적 증빙서류(원본 1부 必, 나머지 사본으로 제출)",
+      "raw": "② 수행실적 증빙서류(원본 1부 必, 나머지 사본으로 제출)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-121",
+      "page": 7,
+      "text": "원본 : [서식5]용역 이행 실적증명서, 나라장터 또는 타기관 발행 실적증명서 중 택 1",
+      "raw": "- 원본 : [서식5]용역 이행 실적증명서, 나라장터 또는 타기관 발행 실적증명서 중 택 1",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-122",
+      "page": 7,
+      "text": "사본 : 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출",
+      "raw": "- 사본 : 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출",
+      "extracted": true,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-123",
+      "page": 7,
+      "text": "공동도급 및 하도급 실적은 인정하지 않음",
+      "raw": "③ 공동도급 및 하도급 실적은 인정하지 않음",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-124",
+      "page": 7,
+      "text": "서식 1 : 제안업체 일반현황 및 연혁",
+      "raw": "◦ 서식 1 : 제안업체 일반현황 및 연혁",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-125",
+      "page": 7,
+      "text": "서식 2 : 자본금 및 매출액 현황",
+      "raw": "◦ 서식 2 : 자본금 및 매출액 현황",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-126",
+      "page": 7,
+      "text": "최근 2년 표준재무제표 첨부",
+      "raw": "* 최근 2년 표준재무제표 첨부",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-127",
+      "page": 7,
+      "text": "서식 3 : 참여인력 이력사항",
+      "raw": "◦ 서식 3 : 참여인력 이력사항",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-128",
+      "page": 7,
+      "text": "서식 4 : 최근 3년간 유사용역 수행실적",
+      "raw": "◦ 서식 4 : 최근 3년간 유사용역 수행실적",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-129",
+      "page": 7,
+      "text": "서식 5 : 용역 이행 실적증명서",
+      "raw": "◦ 서식 5 : 용역 이행 실적증명서",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-130",
+      "page": 8,
+      "text": "제안업체 일반현황 및 연혁",
+      "raw": "제안업체 일반현황 및 연혁",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-131",
+      "page": 9,
+      "text": "소수점 셋째자리 반올림",
+      "raw": "소수점 셋째자리 반올림",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-132",
+      "page": 9,
+      "text": "국세청 발행 표준재무제표증명 첨부(증빙서류 미 첨부시 관련 부문 평가점수 미부여)",
+      "raw": "※ 국세청 발행 표준재무제표증명 첨부(증빙서류 미 첨부시 관련 부문 평가점수 미부여)",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-133",
+      "page": 9,
+      "text": "최근 3년간 유사용역 수행실적",
+      "raw": "최근 3년간 유사용역 수행실적",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-134",
+      "page": 9,
+      "text": "연도순으로(최근연도를 상위에 기재) 건별로 정확하게 기재",
+      "raw": "1. 연도순으로(최근연도를 상위에 기재) 건별로 정확하게 기재",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-135",
+      "page": 9,
+      "text": "확인결과 기재된 내용 중 허위사실이 발견된 경우 0점 처리함",
+      "raw": "2. 확인결과 기재된 내용 중 허위사실이 발견된 경우 0점 처리함",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-136",
+      "page": 9,
+      "text": "유사사업 수행실적 평가기준 (5점)",
+      "raw": "3. 유사사업 수행실적 평가기준 (5점)",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-137",
+      "page": 11,
+      "text": "나라장터 발행 실적증명서 또는 타 기관에서 발행하는 실적증명서로 대체 가능",
+      "raw": "1. 나라장터 발행 실적증명서 또는 타 기관에서 발행하는 실적증명서로 대체 가능",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-138",
+      "page": 11,
+      "text": "실적증명서가 없을 경우, 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출",
+      "raw": "2. 실적증명서가 없을 경우, 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출",
+      "extracted": false,
+      "is_requirement": true
+    },
+    {
+      "line_id": "L-139",
+      "page": 11,
+      "text": "입찰건명 : 가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)",
+      "raw": "○ 입찰건명 : 가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-140",
+      "page": 11,
+      "text": "당사는 (가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)) 의 목적과 그 제안요청서에 제시된 모든 사항을 충분히 검토, 숙지 인정한 후 제안서의 제반사항을 사실에 근거하여 작성하였고, 이에 따른 법률적, 재정적, 행정적 책임을 감수하겠습니다.",
+      "raw": "당사는 (가천대학교 AI부트캠프 사업 생성형 AI 활용 교육 기획·운영 위탁 용역(2026-2학기)) 의 목적과 그 제안요청서에 제시된 모든 사항을 충분히 검토, 숙지 인정한 후 제안서의 제반사항을 사실에 근거하여 작성하였고, 이에 따른 법률적, 재정적, 행정적 책임을 감수하겠습니다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-141",
+      "page": 11,
+      "text": "또한 용역 사업자 선정방식과 공정한 제안서 평가 및 객관적인 내부절차에 의한 제반 결정 등 본 입찰에 관련된 귀 대학교의 방침에 아무런 이의가 없음을 확약하며 어떠한 법적 이의도 제기하지 않겠습니다.",
+      "raw": "또한 용역 사업자 선정방식과 공정한 제안서 평가 및 객관적인 내부절차에 의한 제반 결정 등 본 입찰에 관련된 귀 대학교의 방침에 아무런 이의가 없음을 확약하며 어떠한 법적 이의도 제기하지 않겠습니다.",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-142",
+      "page": 11,
+      "text": "가천대학교산학협력단 귀하",
+      "raw": "가천대학교산학협력단 귀하",
+      "extracted": false,
+      "is_requirement": false
+    },
+    {
+      "line_id": "L-144",
+      "page": 11,
+      "text": "실적증명서가 없을 경우, 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출 【서식 6】 확 약 서",
+      "raw": "2. 실적증명서가 없을 경우, 용역계약서 및 세금계산서(계약금액과 동일해야 함) 함께 제출\n【서식 6】\n확 약 서",
+      "extracted": true,
+      "is_requirement": false
+    }
+  ]
+}

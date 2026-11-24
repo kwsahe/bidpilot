@@ -1,0 +1,45 @@
+{
+  "notice_id": "g2b-R26BK01733478-000",
+  "document": {
+    "name": "[한국공학대학교 산학협력단 입찰재공고] 산업현장 여성공학인을 위한 AI기반 PBL직무교육 모델 및 교수학습 체계 개발 연구용역.zip > 1. [입찰공고서] 산업현장 여성공학인을 위한 AI기반 PBL직무교육 모델 및 교수학습 체계 개발 연구용역.pdf",
+    "index": 0,
+    "format": "pdf",
+    "hash": "5e70a3dad4f06f95"
+  },
+  "fetched_at": "2026-09-22T18:31:12.553337+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "2. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "입찰등록 마감일 기준 「국가를 당사자로 하는 계약에 관한 법률」제27조 및 동법 시행령 제76조에 의한 부정당업자에 해당하지 아니한 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」 시행령 제12조에 해당하고, 동법 시행규칙 제 14조 규정에 의한 입찰참가자격을 갖춘 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "본 계약은 수행 신뢰성 확보를 위해 공동수급 및 하도급은 불허함",
+      "page": 1,
+      "kind": "consortium"
+    },
+    {
+      "id": "QC-04",
+      "text": "입찰참가 신청 시 본교의 선정방식에 이의가 없음을 확약한 업체(서약서 제출)",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

@@ -1,0 +1,510 @@
+@import "tailwindcss";
+
+/*
+ * BidPilot AI — "Evidence Mission Control" 디자인 토큰.
+ * 모든 화면(/, /opportunities, /rfp)이 같은 배경·패널·테두리·상태색을 쓴다.
+ * 2D SVG · 인라인 style 은 src/lib/cosmos/theme.ts 의 COSMOS_COLORS(이 변수들의 var())를, 3D 재질은 COSMOS_HEX(:root 와 같은 hex)를 쓴다.
+ *
+ * 상태색 의미 (전 화면 공통):
+ *  cyan   정상 · 연결 · 증거 확인 · 진행
+ *  amber  주의 · 검토 필요 · 부분 충족
+ *  red    결격 위험 · 불충족 · 중요 경고
+ *  green  최종 통과 · 충분한 근거
+ *  slate  비활성 · 보조 정보
+ */
+:root {
+  --cosmos-bg: #060b18;
+  --cosmos-bg-deep: #04070f;
+  --cosmos-bg-elevated: #0b1326;
+  --cosmos-panel: rgba(11, 19, 38, 0.78);
+  --cosmos-panel-solid: #0b1326;
+  --cosmos-border: rgba(124, 150, 255, 0.16);
+  --cosmos-border-strong: rgba(124, 150, 255, 0.34);
+  --cosmos-text: #e8eeff;
+  --cosmos-text-secondary: #a3b0d4;
+  /*
+    보조 글자 (0925 §4-F-1 · ISSUE-104).
+
+    예전 값 #6b7a9f 는 카드 배경 rgba(11,19,38,.78) 위에서 **4.32:1** 이었다 —
+    WCAG AA(4.5:1) 미만이고, 이 색으로 적힌 것이 「왜 맞나」·「회사에 뜻하는 것」·
+    「사람이 할 일」처럼 담당자가 **결정에 쓰는 줄의 이름표**였다. 그 줄은 7:1 이
+    필요하므로 보조 글자 자체를 그 선 위로 올린다 — 카드 위 7.38:1 · 본문 배경 위 7.49:1.
+    `scripts/check_visibility.mjs` 가 같은 방법(computed style)으로 다시 잰다.
+  */
+  --cosmos-text-muted: #97a3c6;
+  --cosmos-blue: #4c7dff;
+  /*
+    파랑은 **면과 글자가 서로 반대 방향**이라 토큰을 둘로 나눈다 (0925 §4-F-1).
+
+    #4c7dff 는 면으로 쓰면 흰 글자가 3.69:1 이고, 글자로 쓰면 파란 칩 배경
+    rgb(18,30,61) 위에서 4.44:1 이다. 하나를 밝히면 다른 하나가 더 나빠진다.
+      - `--cosmos-blue-text`   어두운 면 위의 **파란 글자** (칩 배경 위 7.52:1)
+      - `--cosmos-blue-strong` **흰 글자를 얹는 단추 면** (흰 글자 4.73:1)
+    `--cosmos-blue` 는 테두리·강조선·3D 노드처럼 글자가 아닌 자리에 그대로 남는다.
+  */
+  --cosmos-blue-text: #8caeff;
+  --cosmos-blue-strong: #3f6ae8;
+  --cosmos-cyan: #22d3ee;
+  --cosmos-violet: #8b7cff;
+  --cosmos-amber: #f5b942;
+  --cosmos-red: #ff5c6c;
+  /* 결정 문장용 붉은 글자 (0925 §4-F-1 · prompt_01 §4-F-1).
+     --cosmos-red 는 배지·테두리에는 충분하지만 «담당자가 결정에 쓰는 문장»에 필요한
+     7:1 에 못 미친다(패널 배경에서 6.26:1). 같은 계열에서 밝기만 올려 7.50:1 을 만든다 —
+     색을 바꾸면 「붉음 = 결격」이라는 약속이 깨진다. */
+  --cosmos-red-text: #ff7a86;
+  --cosmos-green: #34d399;
+  /*
+    「아직 없음」을 말하는 색 (미실행·미결정·미분석·값 없음).
+    예전 값 #3b4766 은 패널 위 **1.92:1** 이라 사실상 읽히지 않았다 — 「없다」도
+    담당자가 읽어야 하는 사실이다. 5.26:1 로 올린다.
+  */
+  --cosmos-slate: #7d8cb0;
+
+  /* 겹 패널 면(메뉴 · 시트 · 팝오버 · 안내 창) · 그림자 · 실전 가이드 본문 링크 (2.4.0 ⑥) */
+  --cosmos-overlay: rgba(11, 19, 38, 0.97);
+  --cosmos-shadow: rgba(0, 0, 0, 0.5);
+  --cosmos-shadow-soft: rgba(0, 0, 0, 0.3);
+  --cosmos-link: #67e8f9;
+  /* 제안서 문장 「공고문 근거」 칩 · 숫자(DetailPanel GROUNDING_COLORS) — 어두운 판은 예전 값 그대로 */
+  --cosmos-rfp: #6f8bff;
+
+  /*
+    기본은 어두운 화면이다. 밝은 화면은 사람이 머리의 「밝은 화면」 단추로 고른다(2.4.0 ⑥ · 대표 11-04) —
+    시스템 라이트/다크 설정은 따라가지 않는다. 고른 값은 이 브라우저에 남고(`lib/theme.ts`) 첫 그림 전에 <html data-theme> 로 붙는다.
+  */
+  --background: var(--cosmos-bg);
+  --foreground: var(--cosmos-text);
+  color-scheme: dark;
+}
+
+/*
+ * 밝은 화면 (2.4.0 ⑥) — 같은 토큰 이름을 다시 정한다. @theme inline 매핑은 그대로라 Tailwind 클래스가 따라간다.
+ * 값은 대비를 계산해 정했다 — 물든 칩(15%) 위에서도 4.9:1 이상 · `red-text` 7.3:1 · 흰 글자 / blue-strong 6.3:1.
+ * 색의 뜻(청록 정상 · 호박 확인 필요 · 빨강 결격 · 회청 아직 없음)은 그대로 — 같은 계열에서 진하게만 했다.
+ */
+:root[data-theme="light"] {
+  --cosmos-bg: #eef1f6;
+  --cosmos-bg-deep: #e8ecf3;
+  --cosmos-bg-elevated: #ffffff;
+  --cosmos-panel: rgba(255, 255, 255, 0.92);
+  --cosmos-panel-solid: #ffffff;
+  --cosmos-border: rgba(23, 37, 84, 0.14);
+  --cosmos-border-strong: rgba(23, 37, 84, 0.28);
+  --cosmos-text: #0f1830;
+  --cosmos-text-secondary: #343f5a;
+  /* 실전 가이드 「준비 상태」 청록 상자(5%) 위 결정 문장 7:1 — #45506b 는 6.57:1 이었다(11-06 시인성 검사) */
+  --cosmos-text-muted: #3e4863;
+  --cosmos-blue: #2b4fc4;
+  --cosmos-blue-text: #1f45b5;
+  --cosmos-blue-strong: #2f55d0;
+  /* 바닥 위 결정 문장 7:1 — #09596e 는 6.96:1 이었다(11-04 검토) */
+  --cosmos-cyan: #08546a;
+  --cosmos-violet: #5b34c7;
+  --cosmos-amber: #7f3d04;
+  --cosmos-red: #a81f2d;
+  --cosmos-red-text: #781421;
+  --cosmos-green: #035e45;
+  --cosmos-slate: #4b5672;
+  --cosmos-overlay: rgba(255, 255, 255, 0.98);
+  --cosmos-shadow: rgba(15, 24, 48, 0.16);
+  --cosmos-shadow-soft: rgba(15, 24, 48, 0.1);
+  --cosmos-link: #08546a;
+  --cosmos-rfp: #1f45b5;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto-sans-kr), var(--font-geist-sans), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: var(--font-geist-mono), "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --color-cosmos-bg: var(--cosmos-bg);
+  --color-cosmos-deep: var(--cosmos-bg-deep);
+  --color-cosmos-elevated: var(--cosmos-bg-elevated);
+  --color-cosmos-panel: var(--cosmos-panel);
+  --color-cosmos-panel-solid: var(--cosmos-panel-solid);
+  --color-cosmos-border: var(--cosmos-border);
+  --color-cosmos-border-strong: var(--cosmos-border-strong);
+  --color-cosmos-text: var(--cosmos-text);
+  --color-cosmos-secondary: var(--cosmos-text-secondary);
+  --color-cosmos-muted: var(--cosmos-text-muted);
+  --color-cosmos-blue: var(--cosmos-blue);
+  --color-cosmos-blue-text: var(--cosmos-blue-text);
+  --color-cosmos-blue-strong: var(--cosmos-blue-strong);
+  --color-cosmos-cyan: var(--cosmos-cyan);
+  --color-cosmos-violet: var(--cosmos-violet);
+  --color-cosmos-amber: var(--cosmos-amber);
+  --color-cosmos-red: var(--cosmos-red);
+  --color-cosmos-red-text: var(--cosmos-red-text);
+  --color-cosmos-green: var(--cosmos-green);
+  --color-cosmos-slate: var(--cosmos-slate);
+}
+
+html {
+  background: var(--cosmos-bg-deep);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  /* 발표 화면에서 멀리서 읽히도록 본문 최소 크기를 13px 이상으로 유지한다. */
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 페이지 공통 배경 — 중앙이 살짝 밝은 네이비 방사 그라디언트 + 아주 옅은 격자. */
+.mc-page-bg {
+  background-color: var(--cosmos-bg);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 30%, #0b1326 0%, #060b18 65%, #04070f 100%),
+    linear-gradient(rgba(124, 150, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 150, 255, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 48px 48px, 48px 48px;
+  background-attachment: fixed, fixed, fixed;
+}
+:root[data-theme="light"] .mc-page-bg {
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 30%, #ffffff 0%, #eef1f6 65%, #e8ecf3 100%),
+    linear-gradient(rgba(23, 37, 84, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 37, 84, 0.04) 1px, transparent 1px);
+}
+
+/* 글래스 패널 — 흐림은 배경 격자만 흐리게 하고 글자 대비는 유지한다. */
+.mc-panel {
+  background: var(--cosmos-panel);
+  border: 1px solid var(--cosmos-border);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 1px 0 rgba(232, 238, 255, 0.04),
+    0 12px 32px var(--cosmos-shadow-soft);
+}
+
+.mc-panel-solid {
+  background: var(--cosmos-panel-solid);
+  border: 1px solid var(--cosmos-border);
+  border-radius: 0.75rem;
+}
+
+/* 키보드 focus 링 — 색만으로 구분하지 않도록 두께 있는 시안 링 + 오프셋. */
+.mc-focus:focus-visible {
+  outline: 2px solid var(--cosmos-cyan);
+  outline-offset: 2px;
+}
+
+/* 다크 배경 위 네이티브 select/input. */
+select,
+input[type="search"],
+input[type="text"] {
+  color-scheme: dark;
+}
+:root[data-theme="light"] :is(select, input[type="search"], input[type="text"]) {
+  color-scheme: light;
+}
+
+select option,
+select optgroup {
+  background: var(--cosmos-panel-solid);
+  color: var(--cosmos-text);
+}
+
+/* 얇은 스크롤바 (WebKit/Firefox). */
+.mc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 150, 255, 0.28) transparent;
+}
+.mc-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.mc-scroll::-webkit-scrollbar-thumb {
+  background: rgba(124, 150, 255, 0.28);
+  border-radius: 999px;
+}
+.mc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+:root[data-theme="light"] .mc-scroll {
+  scrollbar-color: rgba(23, 37, 84, 0.28) transparent;
+}
+:root[data-theme="light"] .mc-scroll::-webkit-scrollbar-thumb {
+  background: rgba(23, 37, 84, 0.28);
+}
+
+/* 표 안 sticky 헤더가 스크롤 시 반투명하게 겹치지 않게 불투명 배경을 준다. */
+.mc-sticky-head th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--cosmos-panel-solid);
+}
+
+/* 공통 키프레임 — 대시보드 셸과 하위 화면이 같이 쓴다. */
+@keyframes mc-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes mc-pulse-ring {
+  0%,
+  100% {
+    /* --cosmos-blue 를 따라간다 — 어두운 판은 예전 rgba(76,125,255,…) 그대로 */
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--cosmos-blue) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--cosmos-blue) 0%, transparent);
+  }
+}
+@keyframes mc-skeleton {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes mc-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@keyframes mc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * 쉬운 보기 (24차 · prompt_14 §3-2) — 바깥 틀 하나에서 글자를 올린다.
+ * 부품 안의 11 · 12 · 12.5 · 13 · 13.5px 를 14px 로(줄 간격 1.6). 부품 파일은 고치지 않는다 — 전체 보기는 그대로다.
+ * 이 틀 안에서 14px 보다 작은 글자는 `scripts/check_visibility.mjs` 가 센다.
+ */
+[data-view="simple"] :is(.text-\[11px\], .text-\[12px\], .text-\[12\.5px\], .text-\[13px\], .text-\[13\.5px\]) {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/*
+ * 실전 가이드 본문 (32차 §3-A-3) — 읽기 폭 약 72자 · 본문 16px · 줄 간격 1.8 · 같은 테마.
+ * 마크다운이 그린 맨 태그(p · ul · ol · blockquote · hr · code)에 모양을 준다. 앵커로 오면 고정 머리에 가리지 않게 scroll-margin.
+ */
+.guide-body {
+  /* 앵커로 온 제목이 고정 머리 밑에 가리지 않게 — 좁은 화면은 머리가 두 줄 이상(145~155px)이라 더 내린다(33차 §3-E G2) */
+  --guide-anchor-offset: 7.5rem;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--cosmos-text);
+  overflow-wrap: anywhere;
+}
+.guide-body h2 {
+  margin: 2.4rem 0 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--cosmos-border-strong);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  scroll-margin-top: var(--guide-anchor-offset);
+}
+.guide-body h3 {
+  margin: 1.8rem 0 0.5rem;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.45;
+  scroll-margin-top: var(--guide-anchor-offset);
+}
+@media (max-width: 1023.98px) {
+  .guide-body {
+    --guide-anchor-offset: 11rem;
+  }
+}
+.guide-body h2:focus,
+.guide-body h3:focus,
+.guide-body li:focus {
+  outline: 2px solid var(--cosmos-cyan, #22d3ee);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.guide-body li[id] {
+  scroll-margin-top: var(--guide-anchor-offset);
+}
+.guide-body p {
+  margin: 0.7rem 0;
+}
+.guide-body ul {
+  margin: 0.6rem 0;
+  padding-left: 1.4rem;
+  list-style: disc;
+}
+.guide-body ol {
+  margin: 0.6rem 0;
+  padding-left: 1.6rem;
+  list-style: decimal;
+}
+.guide-body li {
+  margin: 0.25rem 0;
+}
+.guide-body ul.contains-task-list {
+  list-style: none;
+  padding-left: 0.4rem;
+}
+.guide-body input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: -0.15rem;
+}
+.guide-body blockquote {
+  margin: 0.8rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 3px solid var(--cosmos-border-strong);
+  background: rgba(124, 150, 255, 0.06);
+  color: var(--cosmos-text-secondary);
+}
+:root[data-theme="light"] .guide-body blockquote {
+  background: rgba(23, 37, 84, 0.05);
+}
+.guide-body hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--cosmos-border);
+}
+.guide-body pre {
+  margin: 0.8rem 0;
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--cosmos-border);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre;
+}
+.guide-body code {
+  font-size: 0.92em;
+}
+.guide-body strong {
+  font-weight: 650;
+  color: var(--cosmos-text);
+}
+.guide-body a {
+  color: var(--cosmos-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* 출처를 확인 못 한 값 — 판정 「확인 필요」(주황 칩)와 다른 모양: 점선 테두리 · 회청 */
+.guide-body a.guide-check {
+  padding: 0 0.3rem;
+  border: 1px dashed var(--cosmos-text-secondary);
+  border-radius: 4px;
+  color: var(--cosmos-text-secondary);
+  text-decoration: none;
+  font-size: 0.92em;
+}
+[data-print-only] {
+  display: none;
+}
+
+/*
+ * 인쇄 (32차 §3-A-10) — 흰 바탕 · 검은 글 · 메뉴 · 머리 · 목차 숨김 · 바깥 링크 뒤 주소 · 표 · 체크리스트 중간에서 쪽 안 나뉨.
+ * 「처음 준비 체크리스트만 인쇄」는 <html data-print-scope="checklist"> 일 때 0-2 절만 남긴다.
+ */
+@media print {
+  /* 45차 M19 — 인쇄는 밝은 바탕이라 체크 칸 · 입력 칸도 밝은 모양(다크 color-scheme 이면 속이 꽉 찬 짙은 네모로 나왔다) */
+  :root,
+  input,
+  select {
+    color-scheme: light !important;
+  }
+  html,
+  body,
+  .mc-page-bg {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .guide-doc,
+  .guide-doc * {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .guide-doc .guide-table,
+  .guide-doc th,
+  .guide-doc td,
+  .guide-doc blockquote,
+  .guide-doc [data-guide-readiness] {
+    border-color: #888 !important;
+  }
+  .guide-body {
+    max-width: none;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+  .guide-body a.guide-external::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    word-break: break-all;
+  }
+  .guide-body table,
+  .guide-body tr,
+  .guide-body ul.contains-task-list,
+  .guide-body blockquote,
+  .guide-body pre {
+    break-inside: avoid;
+  }
+  .guide-body h2,
+  .guide-body h3 {
+    break-after: avoid;
+  }
+  .guide-doc .guide-table {
+    overflow: visible !important;
+  }
+  .guide-doc .guide-table table {
+    min-width: 0 !important;
+    width: 100%;
+  }
+  [data-print-only] {
+    display: block !important;
+    margin-bottom: 0.5rem;
+    font-size: 9pt;
+  }
+  html[data-print-scope="checklist"] .guide-body > :not(section[data-guide-id="g-0-2"]),
+  html[data-print-scope="checklist"] [data-guide-readiness] {
+    display: none !important;
+  }
+  /* 체크리스트만 인쇄 — 한 쪽에 들어가게 조금 촘촘히 */
+  html[data-print-scope="checklist"] .guide-body {
+    font-size: 10.5pt;
+    line-height: 1.5;
+  }
+}
+/* 표 첫 열(항목 이름)이 「한 줄 / 뜻」처럼 두 줄로 접히지 않게 */
+.guide-body .guide-table :is(th, td):first-child {
+  min-width: 6.5rem;
+}
+/* 표 칸이 좁은 기둥(폭 48px 미만)으로 쌓이지 않게 — 짧은 값(「1468」)도 칸 폭을 둔다 */
+.guide-body .guide-table :is(th, td) {
+  min-width: 4.5rem;
+}

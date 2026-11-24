@@ -1,0 +1,57 @@
+{
+  "notice_id": "g2b-R26BK01722092-000",
+  "document": {
+    "name": "1.입찰공고문_(AID)데이터 기반 학생 성공‘AI-Care 365’시스템 구축 운영.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "ec7f8f710a6d69dd"
+  },
+  "fetched_at": "2026-09-22T18:30:40.707676+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "5. 입찰참가자격: 다음 각 호에 모두 해당하는 자",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 시행령 제12조에 의한 자격을 갖춘 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 제27조 및 같은법 시행령 제76조에 의한 입찰참가자격 제한을 받지 않은 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "소프트웨어 진흥법에 의한 소프트웨어사업자(컴퓨터관련서비스사업)를 등록한 자",
+      "page": 1,
+      "kind": "industry"
+    },
+    {
+      "id": "QC-04",
+      "text": "첨부 제안요청서의 제안요청사항을 충족하는 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-05",
+      "text": "공동계약이 허용되지 않습니다.",
+      "page": 1,
+      "kind": "consortium"
+    },
+    {
+      "id": "QC-06",
+      "text": "본 입찰은 나라장터를 이용한 전자입찰로만 집행되므로 조달청에 입찰참가자격등록을 하여야 합니다. 입찰참가자격을 등록하지 않은 업체는 국가종합전자조달시스템 입찰참가자격등록규정에 따라 가격입찰서 제출마감일 전일까지 등록을 하여야 합니다.",
+      "page": 1,
+      "kind": "disqualification"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

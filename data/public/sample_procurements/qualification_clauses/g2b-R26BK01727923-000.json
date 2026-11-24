@@ -1,0 +1,63 @@
+{
+  "notice_id": "g2b-R26BK01727923-000",
+  "document": {
+    "name": "1. 용역 입찰공고서(로봇과정)_ver.1_2026.09.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "3689393f40a19167"
+  },
+  "fetched_at": "2026-09-22T18:31:01.508356+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「지방자치단체를 당사자로 하는 계약에 관한 법률」 등 관련 규정에 따라 입찰참가자격을 갖춘 자",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "제안요청서에서 정한 과업 수행이 가능한 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-03",
+      "text": "로봇 실습형 교육과정 교재 개발 수행이 가능한 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-04",
+      "text": "발주기관이 별도로 구매·제공하는 교육용 로봇 장비와 교육내용을 연계할 수 있는 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-05",
+      "text": "각 과목별 교육내용과 발주기관 제공 로봇 장비를 연계한 실습 구성 및 운영방안을 제시할 수 있는 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-06",
+      "text": "로봇 장비의 특성을 고려한 실습예제, 코드, ROS2 및 시뮬레이션 연계방안을 제시할 수 있는 자",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-07",
+      "text": "본 용역의 제안가격 및 용역비 산출내역에는 로봇 장비 구매비를 포함하여서는 아니 됨",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

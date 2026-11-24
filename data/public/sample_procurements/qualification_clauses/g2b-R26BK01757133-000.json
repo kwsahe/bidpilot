@@ -1,0 +1,39 @@
+{
+  "notice_id": "g2b-R26BK01757133-000",
+  "document": {
+    "name": "입찰공고서(2026-18)_[AI기본교육과정개발지원사업] K-MOOC 콘텐츠 개발 입찰.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "043908dd664b7713"
+  },
+  "fetched_at": "2026-10-08T03:07:02.545041+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "2. 입찰참가 자격",
+    "page_from": 2,
+    "page_to": 2
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "국가종합전자조달시스템 입찰참가자격등록규정에 따라 반드시 전자입찰서 제출 마감일 전일까지 나라장터(G2B시스템)에 등록한 자",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 시행령 제76조의 규정에 의해 입찰 참가 자격을 제한받는 기간 중에 있지 아니한 업체",
+      "page": 2,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "「중소기업기본법」제2조에 따른 중소기업자 또는 「소상공인기본법」제2조에 따른 소상공인으로써 유효기간 내의 중소기업·소상공인확인서를 소지한 업체",
+      "page": 2,
+      "kind": "company_type"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

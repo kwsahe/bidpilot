@@ -1,0 +1,39 @@
+{
+  "notice_id": "g2b-R26BK01756826-000",
+  "document": {
+    "name": "1. 입찰공고문.hwp",
+    "index": 0,
+    "format": "hwp",
+    "hash": "cd28d322ab2055e9"
+  },
+  "fetched_at": "2026-10-08T03:07:22.376030+00:00",
+  "status": "ok",
+  "page_is_approximate": true,
+  "section": {
+    "heading": "3. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "「국가를 당사자로 하는 계약에 관한 법률」시행령 제12조 및 동법 시행규칙 제14조에 의한 경쟁 입찰 참가자격을 갖춘 업체",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-02",
+      "text": "사업자 등록증 업태 및 종목 내 행사대행업 및 콘텐츠외소프트웨어개발및판매로 등록된 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-03",
+      "text": "상기 “가~다”항의 조건을 충족한 업체로서 입찰등록 마감일시 이전까지 입찰등록을 완료한 업체",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": null,
+  "note": null
+}

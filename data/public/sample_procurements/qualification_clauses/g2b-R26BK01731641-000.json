@@ -1,0 +1,119 @@
+{
+  "notice_id": "g2b-R26BK01731641-000",
+  "document": {
+    "name": "1. 입찰공고문.pdf",
+    "index": 0,
+    "format": "pdf",
+    "hash": "a2601475d2b18ef7"
+  },
+  "fetched_at": "2026-09-22T18:30:31.056033+00:00",
+  "status": "ok",
+  "page_is_approximate": false,
+  "section": {
+    "heading": "2. 입찰참가자격",
+    "page_from": 1,
+    "page_to": 1
+  },
+  "clauses": [
+    {
+      "id": "QC-01",
+      "text": "제안업체는 국가를 당사자로 하는 계약에 관한 법률 시행령 제43조(협상에 의한 계약체결) 규정에 의한 입찰참가 자격을 갖추어야 한다.",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-02",
+      "text": "국가를 당사자로 하는 계약에 관한 법률 시행령 제12조 및 동법시행규칙 제14조(입찰참가 자격요건의 증명)에 의한 소정의 자격을 갖추어야 한다.",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-03",
+      "text": "제안업체는 입찰 등록 마감일 현재 부정당업체로 지정되지 아니한 업체이어야 한다.",
+      "page": 1,
+      "kind": "disqualification"
+    },
+    {
+      "id": "QC-04",
+      "text": "최근 3년 이내 AI/챗봇 또는 소프트웨어 개발 분야 유사 구축 실적 3건 이상",
+      "page": 1,
+      "kind": "track_record"
+    },
+    {
+      "id": "QC-05",
+      "text": "LLM API 기반 RAG 챗봇 개발 경험 보유 업체 (제안서 내 증빙 필수)",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-06",
+      "text": "서비스 SLA(Service Level Agreement) 제시 가능 업체",
+      "page": 1,
+      "kind": "other"
+    },
+    {
+      "id": "QC-07",
+      "text": "개인정보보호법 준수 및 관련 보안 정책 수립 가능 업체",
+      "page": 1,
+      "kind": "other"
+    }
+  ],
+  "second_source": {
+    "document": {
+      "name": "2. 제안요청서.hwp",
+      "index": 1,
+      "format": "hwp"
+    },
+    "page_is_approximate": true,
+    "section": {
+      "heading": "1. 입찰참가 자격",
+      "page_from": 13,
+      "page_to": 13
+    },
+    "clauses": [
+      {
+        "id": "QC-01",
+        "text": "제안업체는 국가를 당사자로 하는 계약에 관한 법률 시행령 제43조(협상에 의한 계약체결) 규정에 의한 입찰참가 자격을 갖추어야 한다.",
+        "page": 13,
+        "kind": "other"
+      },
+      {
+        "id": "QC-02",
+        "text": "국가를 당사자로 하는 계약에 관한 법률 시행령 제12조 및 동법시행규칙 제14조(입찰참가 자격요건의 증명)에 의한 소정의 자격을 갖추어야 한다.",
+        "page": 13,
+        "kind": "disqualification"
+      },
+      {
+        "id": "QC-03",
+        "text": "제안업체는 입찰 등록 마감일 현재 부정당업체로 지정되지 아니한 업체이어야 한다.",
+        "page": 13,
+        "kind": "disqualification"
+      },
+      {
+        "id": "QC-04",
+        "text": "최근 3년 이내 AI/챗봇 또는 소프트웨어 개발 분야 유사 구축 실적 3건 이상",
+        "page": 13,
+        "kind": "track_record"
+      },
+      {
+        "id": "QC-05",
+        "text": "LLM API 기반 RAG 챗봇 개발 경험 보유 업체 (제안서 내 증빙 필수)",
+        "page": 13,
+        "kind": "other"
+      },
+      {
+        "id": "QC-06",
+        "text": "서비스 SLA(Service Level Agreement) 제시 가능 업체",
+        "page": 13,
+        "kind": "other"
+      },
+      {
+        "id": "QC-07",
+        "text": "개인정보보호법 준수 및 관련 보안 정책 수립 가능 업체",
+        "page": 13,
+        "kind": "other"
+      }
+    ]
+  },
+  "note": null
+}

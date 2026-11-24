@@ -1,0 +1,277 @@
+{
+  "id": "PROPDOC-synthetic-rfp-0001",
+  "procurement_id": "synthetic-rfp-0001",
+  "title": "제안서 초안 (synthetic-rfp-0001)",
+  "sections": [
+    {
+      "id": "PROP-synthetic-rfp-0001",
+      "title": "3. 추진 일정",
+      "sentences": [
+        {
+          "id": "PS-01",
+          "text": "계약상대자는 2026년 10월 1일부터 2026년 12월 15일까지 모든 과업을 완료하겠습니다. (RFP p.2 요구사항 준수)",
+          "grounding_type": "RFP_GROUNDED",
+          "requirement_id": "REQ-001",
+          "evidence_id": null,
+          "needs_review": false
+        }
+      ],
+      "procurement_id": "synthetic-rfp-0001",
+      "generated_at": "2026-09-03T13:03:53.220616Z",
+      "generation_method": "RULE",
+      "mandatory_total": 1,
+      "requirements_with_sentence": 1,
+      "requirements_without_sentence": [],
+      "evidence_grounded_count": 0,
+      "rfp_grounded_count": 1,
+      "needs_review_count": 0
+    },
+    {
+      "id": "PROP-synthetic-rfp-0001",
+      "title": "4. 투입 인력",
+      "sentences": [
+        {
+          "id": "PS-01",
+          "text": "회차별 참석 예정 인원이 25명 이상인 경우 주강사 외에 실습 보조인력 2명 이상을 배치하겠습니다. (근거: 「교육 운영 매뉴얼(가상 예시)」 p.5 \"매주 금요일 17시 주간보고 양식, 서명부·전자출결 기준, 산출물 파일명 규칙(산출물명_제출일자), 참석 예정 25명 이상 시 보조인력 2명 배치 기준.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-008",
+          "evidence_id": "EV-10",
+          "needs_review": false
+        },
+        {
+          "id": "PS-02",
+          "text": "계약상대자는 일정·교육생·산출물을 관리하는 전담 프로젝트 관리자 1명을 지정해야 하며, 사업기간 중 발주기관 승인 없이 교체할 수 없습니다. (근거: 「강사 이력서(가상 예시)」 p.2 \"주강사 K: AI 교육 경력 4년, 공공기관 생성형 AI 교육 유사사업 2건 수행, 전담 프로젝트 관리 경험 보유.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-012",
+          "evidence_id": "EV-03",
+          "needs_review": false
+        }
+      ],
+      "procurement_id": "synthetic-rfp-0001",
+      "generated_at": "2026-09-03T13:03:53.220616Z",
+      "generation_method": "RULE",
+      "mandatory_total": 2,
+      "requirements_with_sentence": 2,
+      "requirements_without_sentence": [],
+      "evidence_grounded_count": 2,
+      "rfp_grounded_count": 0,
+      "needs_review_count": 0
+    },
+    {
+      "id": "PROP-synthetic-rfp-0001",
+      "title": "5. 보안 및 개인정보 보호",
+      "sentences": [
+        {
+          "id": "PS-01",
+          "text": "모든 실습은 가상 또는 비식별 데이터로 진행해야 하며, 교육생이 개인정보와 기관 비공개자료를 외부 생성형 AI 서비스에 입력하지 않도록 안내하겠습니다. (근거: 「교안·실습 포트폴리오(가상 예시)」 p.6 \"직무별 프롬프트 실습 교안, 비식별 실습 데이터셋, 외부 생성형 AI 서비스 입력 금지 안내문 샘플.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-007",
+          "evidence_id": "EV-07",
+          "needs_review": false
+        },
+        {
+          "id": "PS-02",
+          "text": "계약상대자는 사업 종료 후 30일 이내에 교육생 명단, 연락처, 출결 원본 등 개인정보를 파기하고 파기확인서를 제출하겠습니다. (근거: 「정보보호·개인정보 정책(가상 예시)」 p.2 \"교육 종료 후 30일 이내 교육생 명단·연락처·출결 원본 파기, 파기확인서 발급 절차. 외부 AI 서비스에 개인정보·비공개자료 전송 금지.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-019",
+          "evidence_id": "EV-09",
+          "needs_review": false
+        },
+        {
+          "id": "PS-03",
+          "text": "외부 AI 또는 클라우드 서비스를 사용할 경우 개인정보와 기관 비공개자료를 전송해서는 안 되며, 사용 서비스와 데이터 처리방식을 사전에 설명하겠습니다. (근거: 「정보보호·개인정보 정책(가상 예시)」 p.2 \"교육 종료 후 30일 이내 교육생 명단·연락처·출결 원본 파기, 파기확인서 발급 절차. 외부 AI 서비스에 개인정보·비공개자료 전송 금지.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-020",
+          "evidence_id": "EV-09",
+          "needs_review": false
+        }
+      ],
+      "procurement_id": "synthetic-rfp-0001",
+      "generated_at": "2026-09-03T13:03:53.220616Z",
+      "generation_method": "RULE",
+      "mandatory_total": 3,
+      "requirements_with_sentence": 3,
+      "requirements_without_sentence": [],
+      "evidence_grounded_count": 3,
+      "rfp_grounded_count": 0,
+      "needs_review_count": 0
+    },
+    {
+      "id": "PROP-synthetic-rfp-0001",
+      "title": "99. 분류되지 않은 요구사항",
+      "sentences": [
+        {
+          "id": "PS-01",
+          "text": "교육은 총 12회 운영해야 하며, 회차당 교육시간은 최소 3시간으로 합니다. (근거: 「교육 커리큘럼(가상 예시)」 p.4 \"생성형 AI 실무 과정: 회차당 3시간, LLM 기본 이해 → 프롬프트 작성 → 데이터·보안 유의사항 → 문서작성·업무자동화 실습으로 구성. 착수 전 세부 커리큘럼·교안 제출 절차 포함.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-002",
+          "evidence_id": "EV-05",
+          "needs_review": false
+        },
+        {
+          "id": "PS-02",
+          "text": "전체 교육대상은 누적 240명 이상으로 계획하며, 회차별 명단과 실제 참석인원을 구분해 관리하겠습니다. (근거: 「기존 운영 결과보고서(가상 예시)」 p.9 \"2025년 과정: 누적 교육생 260명, 회차별 출결 서명부 관리, 매 회차 만족도 조사 응답률 84%, 최종 교육일로부터 7일 이내 최종결과보고서 제출.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-003",
+          "evidence_id": "EV-08",
+          "needs_review": false
+        },
+        {
+          "id": "PS-03",
+          "text": "총 12회 중 10회는 광주광역시 내 지정 교육장에서 대면으로 운영하고, 2회는 실시간 온라인 방식으로 운영하겠습니다. (근거: 「수행실적 목록(가상 예시)」 p.1 \"2024~2025년 공공기관 대상 생성형 AI 실무교육 2건 운영(대면·실시간 온라인 병행), 회차별 운영기록 및 최종결과보고서 제출 완료.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-004",
+          "evidence_id": "EV-02",
+          "needs_review": false
+        },
+        {
+          "id": "PS-04",
+          "text": "계약상대자는 매 회차 교육생 서명부 또는 전자출결 기록을 작성하고, 결석·중도이탈 인원을 별도로 표시하겠습니다. (근거: 「교육 운영 매뉴얼(가상 예시)」 p.5 \"매주 금요일 17시 주간보고 양식, 서명부·전자출결 기준, 산출물 파일명 규칙(산출물명_제출일자), 참석 예정 25명 이상 시 보조인력 2명 배치 기준.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-014",
+          "evidence_id": "EV-10",
+          "needs_review": false
+        },
+        {
+          "id": "PS-05",
+          "text": "교육과정에는 생성형 AI와 LLM의 기본 이해, 프롬프트 작성, 데이터·보안 유의사항, 문서작성 및 업무자동화 실습을 모두 포함하겠습니다. (근거: 「교육 커리큘럼(가상 예시)」 p.4 \"생성형 AI 실무 과정: 회차당 3시간, LLM 기본 이해 → 프롬프트 작성 → 데이터·보안 유의사항 → 문서작성·업무자동화 실습으로 구성. 착수 전 세부 커리큘럼·교안 제출 절차 포함.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-005",
+          "evidence_id": "EV-05",
+          "needs_review": false
+        },
+        {
+          "id": "PS-06",
+          "text": "계약상대자는 첫 교육일 10일 전까지 세부 커리큘럼, 교안, 실습파일을 제출해 발주기관의 승인을 받겠습니다. (근거: 「교육 커리큘럼(가상 예시)」 p.4 \"생성형 AI 실무 과정: 회차당 3시간, LLM 기본 이해 → 프롬프트 작성 → 데이터·보안 유의사항 → 문서작성·업무자동화 실습으로 구성. 착수 전 세부 커리큘럼·교안 제출 절차 포함.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-006",
+          "evidence_id": "EV-05",
+          "needs_review": false
+        },
+        {
+          "id": "PS-07",
+          "text": "계약상대자는 편집 가능한 원본파일과 PDF 파일을 함께 제출하고, 파일명에 산출물명과 제출일자를 표시하겠습니다. (근거: 「교육 운영 매뉴얼(가상 예시)」 p.5 \"매주 금요일 17시 주간보고 양식, 서명부·전자출결 기준, 산출물 파일명 규칙(산출물명_제출일자), 참석 예정 25명 이상 시 보조인력 2명 배치 기준.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-018",
+          "evidence_id": "EV-10",
+          "needs_review": false
+        },
+        {
+          "id": "PS-08",
+          "text": "[제출서류] \"제안서에는 사업수행계획, 투입인력표, 유사사업 실적증명, 보안·개인정보 보호계획, 가격제안서를 모두 포함해야 한다.\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「계약 증빙(가상 예시)」 p.1, 유사도 0.60 — 미채택)",
+          "grounding_type": "RFP_GROUNDED",
+          "requirement_id": "REQ-021",
+          "evidence_id": null,
+          "needs_review": true
+        },
+        {
+          "id": "PS-09",
+          "text": "입찰참가자는 사업자등록을 완료하고 공공계약 관련 법령상 입찰참가 제한을 받지 않는 사업자여야 합니다. (근거: 「계약 증빙(가상 예시)」 p.1 \"사업자등록증 사본, 2025년 공공기관 교육 용역 계약서(단독 수행) 및 실적증명서 1건.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-009",
+          "evidence_id": "EV-06",
+          "needs_review": false
+        },
+        {
+          "id": "PS-10",
+          "text": "공동수급은 허용하지 않으며, 핵심 교육과업의 재위탁은 발주기관의 사전 서면승인 없이 할 수 없습니다. (근거: 「계약 증빙(가상 예시)」 p.1 \"사업자등록증 사본, 2025년 공공기관 교육 용역 계약서(단독 수행) 및 실적증명서 1건.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-010",
+          "evidence_id": "EV-06",
+          "needs_review": false
+        },
+        {
+          "id": "PS-11",
+          "text": "[총괄책임자] \"총괄책임자는 관련 분야 경력 3년 이상이며 최근 3년 이내 공공기관 또는 교육기관의 AI 교육 유사사업 3건 이상 수행 경험을 보유해야 한다.\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「수행실적 목록(가상 예시)」 p.1, 유사도 0.71 — 미채택)",
+          "grounding_type": "RFP_GROUNDED",
+          "requirement_id": "REQ-011",
+          "evidence_id": null,
+          "needs_review": true
+        },
+        {
+          "id": "PS-12",
+          "text": "[증빙원칙] \"경력과 수행실적은 계약서, 실적증명서, 재직증명서 등 객관적 증빙으로 확인되어야 하며, 증빙이 불충분한 경우 충족으로 확정하지 않는다.\" — 채택된 회사 근거자료가 없어 충족 여부를 확정할 수 없습니다. 확인 필요. (후보 근거: 「계약 증빙(가상 예시)」 p.1, 유사도 0.62 — 미채택)",
+          "grounding_type": "RFP_GROUNDED",
+          "requirement_id": "REQ-013",
+          "evidence_id": null,
+          "needs_review": true
+        },
+        {
+          "id": "PS-13",
+          "text": "계약상대자는 매 회차 종료 직후 만족도 조사를 실시하고, 전체 참석자 대비 응답률 80% 이상을 확보하겠습니다. (근거: 「기존 운영 결과보고서(가상 예시)」 p.9 \"2025년 과정: 누적 교육생 260명, 회차별 출결 서명부 관리, 매 회차 만족도 조사 응답률 84%, 최종 교육일로부터 7일 이내 최종결과보고서 제출.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-015",
+          "evidence_id": "EV-08",
+          "needs_review": false
+        },
+        {
+          "id": "PS-14",
+          "text": "교육이 진행되는 주에는 매주 금요일 17시까지 진행현황, 이슈, 다음 주 계획을 포함한 주간보고를 제출하겠습니다. (근거: 「교육 운영 매뉴얼(가상 예시)」 p.5 \"매주 금요일 17시 주간보고 양식, 서명부·전자출결 기준, 산출물 파일명 규칙(산출물명_제출일자), 참석 예정 25명 이상 시 보조인력 2명 배치 기준.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-016",
+          "evidence_id": "EV-10",
+          "needs_review": false
+        },
+        {
+          "id": "PS-15",
+          "text": "최종 교육일로부터 7일 이내에 전체 운영실적, 출결, 만족도, 개선의견을 포함한 최종결과보고서를 제출하겠습니다. (근거: 「기존 운영 결과보고서(가상 예시)」 p.9 \"2025년 과정: 누적 교육생 260명, 회차별 출결 서명부 관리, 매 회차 만족도 조사 응답률 84%, 최종 교육일로부터 7일 이내 최종결과보고서 제출.\")",
+          "grounding_type": "COMPANY_EVIDENCE_GROUNDED",
+          "requirement_id": "REQ-017",
+          "evidence_id": "EV-08",
+          "needs_review": false
+        },
+        {
+          "id": "PS-16",
+          "text": "AI 분석결과는 참고자료이며, 자격판정, Evidence 채택, 제안서 확정 및 제출 여부는 담당자가 최종 승인하겠습니다. (RFP p.6 요구사항 준수)",
+          "grounding_type": "RFP_GROUNDED",
+          "requirement_id": "REQ-023",
+          "evidence_id": null,
+          "needs_review": false
+        }
+      ],
+      "procurement_id": "synthetic-rfp-0001",
+      "generated_at": "2026-09-03T13:03:53.220616Z",
+      "generation_method": "RULE",
+      "mandatory_total": 17,
+      "requirements_with_sentence": 16,
+      "requirements_without_sentence": [
+        "REQ-022"
+      ],
+      "evidence_grounded_count": 12,
+      "rfp_grounded_count": 4,
+      "needs_review_count": 3
+    }
+  ],
+  "generated_at": "2026-09-03T13:03:53.220616Z",
+  "generation_method": "RULE",
+  "mandatory_total": 23,
+  "requirements_with_sentence": 22,
+  "requirements_without_sentence": [
+    "REQ-022"
+  ],
+  "evidence_grounded_count": 17,
+  "rfp_grounded_count": 5,
+  "needs_review_count": 3,
+  "section_categories": {
+    "3. 추진 일정": [
+      "일정"
+    ],
+    "4. 투입 인력": [
+      "인력"
+    ],
+    "5. 보안 및 개인정보 보호": [
+      "보안"
+    ],
+    "99. 분류되지 않은 요구사항": [
+      "검수",
+      "교육내용",
+      "보고",
+      "수치",
+      "승인",
+      "운영",
+      "자격",
+      "제출",
+      "증빙"
+    ]
+  }
+}
