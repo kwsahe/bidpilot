@@ -1075,7 +1075,7 @@ def _blind_identity(draft_text: str, identity: tuple[list[tuple[str, str]], bool
         id="", finding_type="blind_identity", severity=severity,  # type: ignore[arg-type]
         group_key="blind:identity", group_label="평가본에 회사 식별 정보가 남음", group_rank=group_rank("blind:identity"),
         recommendation=f"{head}{detail}. 공고가 평가본에 회사를 알아볼 수 있는 정보를 막습니다 — 회사 이름 · 대표자 · 연락처 · 번호 · "
-                       "실적 기관 이름을 지우거나 「당사」 · 기관 유형으로 바꾸세요(값은 기록에 남기지 않습니다).",
+                       "실적 기관 이름 · 실적 사업명을 지우거나 「당사」 · 기관 유형 · 연도와 분야로 바꾸세요(값은 기록에 남기지 않습니다).",
         detected_by="RULE",
     )]
 

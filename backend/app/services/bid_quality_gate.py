@@ -33,7 +33,9 @@ from app.services.plan_form_service import unwritten_count
 logger = logging.getLogger(__name__)
 
 #: 게이트 규칙 판 — 검사를 바꾸면 올린다(보고서 · 기록 · 화면에 싣는다).
-GATE_VERSION = 4  # 4 — 2.10.0 주차 일정 · 원문 대면 활동의 온라인 전환(REMOTE_SWAP) · 본문 시점 ↔ 일정표(SCHEDULE_BODY_GAP) ·
+GATE_VERSION = 5  # 5 — 2.11.0 PDF 검사(PDF_BLANKS_FEWER · PDF_OVERLAP · PDF_TABLE_ORPHAN) · 제출서류 못 읽음(PAPERS_UNREAD) · 작성 도구 낱말(TOOL_WORD) ·
+#   제목 조각(TITLE_WORD_GAP) · 확정 전 인력 경력(STAFFING_PROMISE) · 평가본 실적 사업명 · 사전규격뿐(SOURCE_PRESPEC_ONLY) · 참가 자격(ELIGIBILITY)
+#   4 — 2.10.0 주차 일정 · 원문 대면 활동의 온라인 전환(REMOTE_SWAP) · 본문 시점 ↔ 일정표(SCHEDULE_BODY_GAP) ·
 #   증빙 전 실적 수치(EVIDENCE_NUMBER) · 역할 이름 한 벌(ROLE_MISMATCH) · 예산 산수(BUDGET_MATH) · 평가본 식별 낱말(BLIND_IDENT_LEFT) ·
 #   평가표 못 읽음(EVAL_UNREAD)
 SEVERITIES = ("BLOCKER", "MAJOR", "MINOR", "INFO")
@@ -54,7 +56,7 @@ AXIS_OF: dict[str, str] = {
     "SCHEDULE_GRID": "auto", "SCHEDULE_OUTSIDE": "auto", "SCHEDULE_TASK_MISSING": "auto", "SCHEDULE_ORDER": "auto", "SCHEDULE_OUTPUT": "auto",
     "SCHEDULE_BODY_GAP": "auto", "REMOTE_SWAP": "auto", "ROLE_MISMATCH": "auto",
     "NUMBER_SUM": "auto", "NOTICE_VALUE": "auto", "NOTICE_AMBIGUOUS": "fact", "BLIND_IDENT_LEFT": "auto",
-    "NO_SIMILAR_RULE": "fact", "TASK_DETAIL_GAP": "auto", "CAPABILITY_LEAP": "auto",
+    "NO_SIMILAR_RULE": "fact", "TASK_DETAIL_GAP": "auto", "CAPABILITY_LEAP": "auto", "TOOL_WORD": "auto", "TITLE_WORD_GAP": "auto",
     "STAFFING_UNCONFIRMED": "input", "REVIEW_BLANKS": "input", "FORMAT_TWO_VOLUME": "input", "FORMAT_PPT": "input",
     "FORMAT_LANDSCAPE": "input", "BLIND_RULE": "input", "APPROVAL_VOID": "input", "BUDGET_MATH": "input",
     "STAFFING_PROMISE": "evidence", "EVIDENCE_UNVERIFIED": "evidence", "EVIDENCE_NUMBER": "evidence",
@@ -62,10 +64,15 @@ AXIS_OF: dict[str, str] = {
     # 한글에서 저장한 PDF 검사(2.10.0 T8 · 사람이 고친 파일 — 게이트 판정 밖 · D10)
     "PDF_UNREADABLE": "fact", "PDF_PAGES": "fact", "PDF_PAGES_OVER": "input", "PDF_NOT_A4": "input", "PDF_UNWRITTEN": "input",
     "PDF_LINK_CUT": "input", "PDF_BUDGET_UNREAD": "fact", "PDF_EVAL_PAGE": "input", "PDF_EVAL_PAGES": "fact",
+    "PDF_BLANKS_FEWER": "fact", "PDF_OVERLAP": "input", "PDF_TABLE_ORPHAN": "input",
+    "SOURCE_PRESPEC_ONLY": "fact", "ELIGIBILITY": "fact",
+    "PAPERS_UNREAD": "fact",  # 입찰공고문 제출서류 0건(2.11.0 T6b · 보통 — 제출서류는 판정 밖 · 2.10.0 D10)
 }
 #: 자동 작성 검사(`generation`) — 앱이 고칠 것(auto)만 본다. 담당자 입력이 남았다는 이유만으로 실패하지 않는다(3차 지시서 §12).
 GENERATION_LABELS = {"PASS": "자동 작성 완료", "REVIEW": "자동 작성 완료 · 검토할 경고 있음", "FAIL": "자동 작성 결함 — 수정 필요",
                      "ERROR": "검증 못 함"}
+#: 참가 자격 판정 엔진이 예외를 냄 — 게이트를 막지 않고 참고 한 줄(2.11.0 D3).
+ELIGIBILITY_ERROR = "error"
 APPROVAL_FILE = "bid_plan_approval.json"
 REPORT_FILE = "bid_quality.json"
 LOG_FILE = "bid_quality_log.jsonl"
@@ -115,6 +122,16 @@ _STAFF_WHO_RE = re.compile(r"인력|강사|컨설턴트|전문가|PM|심사원|�
 _STAFF_QUAL_RE = re.compile(r"자격|심사원|현직자|경력자|(?:경력|경험)(?:과\s*경험)?을\s*(?:다수\s*)?(?:보유|갖춘)|\d+\s*년\s*이상|자격증|박사|석사")
 _STAFF_VERB_RE = re.compile(r"배치|투입|구성|꾸리|꾸립|선발|채용|섭외|배정|확보")
 _STAFF_SKIP_RE = re.compile(r"교체")
+#: 확정 전 인력의 지난 경력을 단정하는 꼴(2.11.0 T7c · 「컨설팅을 수행해 온 코치」 · 「경력이 풍부한 강사」 · 「○○ 출신 전문가」) — 동사가 없어도.
+#: 「온」과 사람 낱말 사이 낱말은 조사로 끝나지 않을 때만(「운영해 온 프로그램을 전문가와」는 사람 이력이 아니다).
+_STAFF_PERSON = r"(?:인력|강사|컨설턴트|전문가|PM|심사원|멘토|연구원|코치|퍼실리테이터|튜터)"
+_STAFF_PAST_RE = re.compile(
+    rf"(?:해|하여|해서)\s*온\s+(?:[^\s.,]+(?<![을를에로와과은는이가의])\s+){{0,2}}?(?:[가-힣]{{1,4}})?{_STAFF_PERSON}"
+    rf"|(?:경력|경험|이력)이\s*(?:풍부한|많은|있는)\s*(?:[^\s.,]+(?<![을를에로와과은는이가의])\s+)?{_STAFF_PERSON}"
+    rf"|출신\s*(?:의\s*)?{_STAFF_PERSON}")
+#: 인력 표가 없는 공고에서도 보는 외부 인력 낱말 · 조건형(단정이 아니라 선정 기준).
+_STAFF_EXTERNAL_RE = re.compile(r"위촉|외부|초빙|섭외")
+_STAFF_COND_RE = re.compile(r"선정\s*기준|기준으로|요건|이상인\s*자|갖춘\s*자|후보")
 #: 일정표 담당(역할) 칸에 든 경력 · 자격(2.9.0) — 그 칸은 역할 이름만(「PM · 운영 담당」).
 _OWNER_PERSON_RE = bid.PERSON_VALUE_RE  # 참여인력 표 역할 · 담당 칸(2.10.0 D4)과 한 꼴 · 「교체할 때는 동등 이상의 자격 · 경력자로」 — 교체 규칙이지 지금 인력 약속이 아니다
 _HWP_RE = re.compile(r"\.hwpx?$", re.I)
@@ -166,7 +183,7 @@ ACTIONS: dict[str, str] = {
     "NUMBER_FIXED": "원문 목차와 대조해 고친 번호가 맞는지 보세요",
     "NUMBER_DUP": "초안을 다시 쓰면 겹친 번호를 고쳐 붙입니다 — 또는 받은 파일에서 번호를 고치세요",
     "BLIND_RULE": "평가본으로도 받고, 영문 이름 · 로고는 직접 확인하세요",
-    "BLIND_IDENT_LEFT": "받은 평가본 파일의 그 자리에서 회사 이름 · 대표자 · 연락처 · 번호 · 실적 기관 이름을 지우거나 「당사」 · 기관 유형(대학 · 지자체 …)으로 바꾸세요",
+    "BLIND_IDENT_LEFT": "받은 평가본 파일의 그 자리에서 회사 이름 · 대표자 · 연락처 · 번호 · 실적 기관 이름 · 실적 사업명을 지우거나 「당사」 · 기관 유형(대학 · 지자체 …) · 연도와 분야로 바꾸세요",
     "PAGES_APPROX": "원문 위치는 원문 파일에서 직접 확인하세요",
     "SCHEDULE_GRID": "초안을 다시 쓰면 추진 기간을 개월차(짧은 사업은 주차 「Wn~Wm」)로 씁니다 — 또는 받은 파일 일정표의 추진 기간을 "
                      "「n~m개월차」(짧은 사업은 「Wn~Wm」)로 고치세요",
@@ -184,6 +201,8 @@ ACTIONS: dict[str, str] = {
     "NO_SIMILAR_RULE": "원문이 막는 범위를 확인하고, 해당하면 받은 파일에서 그 실적 문장을 빼세요",
     "TASK_DETAIL_GAP": "초안을 다시 쓰거나, 과업마다 담당 · 일정 · 산출물 · 검수 · 위험 대응을 보강하세요",
     "CAPABILITY_LEAP": "원문이 요구한 산출물인지 확인하고, 아니면 그 문장을 빼세요",
+    "TOOL_WORD": "「원문」을 「제안요청서」(또는 공고 · 과업지시서)로 바꾸세요 — 초안을 다시 쓰거나 받은 파일에서",
+    "TITLE_WORD_GAP": "소항목 제목이 말한 내용을 본문에 넣으세요(초안을 다시 쓰거나 받은 파일에서)",
     "PDF_UNREADABLE": "한글에서 「PDF 로 저장」(인쇄 · 그림 저장 아님)한 파일을 다시 올리세요 — 암호를 걸었으면 풀고 올리세요",
     "PDF_PAGES": "원문 쪽수 상한(표지 · 목차 포함 여부)을 직접 확인하세요",
     "PDF_PAGES_OVER": "원문 쪽수 상한 안으로 줄이세요(표지 · 목차를 빼는 규정이면 원문으로 확인)",
@@ -193,6 +212,13 @@ ACTIONS: dict[str, str] = {
     "PDF_BUDGET_UNREAD": "예산 배분안 산수(수량 × 단가 · 소계 · 부가세 · 합계)는 직접 검산하세요",
     "PDF_EVAL_PAGE": "조견표의 쪽 번호를 실제 PDF 쪽으로 고치세요(표지 = 1쪽)",
     "PDF_EVAL_PAGES": "조견표에 쪽 번호를 적는다면 이 쪽 번호를 쓰세요(표지 = 1쪽)",
+    "PDF_BLANKS_FEWER": "PDF 쪽 그림으로 「(담당자 입력)」이 남은 칸이 없는지 확인하세요 — 채운 칸 수가 차이와 같으면 정상입니다",
+    "PDF_OVERLAP": "한글에서 그 쪽 긴 표 뒤에 빈 문단을 넣거나 표 앞에서 쪽을 나눠 글이 겹치지 않게 한 뒤 다시 PDF 로 저장하세요",
+    "PDF_TABLE_ORPHAN": "그 표 제목 줄 앞에서 쪽을 나눠 제목 · 칸 이름 줄이 표 내용과 같은 쪽에 오게 한 뒤 다시 PDF 로 저장하세요",
+    "SOURCE_PRESPEC_ONLY": "입찰 분석에서 본공고 첨부(공고서 · 입찰공고문)를 받은 뒤 초안을 다시 쓰세요",
+    "ELIGIBILITY": "입찰 분석 › 참가 자격에서 사유를 보세요 — 회사자료(등록 업종 · 직접생산 품명 …)가 틀렸으면 고치고, "
+                   "원문상 충족이면 조항 확인에 「충족」으로 남기세요(제출 · 참여 판단은 사람)",
+    "PAPERS_UNREAD": "제안요청서 · 입찰공고문의 제출 서류 · 파일 구분 줄을 보고 낼 서류를 직접 정리하세요",
 }
 
 
@@ -470,6 +496,87 @@ def task_gaps(view: dict[str, Any]) -> list[tuple[str, int, int]]:
         if missing * 2 > len(blocks):
             out.append((str(entry.get("section") or ""), missing, len(blocks)))
     return out
+
+
+# --- 작성 도구 낱말 · 제목 조각 · 확정 전 인력 경력(2.11.0 T7a~c · 게이트 판 5) ---------------------------------------
+
+#: 작성 지시문이 자료를 부르는 말 「원문」이 제출용에 샌 것 — 「원문과 대조」 · 「원문공개」처럼 과업 낱말인 꼴은 뺀다.
+_TOOL_WORD_RE = re.compile(r"원문(?!\s*(?:과|와|을|를)?\s*(?:대조|비교|공개|정보|데이터|DB|보존|파일))")
+_TOOL_CHUNK_RE = re.compile(r"원문\S*(?:\s+\S+)?")
+
+
+def tool_words(view: dict[str, Any], sentences: list[tuple[str, dict[str, Any]]]) -> list[tuple[str, str]]:
+    """본문 문장 · AI 표(일정 · 핵심 마감 · 과업별 대응) 칸에 남은 「원문」 — (자리, 글). 인용 원문에 그 낱말이 있는 제안요청서 문장과
+    이번 공고 글에 같은 덩어리가 있는 것(기록물 원문 과업)은 뺀다."""
+    notice: str | None = None  # 낱말이 나온 초안만 공고 글을 모은다
+    out: list[tuple[str, str]] = []
+
+    def left(text: str) -> bool:
+        nonlocal notice
+        if not _TOOL_WORD_RE.search(text):
+            return False
+        if notice is None:
+            notice = _compact(notice_text(view))
+        chunks = [m.group(0) for m in _TOOL_CHUNK_RE.finditer(text) if _TOOL_WORD_RE.match(m.group(0))]
+        return any(_compact(chunk) not in notice for chunk in chunks)
+
+    for section, sentence in sentences:
+        if sentence.get("type") == plan_draft_service.NOTICE and "원문" in str(sentence.get("source") or ""):
+            continue
+        if left(str(sentence.get("text") or "")):
+            out.append((section, str(sentence.get("text") or "")))
+    keys = (bid.SCHEDULE_TABLE["key"], bid.MILESTONE_TABLE["key"], bid.SCOPE_TABLE["key"])
+    for table in view.get("tables") or []:
+        if table.get("key") not in keys or table.get("by") != "llm":
+            continue
+        for row in table.get("rows") or []:
+            for cell in row:
+                text = plan_export_service._CELL_MARK.sub("", str(cell or ""))
+                if left(text):
+                    out.append((f"{table.get('title')} 표", text))
+    return out
+
+
+#: 소항목 제목에서만 흔한 말 — 공고 낱말을 박지 않으려 다섯에서 멈춘다.
+_TITLE_GENERIC = frozenset(("제안", "기타", "특징", "장점", "사항"))
+_TITLE_SPLIT_RE = re.compile(r"\s+및\s+|\s*[·ㆍ,/]\s*")
+_TITLE_MAX = 25
+
+
+def title_gaps(view: dict[str, Any]) -> list[tuple[str, str]]:
+    """소항목 제목 「A 및 B」 · 「A · B」에서 한 조각의 핵심 낱말이 본문 · 딸린 표 어디에도 없는 것(근사) — (소항목, 조각).
+    긴 제목(작성 방법 문장을 목차로 둔 공고) · AI 가 쓰지 않은 소항목은 보지 않는다. 네 글자 넘는 한글 낱말은 뒤 두 글자(머리 명사)만
+    있어도 있음으로 본다(「업무보고」 → 「착수 보고」)."""
+    plains = {item["key"]: str(item.get("plain") or "") for section in (view.get("form") or {}).get("sections") or []
+              for item in section.get("items") or [] if item.get("key")}
+    tables = {t.get("key"): t for t in view.get("tables") or []}
+    out: list[tuple[str, str]] = []
+    for entry in view.get("sections") or []:
+        plain = plains.get(entry.get("key"), "")
+        if entry.get("by") != "llm" or not entry.get("sentences") or not plain or len(plain) > _TITLE_MAX:
+            continue
+        # 괄호 안의 「·」 「,」는 제목 조각이 아니다(「추진 일정(주차별 · 월별)」 · 2.11.0 검토)
+        parts = [part.strip() for part in _TITLE_SPLIT_RE.split(re.sub(r"[(（][^)）]*[)）]", "", plain)) if part.strip()]
+        if len(parts) < 2:
+            continue
+        body = bid._name_key(" ".join([*(str(s.get("text") or "") for s in entry["sentences"]),
+                                       *(str(cell) for key in entry.get("tables") or [] if key != bid.EVAL_TABLE_KEY
+                                         for row in (tables.get(key) or {}).get("rows") or [] for cell in row)]))
+        for part in parts:
+            words = bid.eval_core_words(part) - _TITLE_GENERIC
+            if words and not any(bid.word_re(word).search(body) or (len(word) >= 4 and re.fullmatch(r"[가-힣]+", word) and word[-2:] in body)
+                                 for word in words):
+                out.append((str(entry.get("section") or ""), part))
+    return out
+
+
+def past_career(sentence: dict[str, Any]) -> bool:
+    """확정 전 인력의 지난 경력을 단정하는 문장인가 — 교체 규칙 · 선정 기준 꼴 · 인용 원문에 같은 꼴이 있는 제안요청서 문장은 아니다."""
+    text = str(sentence.get("text") or "")
+    match = _STAFF_PAST_RE.search(text)
+    if not match or _STAFF_SKIP_RE.search(text) or _STAFF_COND_RE.search(text):
+        return False
+    return not (sentence.get("type") == plan_draft_service.NOTICE and _compact(match.group(0)) in _compact(sentence.get("source")))
 
 
 # --- 세부 추진 일정표(3차 지시서 §4 · 게이트 판 3) ---------------------------------------------------------------
@@ -938,12 +1045,14 @@ def evidence_status(view: dict[str, Any], *, capacity: dict[str, Any], ledger_ro
 # 평가본 식별 낱말(2.10.0 D7 — 원문이 평가본을 요구할 때만 · 제출 전 PDF 검사도 같은 함수)
 # ---------------------------------------------------------------------------
 
-#: 남으면 차단(회사를 바로 가리킴 · D7) — 그 밖(주소 · 홈페이지 · 설립일 · 실적 기관 이름)은 중요.
+#: 남으면 차단(회사를 바로 가리킴 · D7) — 그 밖(주소 · 홈페이지 · 설립일 · 실적 기관 이름 · 실적 사업명)은 중요.
 IDENTITY_BLOCKING = ("회사 이름", "대표자", "전화", "사업자번호", "인증번호")
 #: 종류 ← 회사 값 열쇠(`plan_fill_service.company_values`).
 _IDENTITY_FIELDS = (("회사 이름", "name"), ("대표자", "representative"), ("전화", "phone"), ("사업자번호", "business_number"),
                     ("주소", "address"), ("홈페이지", "website"), ("설립일", "opened_on"))
 _CORP_RE = re.compile(r"^(?:주식회사|\(주\)|㈜)\s*|\s*(?:주식회사|\(주\)|㈜)$")
+#: 실적 사업명으로 볼 견주기 꼴 길이 — 짧은 「AI 교육」류는 회사를 가리키지 않는다(2.11.0 D4).
+PROJECT_TITLE_MIN = 10
 
 
 def _ident_key(text: Any) -> str:
@@ -953,7 +1062,8 @@ def _ident_key(text: Any) -> str:
 
 def identity_words(values: dict[str, Any], ledger_rows: Iterable[dict[str, Any]] = (), *, exclude: str = "") -> list[tuple[str, str]]:
     """평가본에 남으면 안 되는 회사 식별 낱말 (종류, 낱말) — 회사 값(`plan_fill_service.company_values` 꼴 — 이름 짧은 꼴 · 대표자 · 전화 ·
-    사업자번호 · 주소 · 홈페이지 · 설립일 · 인증 이력 속 「제…호」)과 실적 원장 기관 이름(`bid.agency_names`). 이번 공고 글(`exclude` ·
+    사업자번호 · 주소 · 홈페이지 · 설립일 · 인증 이력 속 「제…호」)과 실적 원장 기관 이름(`bid.agency_names`) · 수행 실적 사업명(원장 제목 —
+    그대로와 AI 에 보낸 가림 꼴(`bid.blind_text`) · 견주기 꼴 10자 이상만 · 인증 · 지정 행 제외 · 2.11.0 D4). 이번 공고 글(`exclude` ·
     `notice_text`)에 있는 낱말과 견주기 꼴 2자 미만은 뺀다. 값은 보고서 · 기록에 싣지 않는다(검사 줄은 종류 · 수 · 자리만)."""
     out: list[tuple[str, str]] = []
     seen: set[str] = set()
@@ -974,9 +1084,18 @@ def identity_words(values: dict[str, Any], ledger_rows: Iterable[dict[str, Any]]
         add(kind, value)
     for match in plan_export_service.CERT_NO_RE.finditer(str(values.get("history") or "")):
         add("인증번호", match.group(0))
-    for row in ledger_rows:
-        for name in bid.agency_names(row.get("agency")):
+    rows = list(ledger_rows)
+    agencies = [bid.agency_names(row.get("agency")) for row in rows]
+    for names in agencies:
+        for name in names:
             add("실적 기관", name)
+    every = {name for names in agencies for name in names}
+    for row in rows:
+        title = str(row.get("title") or "")
+        if row.get("field") in bid.PROJECT_FIELDS:
+            for word in (title, bid.blind_text(title, every)):
+                if len(_ident_key(word)) >= PROJECT_TITLE_MIN:
+                    add("실적 사업명", word)
     return out
 
 
@@ -1021,7 +1140,7 @@ def identity_findings(pairs: Iterable[tuple[str, str]], words: list[tuple[str, s
     out = []
     for severity, title, kinds in (
             ("BLOCKER", "평가본에 회사를 알아볼 수 있는 값이 남음 — 회사 이름 · 대표자 · 연락처 · 번호", [k for k in order if k in IDENTITY_BLOCKING]),
-            ("MAJOR", "평가본에 회사를 짐작할 수 있는 값이 남음 — 실적 기관 · 주소 · 홈페이지 · 설립일", [k for k in order if k not in IDENTITY_BLOCKING])):
+            ("MAJOR", "평가본에 회사를 짐작할 수 있는 값이 남음 — 실적 기관 · 실적 사업명 · 주소 · 홈페이지 · 설립일", [k for k in order if k not in IDENTITY_BLOCKING])):
         if not kinds:
             continue
         places = list(dict.fromkeys(place for kind in kinds for spots in left[kind].values() for place in spots))
@@ -1038,6 +1157,51 @@ def _ppt_required(fmt: dict[str, Any]) -> bool:
         return False
     lines = [note for note in fmt.get("notes") or [] if bid._PPT_RE.search(str(note))]
     return not lines or not all(bid.ppt_optional(str(note)) for note in lines)
+
+
+def _names(names: list[str]) -> str:
+    return "「" + "」 · 「".join(_snip(name) for name in names[:3]) + "」" + (" 외" if len(names) > 3 else "")
+
+
+def _source_gap_findings(gap: dict[str, list[str]]) -> list[dict[str, Any]]:
+    """사전규격 규격서만 읽고 쓴 초안(2.11.0 T9) — 초안을 쓴 뒤 본공고 첨부를 받았으면 다시 쓰면 되는 것(auto), 아직 안 받았거나 받아 둔
+    파일의 글을 읽지 못했으면 사람이 볼 것(fact). 안 받은 · 못 읽은 첨부 이름도 함께 적는다."""
+    missing, received, unread = gap.get("missing") or [], gap.get("received") or [], gap.get("unread") or []
+    rest = " · ".join(part for part in (f"아직 안 받음 {_names(missing)}" if missing else "",
+                                        f"받았지만 글을 읽지 못함 {_names(unread)}" if unread else "") if part)
+    if received:
+        return [_finding("SOURCE_PRESPEC_ONLY", "MAJOR", "사전규격 규격서만으로 쓴 초안 — 그 뒤 본공고 첨부를 받아 둠",
+                         f"{_names(received)} — 초안을 다시 쓰면 함께 읽습니다" + (f" ({rest})" if rest else ""),
+                         count=len(received) + len(missing) + len(unread), axis="auto",
+                         action="초안을 다시 쓰세요 — 받아 둔 본공고 첨부를 함께 읽습니다")]
+    if missing or unread:
+        title = "본공고 첨부를 받지 않아 사전규격 규격서만으로 씀" if missing else "본공고 첨부의 글을 읽지 못해 사전규격 규격서만으로 씀"
+        action = None if missing else "받아 둔 본공고 첨부가 그림 PDF · 깨진 파일인지 열어 보고, 입찰공고문 조건은 원문에서 직접 확인하세요"
+        return [_finding("SOURCE_PRESPEC_ONLY", "MAJOR", title, f"{rest} — 입찰공고문 제출서류 · 계약 예정일 · 공고문 조건을 읽지 못했습니다",
+                         count=len(missing) + len(unread), action=action)]
+    return []
+
+
+def eligibility_findings(report: Any) -> list[dict[str, Any]]:
+    """입찰 분석 참가 자격 판정 한 줄(2.11.0 T10 · D3) — 「불가」는 중요(회사 사실 · 문서 결함이 아니라 승인을 막지 않음), 「확인 필요」 · 판정 못 함은
+    참고. 가능 · 판정 없음이면 줄이 없다."""
+    where = "입찰 분석 › 참가 자격"
+    if report is None:
+        return []
+    if report == ELIGIBILITY_ERROR:
+        return [_finding("ELIGIBILITY", "INFO", "참가 자격 판정을 하지 못함", "입찰 분석에서 참가 자격을 직접 확인하세요", location=where)]
+    fails = [r for r in report.results if r.status == "FAIL"]
+    if fails:
+        shown = " · ".join(f"{r.label}: {_snip(r.clause_text or r.reason)}" for r in fails[:3]) + (" 외" if len(fails) > 3 else "")
+        return [_finding("ELIGIBILITY", "MAJOR", "입찰 분석 참가 자격 판정이 「불가」 — 제안서 결함이 아니라 회사 사실", shown, count=len(fails),
+                         location=where)]
+    checks = [r for r in report.results if r.status == "CHECK"]
+    if not checks:
+        return []
+    company = [r for r in checks if r.check_side == "company"]
+    tail = (" — " + " · ".join(_snip(r.label) for r in company[:2]) + (" 외" if len(company) > 2 else "")) if company else ""
+    return [_finding("ELIGIBILITY", "INFO", "입찰 분석 참가 자격에 확인 필요가 남음", f"확인 필요 {len(checks)}줄(회사 쪽 {len(company)}){tail}",
+                     count=len(checks), location=where)]
 
 
 def _review_flags(sentences: list[tuple[str, dict[str, Any]]]) -> list[tuple[str, int, str]]:
@@ -1059,10 +1223,11 @@ def _review_flags(sentences: list[tuple[str, dict[str, Any]]]) -> list[tuple[str
 def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str, Any] | None = None,
                 scan: dict[str, Any] | None = None, evidence: dict[str, Any] | None = None,
                 coverage: list[dict[str, Any]] | None = None,
-                identity: list[tuple[str, str]] | None = None) -> tuple[list[dict[str, Any]], bool]:
+                identity: list[tuple[str, str]] | None = None, eligibility: Any = None) -> tuple[list[dict[str, Any]], bool]:
     """검사 목록(심각도 순) · 인력 미확정 여부. view 는 `read_view` 가 만든 화면 초안(`stale` · `terms` 포함). scan 은 `_scan_submit` 결과 ·
     coverage 는 `evaluation_coverage`(없으면 센다) · evidence 는 `evidence_status`(회사 자료를 읽는 `read_view` 가 넘긴다 · 없으면 그 검사를 건너뜀) ·
-    identity 는 `identity_words`(원문이 평가본을 요구할 때 `read_view` 가 넘긴다 · 없으면 식별 낱말 검사를 건너뜀)."""
+    identity 는 `identity_words`(원문이 평가본을 요구할 때 `read_view` 가 넘긴다 · 없으면 식별 낱말 검사를 건너뜀) ·
+    eligibility 는 입찰 분석 판정(`EligibilityReport` · 예외면 `ELIGIBILITY_ERROR` · 없으면 건너뜀)."""
     found: list[dict[str, Any]] = []
     form = view.get("form") or {}
     fmt = view.get("format") or {}
@@ -1130,10 +1295,13 @@ def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str,
     for section, count, sample in _grouped([(s, str(x.get("text") or "")) for s, x in sentences if bid.hype_words(x)]):
         found.append(_finding("HYPE_LEFT", "MAJOR", "과장 표현이 본문에 남음(「반드시 달성」 · 「완벽」 · 「보장」 · 「100% 달성」)",
                               f"「{_snip(sample)}」 — 빼거나 달성 방법을 담은 확정형 계획으로 고치세요", section=section, count=count))
+    promised: set[int] = set()  # 자격 약속으로 이미 센 문장 — 지난 경력 단정으로 두 번 세지 않는다
     if staffing_unconfirmed:
-        promises = [(s, str(x.get("text") or "")) for s, x in sentences
-                    if (t := str(x.get("text") or "")) and _STAFF_WHO_RE.search(t) and _STAFF_QUAL_RE.search(t)
-                    and _STAFF_VERB_RE.search(t) and not _STAFF_SKIP_RE.search(t)]
+        pledges = [(s, x) for s, x in sentences
+                   if (t := str(x.get("text") or "")) and _STAFF_WHO_RE.search(t) and _STAFF_QUAL_RE.search(t)
+                   and _STAFF_VERB_RE.search(t) and not _STAFF_SKIP_RE.search(t)]
+        promised = {id(x) for _s, x in pledges}
+        promises = [(s, str(x.get("text") or "")) for s, x in pledges]
         schedule = next((t for t in view.get("tables") or [] if t.get("key") == bid.SCHEDULE_TABLE["key"] and t.get("by") == "llm"
                          and len(t.get("columns") or []) == 5), None)
         promises += [(f"{schedule.get('title')} 표 담당 칸", f"{row[0]} — {row[2]}") for row in (schedule or {}).get("rows") or []
@@ -1145,6 +1313,13 @@ def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str,
         for section, count, sample in _grouped(promises):
             found.append(_finding("STAFFING_PROMISE", "MAJOR", "인력 미확정인데 인력 자격을 약속하는 문장",
                                   f"「{_snip(sample)}」 — 실제 투입할 인력이 그 자격을 갖췄는지 확인하세요", section=section, count=count))
+    # 확정 전 · 외부 위촉 인력의 지난 경력 단정(2.11.0 T7c) — 인력 표가 없는 공고도 위촉 · 외부 · 초빙 · 섭외 문장은 본다
+    careers = [(s, str(x.get("text") or "")) for s, x in sentences if id(x) not in promised
+               and (staffing_unconfirmed or _STAFF_EXTERNAL_RE.search(str(x.get("text") or ""))) and past_career(x)]
+    for section, count, sample in _grouped(careers):
+        found.append(_finding("STAFFING_PROMISE", "MAJOR", "확정 전 인력의 지난 경력을 단정하는 문장",
+                              f"「{_snip(sample)}」 — 확정한 사람이 아니면 선정 기준(「…경력을 갖춘 전문가를 위촉 기준으로」)으로 고치세요",
+                              section=section, count=count))
     if notice:
         for label, ours, theirs in (("사업명", view.get("title"), notice.get("title")), ("발주기관", view.get("agency"), notice.get("agency"))):
             if ours and theirs and _compact(ours) != _compact(theirs):
@@ -1153,6 +1328,9 @@ def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str,
     if view.get("stale"):
         found.append(_finding("STALE", "MAJOR", "초안을 쓴 뒤 공고 분석이 바뀜",
                               "제안요청서를 다시 읽어 요구사항이 달라졌습니다 — 초안을 다시 쓰세요"))
+    if gap := view.get("source_gap"):
+        found += _source_gap_findings(gap)
+    found += eligibility_findings(eligibility)
     # 본문의 사업기간 · 금액이 원문과 다름(2.8.0 B6 · 승인을 무효로 한다 — 금액 기준은 원문 사업금액)
     terms = view.get("terms") or bid.draft_terms(view)
     off = [(s, f"{_snip(x.get('text'))} — {why}") for s, x in sentences if (why := _terms_mismatch(str(x.get("text") or ""), terms))]
@@ -1198,6 +1376,13 @@ def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str,
     for section, count, sample in _grouped(leaps):
         found.append(_finding("CAPABILITY_LEAP", "MINOR", "회사 역량으로 원문 밖 도구 · 시스템을 만들겠다는 문장",
                               f"「{_snip(sample)}」 — 제안요청서가 요구하지 않은 산출물 약속입니다. 원문 요구가 아니면 빼세요", section=section, count=count))
+    # 작성 도구 낱말 「원문」(2.11.0 T7a) · 소항목 제목 조각이 본문에 없음(근사 · T7b)
+    for section, count, sample in _grouped(tool_words(view, sentences)):
+        found.append(_finding("TOOL_WORD", "MINOR", "작성 도구 낱말 「원문」이 본문 · 표에 남음",
+                              f"「{_snip(sample)}」 — 평가위원에게는 「제안요청서」로 보여야 합니다", section=section, count=count))
+    for section, part in title_gaps(view):
+        found.append(_finding("TITLE_WORD_GAP", "MINOR", f"소항목 제목의 「{_snip(part)}」 내용이 본문에 없음(근사)",
+                              f"「{_snip(section)}」 본문 · 표에서 「{_snip(part)}」의 핵심 낱말을 찾지 못했습니다", section=section))
     # 세부 추진 일정표(3차 지시서 §4 · 게이트 판 3) · 역할 이름 한 벌(2.10.0 T3 · 보통)
     found += schedule_findings(view)
     found += role_findings(view)
@@ -1261,6 +1446,10 @@ def findings_of(view: dict[str, Any], *, meta: dict[str, Any], notice: dict[str,
         found.append(_finding("REVIEW_BLANKS", "MINOR", "검토용 「담당자가 채울 항목」이 남음",
                               "회사가 정할 값 · 본문에서 뺀 문장 · 붙일 서류가 검토용 파일 끝 「담당자가 채울 항목」에 있습니다",
                               count=len(blanks), location="검토용 파일 「담당자가 채울 항목」"))
+    if bid.papers_unread(view):
+        # 보통 · 사실 확인 — 상태(차단 · 검토 필요)도 자동 작성 검사도 바꾸지 않는다(제출서류는 판정 밖 · 2.10.0 D10)
+        found.append(_finding("PAPERS_UNREAD", "MINOR", "입찰공고문 제출서류 목록을 읽지 못함", bid.PAPERS_UNREAD_NOTE,
+                              location=f"검토용 파일 「담당자가 채울 항목」 › {bid.SUPPLEMENT_SECTION}"))
 
     # --- 참고 --------------------------------------------------------------------------------------------
     quant = _eval_none(view)
@@ -1377,7 +1566,7 @@ def _result(view: dict[str, Any], findings: list[dict[str, Any]], *, draft_hash:
 
 def evaluate(view: dict[str, Any], *, meta: dict[str, Any], draft_hash: str, notice: dict[str, Any] | None = None,
              approval: dict[str, Any] | None = None, evidence: dict[str, Any] | None = None,
-             identity: list[tuple[str, str]] | None = None) -> dict[str, Any]:
+             identity: list[tuple[str, str]] | None = None, eligibility: Any = None) -> dict[str, Any]:
     """품질 게이트 결과(화면 `quality` 칸 · API 약속 그대로). 승인은 지금 초안 해시와 같을 때만 살아 있고, 승인을 무효로 하는 검사
     (`VOID_CODES` — 낡음 · 공고 불일치 …)가 있으면 「제출 준비」가 아니라 APPROVAL_VOID(2.8.0 B2). evidence 는 `evidence_status`
     (회사 자료를 읽는 `read_view` 가 계산해 넘긴다 · 없으면 근거 상태 검사를 건너뛰고 `evidence_status` 칸은 None) · identity 는
@@ -1385,7 +1574,7 @@ def evaluate(view: dict[str, Any], *, meta: dict[str, Any], draft_hash: str, not
     scan = _scan_submit(view, meta)
     coverage = evaluation_coverage(view)
     findings, staffing_unconfirmed = findings_of(view, meta=meta, notice=notice, scan=scan, evidence=evidence, coverage=coverage,
-                                                 identity=identity)
+                                                 identity=identity, eligibility=eligibility)
     live = approval if approval and approval.get("draft_hash") == draft_hash else None
     void = [f["title"] for f in findings if f["code"] in VOID_CODES]
     if live and void:
@@ -1426,7 +1615,9 @@ def stored_notice(procurement_id: str) -> dict[str, Any] | None:
         if notice.id == procurement_id:
             demand = (notice.raw_data or {}).get("demand_institution")
             return {"notice_no": notice.notice_no, "title": notice.title, "agency": home_agencies.display_agency(notice.agency, demand),
-                    "url": notice.source_url}
+                    "url": notice.source_url,
+                    "attachments": [str(a.get("name")) for a in (notice.raw_data or {}).get("attachments") or []
+                                    if isinstance(a, dict) and a.get("name") and a.get("url")]}
     return None
 
 
@@ -1582,6 +1773,19 @@ def quality_report(context: AnalysisContext | None, procurement_id: str) -> dict
 
 #: 다시 읽은 한글 문단의 대항목 머리(「Ⅵ. 결과 활용성 부문」).
 _MAJOR_HEAD_RE = re.compile(r"^([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]{1,4})\s*\.")
+#: 목차 쪽 제목(앱 목차 블록 · 사람이 넣은 「< 목 차 >」 — 견주기 꼴에서 꺾쇠를 뗀 글).
+_TOC_TITLES = ("목차", "차례")
+
+
+def _without_toc(paragraphs: list[str]) -> list[str]:
+    """앱이 넣은 목차(「목차」 문단 다음 ~ 목차 첫 줄 글이 본문 머리로 다시 나오기 전)를 뺀 문단(2.11.0 D2) — 목차 줄은 본문 머리를
+    옮겨 적은 것이라 대항목 겹침 · 미작성 셈에 넣지 않는다(게이트 셈 `_block_text` 도 목차를 세지 않는다). 첫 줄이 다시 나오지 않으면 그대로."""
+    if "목차" not in paragraphs:
+        return paragraphs
+    start = paragraphs.index("목차")
+    first = paragraphs[start + 1] if start + 1 < len(paragraphs) else None
+    end = next((i for i in range(start + 2, len(paragraphs)) if paragraphs[i] == first), None)
+    return paragraphs if end is None else paragraphs[:start] + paragraphs[end:]
 
 
 def recheck_hwpx(payload: bytes, *, expected: int) -> dict[str, Any]:
@@ -1597,6 +1801,7 @@ def recheck_hwpx(payload: bytes, *, expected: int) -> dict[str, Any]:
     except Exception:  # noqa: BLE001 — 다시 읽기 실패는 「다름」으로(파일은 「초안」 이름)
         logger.warning("만든 한글 파일을 다시 읽지 못했습니다", exc_info=True)
         return {"reextract_ok": False, "placeholders": None, "gate_spots": expected, "match": False, "duplicate_majors": []}
+    paragraphs = _without_toc(paragraphs)
     count = sum(unwritten_count(text) for text in paragraphs)
     if count != expected:
         logger.warning("만든 한글 파일을 다시 읽은 미작성 칸 수가 게이트와 다릅니다 (다시 읽음 %s · 게이트 %s)", count, expected)
@@ -1665,8 +1870,9 @@ PDF_READ_SECONDS = 60.0
 
 
 def read_pdf(payload: bytes, *, max_pages: int = PDF_READ_PAGES) -> dict[str, Any]:
-    """올린 PDF(pdfplumber · 새 의존성 없음) → {ok, reason, pages(쪽 글), cells(쪽마다 표 칸 글 — 칸 안 줄바꿈을 지운 글), total(전체 쪽수),
-    partial(앞쪽만 읽음), sizes(pt), links(URI), info(문서 정보 제목 · 지은이 · 주제 · 낱말)}.
+    """올린 PDF(pdfplumber · 새 의존성 없음) → {ok, reason, pages(쪽 글), cells(쪽마다 표 칸 글 — 한 줄에 한 칸 · 칸 안 줄바꿈은 빈칸 없이 이음),
+    outside(쪽마다 표 밖 글), overlaps(쪽마다 겹친 낱말 쌍 수), total(전체 쪽수), partial(앞쪽만 읽음), sizes(pt), links(URI),
+    info(문서 정보 제목 · 지은이 · 주제 · 낱말)}.
     열지 못하거나(깨짐 · 암호 · 비정상 압축 — `document_extractor._check_pdf_streams`) 글이 한 줄도 없으면(그림으로 저장) ok False.
     글은 앞 `max_pages` 쪽 · `PDF_READ_SECONDS` 안에서만 읽는다."""
     import time
@@ -1675,7 +1881,8 @@ def read_pdf(payload: bytes, *, max_pages: int = PDF_READ_PAGES) -> dict[str, An
 
     from app.services import document_extractor
 
-    empty: dict[str, Any] = {"ok": False, "reason": None, "pages": [], "cells": [], "total": 0, "partial": False, "sizes": [], "links": [], "info": ""}
+    empty: dict[str, Any] = {"ok": False, "reason": None, "pages": [], "cells": [], "outside": [], "overlaps": [], "total": 0, "partial": False,
+                             "sizes": [], "links": [], "info": ""}
     try:
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "check.pdf"
@@ -1686,12 +1893,22 @@ def read_pdf(payload: bytes, *, max_pages: int = PDF_READ_PAGES) -> dict[str, An
                 started = time.monotonic()
                 pages: list[str] = []
                 cells: list[str] = []
+                outside: list[str] = []
+                overlaps: list[int] = []
                 for page in pdf.pages[:max_pages]:
                     if time.monotonic() - started > PDF_READ_SECONDS:
                         break
                     pages.append(page.extract_text() or "")
-                    # 좁은 표 칸(참여인력 「성명」)의 「(담당자 입력)」 · 식별 낱말은 쪽 글에서 옆 칸 글과 섞여 갈린다 — 칸 글로도 본다(11-13 독립 검토)
-                    cells.append("\n".join(re.sub(r"\s*\n\s*", " ", str(cell)) for table in page.extract_tables() for row in table for cell in row if cell))
+                    # 좁은 표 칸(참여인력 「성명」)의 「(담당자 입력)」 · 식별 낱말은 쪽 글에서 옆 칸 글과 섞여 갈린다 — 칸 글로도 본다(11-13 독립 검토).
+                    # 칸 안 줄바꿈은 빈칸 없이 잇는다 — 「(담당⏎자 입⏎력)」이 빈칸으로 이으면 「(담당 자 입 력)」이라 미작성 꼴에 안 맞았다(2.11.0 T5b ·
+                    # 11-14 완성본 07위 91 · 게이트 105). 표 밖 글은 칸 글과 따로 세려고 표 상자 밖만(`_page_unwritten`).
+                    tables = page.find_tables()
+                    cells.append("\n".join(re.sub(r"\s*\n\s*", "", str(cell)) for table in tables for row in table.extract() for cell in row if cell))
+                    rest = page
+                    for table in tables:
+                        rest = rest.outside_bbox(table.bbox, strict=False)
+                    outside.append(rest.extract_text() or "")
+                    overlaps.append(_overlap_pairs(page.extract_words()))
                 read = pdf.pages[:len(pages)]
                 sizes = [(float(page.width), float(page.height)) for page in read]
                 links = [str(link["uri"]) for page in read for link in page.hyperlinks if link.get("uri")]
@@ -1702,10 +1919,32 @@ def read_pdf(payload: bytes, *, max_pages: int = PDF_READ_PAGES) -> dict[str, An
     if not pages:
         return {**empty, "total": total, "reason": "PDF 에 쪽이 없습니다" if not total else "PDF 를 읽는 데 시간이 너무 걸려 멈췄습니다"}
     partial = len(pages) < total
+    read_parts = {"pages": pages, "cells": cells, "outside": outside, "overlaps": overlaps, "total": total, "partial": partial, "sizes": sizes,
+                  "links": links, "info": info}
     if not any(text.strip() for text in pages):
-        return {**empty, "pages": pages, "cells": cells, "total": total, "partial": partial, "sizes": sizes, "links": links, "info": info,
+        return {**empty, **read_parts,
                 "reason": "PDF 에서 글을 읽지 못했습니다 — 그림(스캔)으로 저장한 PDF 는 미작성 · 식별 낱말 검사를 할 수 없습니다"}
-    return {"ok": True, "reason": None, "pages": pages, "cells": cells, "total": total, "partial": partial, "sizes": sizes, "links": links, "info": info}
+    return {"ok": True, "reason": None, **read_parts}
+
+
+#: 겹쳤다고 보는 낱말 상자 겹침(pt · 가로 · 세로 모두 넘을 때 · 2.11.0 T5d) — 한글이 쪽 끝 긴 표를 다음 쪽으로 밀며 뒤 글을 앞 쪽에 겹쳐 찍었다
+#: (11-14 09위 17쪽 28쌍 · 빈 문단을 넣은 판 0 · 다른 한글 PDF 63개 1,355쪽 0).
+OVERLAP_PT = 3.0
+
+
+def _overlap_pairs(words: list[dict[str, Any]]) -> int:
+    """쪽 낱말 상자(`extract_words`) 중 가로 · 세로 모두 `OVERLAP_PT` 넘게 겹친 쌍 수 — top 순으로 쓸어 앞 낱말 아래 끝에 닿기 전까지만 견준다.
+    top 차가 3pt 안인 두 글줄은 pdfplumber 가 한 줄 낱말로 섞어 못 센다(근사)."""
+    boxes = sorted(words, key=lambda word: float(word["top"]))
+    pairs = 0
+    for index, a in enumerate(boxes):
+        for b in boxes[index + 1:]:
+            if float(b["top"]) >= float(a["bottom"]) - OVERLAP_PT:
+                break
+            wide = min(float(a["x1"]), float(b["x1"])) - max(float(a["x0"]), float(b["x0"]))
+            tall = min(float(a["bottom"]), float(b["bottom"])) - float(b["top"])
+            pairs += wide > OVERLAP_PT and tall > OVERLAP_PT
+    return pairs
 
 
 #: 좁은 표 칸에서 갈린 「(담당자」 조각 — 온전한 표시를 지운 뒤, 같은 줄에 닫는 괄호가 없는 것만(옆 칸 글이 같은 줄에 붙어도 ·
@@ -1718,6 +1957,32 @@ def _pdf_unwritten(text: str) -> int:
     from app.services.plan_form_service import HUMAN_INPUT_RE
 
     return unwritten_count(text) + len(_DANGLING_HUMAN_RE.findall(HUMAN_INPUT_RE.sub(" ", text)))
+
+
+def _page_unwritten(text: str, cells: str, outside: str | None) -> int:
+    """한 쪽의 미작성 칸 — 표 밖 글 + 칸마다(`unwritten_count` · 칸 안 줄바꿈을 빈칸 없이 이은 글)와 쪽 글 셈 중 큰 쪽(2.11.0 T5b).
+    쪽 글에서는 옆 칸과 섞여 「(담당 (담당」으로 갈린 칸을 놓쳤다(11-14 02위 0 · 칸에는 49). 큰 쪽을 쓰는 까닭 — 표를 덜 잡았거나 칸 안
+    줄바꿈 뒤 한글이 붙은 칸(「확인 필요⏎교육」)에서 지금보다 적게 세지 않게. 표 밖 글이 없는 옛 결과(`outside` None)는 쪽 글만."""
+    page = _pdf_unwritten(text)
+    if outside is None:
+        return page
+    return max(page, _pdf_unwritten(outside) + sum(unwritten_count(cell) for cell in cells.splitlines()))
+
+
+#: 쪽 번호 줄(「- 3 -」 · 「3」 · 「3 / 40」) · 표 제목 줄(앱 꼴 「< 제목 >」 — 꺾쇠 뒤 빈칸 · 「<참고>」처럼 붙여 쓴 글은 아님 · 2.11.0 T5e).
+_PAGE_NO_RE = re.compile(r"^[\s\-–—]*\d{1,3}(?:\s*/\s*\d{1,3})?[\s\-–—]*$")
+_CAPTION_RE = re.compile(r"^\s*[<〈＜]\s")
+
+
+def _orphan_titles(pages: list[str]) -> list[int]:
+    """다음 쪽이 있는 쪽 중 마지막 두 줄(빈 줄 · 쪽 번호 줄 뺌)에 표 제목 줄이 든 쪽(1부터) — 한글이 긴 표 제목 · 칸 이름 줄만 쪽 끝에 남긴 꼴
+    (`plan_hwpx_service._data_table` 의 ponytail 한계 · 11-14 01 · 07 · 08위). 근사 — 두 줄로 갈린 긴 제목 · 꼬리말 글이 찍힌 쪽은 놓친다."""
+    out = []
+    for number, text in enumerate(pages[:-1], start=1):
+        tail = [line for line in text.splitlines() if line.strip() and not _PAGE_NO_RE.match(line)][-2:]
+        if any(_CAPTION_RE.match(line) for line in tail):
+            out.append(number)
+    return out
 
 
 def _find_page(texts: list[str], needle: str, start: int) -> int | None:
@@ -1750,6 +2015,11 @@ def eval_pages(view: dict[str, Any], pages: list[str]) -> tuple[list[dict[str, s
         return [], []
     texts = [_compact(text) for text in pages]
     lines = [[_compact(line) for line in text.splitlines()] for text in pages]
+    # 목차 쪽(첫 두 줄 — 빈 줄 뺌 — 이 「목차」 · 「< 목 차 >」 · 「차례」)은 조견표 머리 · 목차 머리 찾기에서 뺀다 — 쪽 번호 없는 목차(앱 제출용 목차 ·
+    # 2.11.0 D2)는 머리 줄이 본문과 같아 조견표 행이 모두 목차 쪽으로 대어졌다(11-14 완성본 01 · 03 · 04 · 07 · 08위). 적은 쪽 대조는 원래 쪽 글을 읽는다.
+    toc = {i for i, page in enumerate(lines) if any(line.strip("<>〈〉＜＞") in _TOC_TITLES for line in [x for x in page if x][:2])}
+    texts = ["" if i in toc else text for i, text in enumerate(texts)]
+    lines = [[] if i in toc else page for i, page in enumerate(lines)]
     start = _find_page(texts, _compact(bid.EVAL_TITLE), 0) or 0
     found: dict[str, int] = {}
     guessed: set[str] = set()  # 소항목 머리를 못 찾아 대항목 쪽으로 둔 번호 — 적은 쪽과 견주지 않는다(T8 검토)
@@ -1813,10 +2083,13 @@ def _notice_keys(url: str) -> tuple[str, ...]:
     return tuple(query.get(key, [""])[0] for key in ("bidPbancNo", "bidPbancOrd"))
 
 
-def pdf_findings(pdf: dict[str, Any], view: dict[str, Any], *, identity: list[tuple[str, str]] | None) -> list[dict[str, Any]]:
-    """`read_pdf` 결과 → 검사 줄(심각도 순) — 쪽수(원문 상한) · A4(가로는 원문이 가로일 때만) · 미작성(`unwritten_count` 한 규칙) ·
-    평가본 공고면 식별 낱말(본문 + 문서 정보 · 원본 · 사본을 함께 내는 공고는 중요까지) · 표지 나라장터 링크(공고번호 · 차수) · 예산 배분안 산수
-    (`plan_validation.budget_breaks` — 표 제목 줄 ~ 합계 줄) · 조견표 목차의 실제 쪽(`eval_pages`). 글을 못 읽으면 「검사 못 함」 한 줄 + 쪽수 · 크기만."""
+def pdf_findings(pdf: dict[str, Any], view: dict[str, Any], *, identity: list[tuple[str, str]] | None,
+                 expected_blanks: int | None = None) -> list[dict[str, Any]]:
+    """`read_pdf` 결과 → 검사 줄(심각도 순) — 쪽수(원문 상한) · A4(가로는 원문이 가로일 때만) · 미작성(`unwritten_count` 한 규칙 · 표 칸 단위
+    `_page_unwritten`) · 그 수가 앱 초안 빈칸(`expected_blanks`)보다 적음(참고) · 평가본 공고면 식별 낱말(본문 + 문서 정보 · 원본 · 사본을 함께
+    내는 공고는 중요까지) · 표지 나라장터 링크(공고번호 · 차수) · 예산 배분안 산수(`plan_validation.budget_breaks` — 표 제목 줄 ~ 합계 줄) ·
+    조견표 목차의 실제 쪽(`eval_pages`) · 글자 겹침(`overlaps`) · 쪽 끝에 남은 표 제목(`_orphan_titles`). 글을 못 읽으면 「검사 못 함」 한 줄 +
+    쪽수 · 크기만. 새 칸(cells · outside · overlaps)이 없는 옛 결과는 그 검사를 지금처럼 건너뛴다."""
     fmt = view.get("format") or {}
     pages = list(pdf.get("pages") or [])
     found: list[dict[str, Any]] = []
@@ -1839,15 +2112,22 @@ def pdf_findings(pdf: dict[str, Any], view: dict[str, Any], *, identity: list[tu
                               f"{_pages_text(odd)} — {width:.0f} × {height:.0f}pt(A4 = 595 × 842pt)", count=len(odd), location=f"PDF {odd[0]}쪽"))
     if not pdf.get("ok"):
         return _sorted(found)
-    blanks = [(n, count) for n, text in enumerate(pages, start=1) if (count := _pdf_unwritten(text))]
+    cells = [*(pdf.get("cells") or []), *[""] * len(pages)]
+    outside = list(pdf.get("outside") or [])  # 비면(옛 결과 · 시험 가짜) 쪽 글만 센다
+    blanks = [(n, count) for n, text in enumerate(pages, start=1)
+              if (count := _page_unwritten(text, cells[n - 1], outside[n - 1] if n <= len(outside) else None))]
+    written = sum(c for _n, c in blanks)
     if blanks:
         found.append(_finding("PDF_UNWRITTEN", "BLOCKER", "PDF 에 미작성 칸 「(담당자 입력)」 등이 남음",
-                              f"{_pages_text([n for n, _count in blanks])} — 제출 전에 채우거나 지우세요", count=sum(c for _n, c in blanks),
+                              f"{_pages_text([n for n, _count in blanks])} — 제출 전에 채우거나 지우세요", count=written,
                               location=f"PDF {blanks[0][0]}쪽"))
+    # 앞쪽만 읽었으면 당연히 적다 — 견주지 않는다(2.11.0 T5c · 채운 칸과 못 읽은 칸을 앱이 가르지 못해 참고만)
+    if expected_blanks and not pdf.get("partial") and written < expected_blanks:
+        found.append(_finding("PDF_BLANKS_FEWER", "INFO", "PDF 에서 읽은 미작성 칸이 앱 초안보다 적음",
+                              f"앱 초안 {expected_blanks}칸 · PDF {written}칸 — 그사이 채운 칸이 {expected_blanks - written}개보다 적다면 "
+                              "PDF 에서 못 읽은 칸이 있습니다(같은 초안으로 만든 PDF 일 때만 견줄 수 있음)", count=expected_blanks - written))
     if fmt.get("blind") and identity:
-        cells = list(pdf.get("cells") or [])
-        pairs = [*((f"{n}쪽", f"{text}\n{cells[n - 1] if n - 1 < len(cells) else ''}") for n, text in enumerate(pages, start=1)),
-                 ("문서 정보", str(pdf.get("info") or ""))]
+        pairs = [*((f"{n}쪽", f"{text}\n{cells[n - 1]}") for n, text in enumerate(pages, start=1)), ("문서 정보", str(pdf.get("info") or ""))]
         for finding in identity_findings(pairs, identity):
             if not fmt.get("blind_only"):  # 회사명 포함본도 내는 공고 — 올린 파일이 그 판일 수 있다
                 finding = {**finding, "severity": "MAJOR", "title": f"평가본 파일이면 — {finding['title']}"}
@@ -1872,9 +2152,17 @@ def pdf_findings(pdf: dict[str, Any], view: dict[str, Any], *, identity: list[tu
                 found.append(_finding("BUDGET_MATH", "MAJOR", "예산 배분안 산수가 맞지 않음(PDF)", " · ".join(breaks[:3]) + (" 외" if len(breaks) > 3 else ""),
                                       count=len(breaks), location=f"PDF {lines[budget[0]][0]}쪽 · 표 「{bid.BUDGET_TABLE['title']}」"))
     found += eval_pages(view, pages)[1]
+    if overlapped := [(n, k) for n, k in enumerate(pdf.get("overlaps") or [], start=1) if k]:
+        found.append(_finding("PDF_OVERLAP", "MAJOR", "글자가 겹친 쪽이 있음",
+                              f"{_pages_text([n for n, _k in overlapped])} — 겹친 낱말 {sum(k for _n, k in overlapped)}쌍 · "
+                              "쪽 끝 긴 표 뒤 글이 앞 쪽으로 흘러 겹친 꼴일 수 있습니다", count=len(overlapped), location=f"PDF {overlapped[0][0]}쪽"))
+    if orphans := _orphan_titles(pages):
+        found.append(_finding("PDF_TABLE_ORPHAN", "MINOR", "쪽 끝에 표 제목 · 칸 이름 줄만 남음(근사)",
+                              f"{_pages_text(orphans)} — 표 내용은 다음 쪽부터", count=len(orphans), location=f"PDF {orphans[0]}쪽"))
     if pages:  # 표 잘림 · 칸 넘침은 글로 알 수 없다(submit5 — 사람이 쪽 그림으로)
         found.append(_finding("PDF_TABLE_LOOK", "INFO", "표 잘림 · 칸 넘침은 앱이 보지 못함 — 쪽 그림으로 확인",
-                              "PDF 화면에서 표가 쪽 끝에서 잘리거나 칸 글이 넘치거나 겹친 곳이 없는지 담당자가 직접 봅니다"))
+                              "PDF 화면에서 표가 쪽 끝에서 잘리거나 칸 글이 넘친 곳이 없는지 담당자가 직접 봅니다"
+                              "(글자 겹침 · 쪽 끝에 남은 표 제목은 앱이 근사로 봅니다)"))
     return _sorted(found)
 
 
@@ -1899,10 +2187,13 @@ def budget_lines(lines: list[str]) -> tuple[int, list[Any]] | None:
 def check_pdf(payload: bytes, view: dict[str, Any], *, identity: list[tuple[str, str]] | None, draft_hash: str) -> dict[str, Any]:
     """한글에서 저장한 PDF 검사(`POST …/plan-draft/check-pdf`) — 상태(검사 못 함 · 고칠 곳 있음(차단 · 중요) · 통과) · 쪽수 · 검사 줄.
     올린 파일 이름 · 식별 낱말 값은 싣지 않는다(D7). 품질 게이트 판정 · 승인과 따로다(D10)."""
-    limit = (view.get("format") or {}).get("page_limit")
+    fmt = view.get("format") or {}
+    limit = fmt.get("page_limit")
     # 원문 상한을 넘는지는 전체 쪽수로 아니, 글은 상한 + 5쪽(작으면 PDF_READ_PAGES)까지만 읽는다
     read = read_pdf(payload, max_pages=min(PDF_READ_PAGES, int(limit) + 5) if limit else PDF_READ_PAGES)
-    findings = pdf_findings(read, view, identity=identity)
+    # 앱 초안 빈칸(`submit_variant` 판) — 평가본 · 회사명 판을 함께 받는 공고는 어느 판을 올렸는지 몰라 견주지 않는다(2.11.0 T5c)
+    expected = None if fmt.get("blind") and not fmt.get("blind_only") else (view.get("quality") or {}).get("submit_blanks")
+    findings = pdf_findings(read, view, identity=identity, expected_blanks=expected)
     state = "unreadable" if not read["ok"] else "issues" if any(f["severity"] in ("BLOCKER", "MAJOR") for f in findings) else "ok"
     return {"at": datetime.now(timezone.utc).isoformat(), "draft_hash": draft_hash, "state": state, "state_label": PDF_STATES[state],
             "pages": read.get("total") or len(read["pages"]) or None, "page_limit": limit,
@@ -1960,7 +2251,9 @@ def quality_workbook(view: dict[str, Any]) -> bytes:
         kit._append(papers, [row.get("no"), row.get("name"), row.get("file"), row.get("need"), row.get("valid"), due, qualify])
     for note in found.get("notes") or []:
         kit._append(papers, ["※", "제출 방법", "", note.get("text"), "", due, qualify])
-    if not found.get("rows") and not found.get("notes"):
+    if bid.papers_unread(view):
+        kit._append(papers, ["", bid.PAPERS_UNREAD_NOTE])  # 새 초안인데 0건(2.11.0 T6b)
+    elif not found.get("rows") and not found.get("notes"):
         kit._append(papers, ["", "공고문 제출서류를 읽지 못했습니다 — 초안을 다시 쓰면 입찰공고문에서 읽습니다(옛 초안 · 입찰공고문을 받지 못한 공고)"])
     for sheet in book.worksheets:
         kit._autosize(sheet)

@@ -11,6 +11,7 @@ import { describe, it } from "node:test";
 
 import { ApiError, type BidFormatRules } from "../src/lib/api.ts";
 import {
+  BEFORE_RULE_NOTE,
   OLD_DRAFT_NOTE,
   OUTLINE_SESSION,
   WITH_NAME_LABEL,
@@ -117,6 +118,33 @@ describe("평가표 · 형식 규정", () => {
     assert.equal(formatLines({ ...NO_RULES, blind: true, blind_note: "  " }).length, 2);
   });
 
+  it("(2.11.0 T3 · T4 · T3b) 원본 · 사본 표시 · 목차 쪽은 앱이 · 원문 표지 서식은 직접 맞춘다", () => {
+    const toc = { line: "◦ 표지, 목차를 포함하여 작성", document: "제안요청서.hwp", page: 9 };
+    const cover = { line: "□ 서식 2. 제안서 표지 (본교양식 준수)", document: "제안요청서.hwp", page: 25 };
+    const lines = formatLines({ ...NO_RULES, blind: true, original_copy: true, toc_required: toc, cover_form: cover });
+    assert.deepEqual(
+      lines.map((line) => [line.manual, line.text.split(" — ")[0]]),
+      [
+        [false, "평가본에는 회사명 · 대표자를 넣지 않습니다"],
+        [true, "평가본에 영문 회사 이름 · 로고 · 인증 이름 속 회사 표기가 남지 않았는지 직접 확인하세요"],
+        [false, "표지에 원본 · 사본을 적습니다"],
+        [false, "원문이 목차를 요구합니다"],
+        [true, "원문이 제안서 표지 서식을 정했습니다(「□ 서식 2. 제안서 표지 (본교양식 준수)」 · 제안요청서 25쪽)"],
+      ],
+    );
+    // 내려받는 파일은 저장 초안 형식 — 2.11.0 전에 쓴 초안(원본 · 사본 칸 없음)이면 두 「앱이 넣는다」 줄에 그 말을 붙인다
+    const fresh = { ...NO_RULES, original_copy: true, toc_required: toc };
+    const notes = (saved?: Partial<typeof fresh> | null) => formatLines(fresh, saved).map((line) => line.text.endsWith(BEFORE_RULE_NOTE));
+    assert.deepEqual(notes({ page_limit: 20, blind: true }), [true, true]); // 옛 초안
+    assert.deepEqual(notes({ page_limit: 20, blind: true, original_copy: false }), [false, false]); // 2.11.0 뒤 초안
+    assert.deepEqual(notes(undefined), [false, false]); // 초안 없음
+    assert.deepEqual(notes(null), [false, false]);
+    // 옛 초안(칸 없음) · 빈 값은 줄을 만들지 않는다
+    assert.deepEqual(formatLines({ ...NO_RULES, original_copy: false, toc_required: null, cover_form: null }), []);
+    assert.deepEqual(formatLines({ ...NO_RULES, cover_form: { line: "  ", document: null, page: null } }), []);
+    assert.equal(formatLines({ ...NO_RULES, cover_form: { ...cover, document: null } })[0].text.includes("쪽)"), false);
+  });
+
   it("평가본 단추는 원문이 회사명 표기를 막을 때만", () => {
     assert.deepEqual(downloadVariants(null), ["submit", "review"]);
     assert.deepEqual(downloadVariants({ ...NO_RULES, blind: true }), ["submit", "review", "blind"]);
@@ -181,6 +209,9 @@ describe("화면 연결", () => {
     assert.match(page, /variants=\{downloadVariants\(doc\.format\)\}/);
     assert.match(page, /blindOnly=\{isBlindOnly\(doc\.format\)\}/);
     assert.match(page, /NO_FORMAT_RULES/);
+    // 형식 줄은 저장 초안 형식도 받는다(2.11.0 전 초안이면 「다시 쓰면 들어갑니다」)
+    assert.match(page, /<BidOutlinePanel noticeId=\{noticeId\} ctx=\{ctx\} saved=\{doc\?\.format\} \/>/);
+    assert.match(page, /formatLines\(preview\.format, saved\)/);
   });
 
   it("내려받기 부품이 평가본 이름을 안다", () => {

@@ -24,6 +24,7 @@ from app.main import app
 from app.schemas.organization import AnalysisContext, OrganizationCreateRequest
 from app.services import (
     bid_proposal_service as bid,
+    bid_quality_gate,
     llm_client,
     organization_service,
     plan_export_service,
@@ -429,6 +430,36 @@ def test_조달청_표준_공고서_번호_없는_머리와_글머리_서류_목
     # 머리 괄호 · 꺾쇠 안 안내의 「는」은 문장 판정에서 뺀다(1811356)
     aside = "라. 제출 서류 <제출서류는 공고문 순서로 정리해주시기 바랍니다>\n- 사업제안서 7부\n- 제안서 제출 공문서 1부"
     assert [i["text"] for i in bid.submission_papers([_notice_doc(aside)])[0]["items"]] == ["사업제안서 7부", "제안서 제출 공문서 1부"]
+
+
+def test_파일명_지정_제출_머리와_각_1부_서류_이름() -> None:
+    """2.11.0 T6b · T6a — 조달청 협상 공고서 「6-4. 기술제안서는 다음과 같이 파일명을 지정하여 제출」 아래 ① 목록(1822113) ·
+    「각 1부」 · 「각각 1통」의 「각」은 서류 이름이 아니다(띄어 쓴 것만 — 「보안각서」는 그대로)."""
+    std = ("6-3. 접수방법 : 온라인 제출\n6-4. 기술제안서는 다음과 같이 파일명을 지정하여 제출하시기 바랍니다.\n"
+           "① 정성제안서 1식(증빙서류 포함)\n② 제안요약서 1식\n6-5. 제안서 제출방법 : 온라인")
+    found = bid.submission_papers([_notice_doc(std)])
+    assert len(found) == 1 and found[0]["head"].startswith("6-4.")
+    assert [i["no"] for i in found[0]["items"]] == ["①", "②"]
+    assert [r["name"] for r in bid.paper_rows(found, [], deadline=None, today="2026-11-16")[0]] == ["정성제안서", "제안요약서"]
+    assert bid.submission_papers([_notice_doc(std.replace("다음과", "아래와"))])[0]["head"].startswith("6-4.")
+    # 다른 꼴 — 번호 「n-n.」이 아니거나 「파일명을 지정」이 없으면 머리가 아니다
+    assert bid.submission_papers([_notice_doc("가. 입찰서는 다음과 같이 제출\n① 가격입찰서")]) == []
+    assert bid.submission_papers([_notice_doc("6-4. 기술제안서는 다음과 같이 제출하시기 바랍니다.\n① 정성제안서 1식")]) == []
+    papers = [{"document": "공고문", "page": 1, "notes": [], "items": [
+        {"no": "④", "text": "기타문서 각 1부", "subs": []}, {"no": "⑤", "text": "보안각서 1부", "subs": []},
+        {"no": "⑥", "text": "국세 및 지방세 완납증명서 각각 1통", "subs": []}, {"no": "⑦", "text": "인감증명서 및 사용인감계 각1부", "subs": []}]}]
+    rows = bid.paper_rows(papers, [], deadline=None, today="2026-11-16")[0]
+    assert [r["name"] for r in rows] == ["기타문서", "보안각서", "국세 및 지방세 완납증명서", "인감증명서 및 사용인감계"]
+    # 「…증명서 각」 꼬리가 떨어져 이제 유효기간 짝을 찾는다(회사 자료에 없으면 「없음 — 유효기간 확인」)
+    assert rows[2]["valid"] == f"{bid.CREDENTIALS_PATH}에 없음 — 유효기간 확인" and rows[0]["valid"] == ""
+    assert bid.paper_for("기타문서", papers) == "제출 서류 ④ 기타문서"
+    assert bid.paper_for("국세 지방세 완납증명서", papers) == "제출 서류 ⑥ 국세 및 지방세 완납증명서"
+    # 「서약서」가 든 묶음은 「각」이 떨어져 확인서로 끝나도 회사가 서명하는 서식 — 유효기간 말 없음(단독 확인서는 그대로)
+    pledge = [{"document": "공고문", "page": 1, "notes": [], "items": [
+        {"no": "⑧", "text": "입찰업체 서약서 및 공동책임 확인서 각 1부", "subs": []}, {"no": "⑨", "text": "공동책임 확인서 1부", "subs": []}]}]
+    signed, alone = bid.paper_rows(pledge, [], deadline=None, today="2026-11-16")[0]
+    assert signed["name"] == "입찰업체 서약서 및 공동책임 확인서" and signed["valid"] == ""
+    assert alone["valid"] == f"{bid.CREDENTIALS_PATH}에 없음 — 유효기간 확인"
 
 
 def test_제출서류_목록은_번호가_되돌아가거나_끝_줄이면_끝나고_자격_절_제목은_머리가_아니다() -> None:
@@ -1139,6 +1170,89 @@ def test_HWPX_긴_표는_제목을_표_첫_행으로_두고_머리와_함께_되
     assert re.search(r'<hp:tbl [^>]*rowCnt="9"', long) and '<hp:pos treatAsChar="0"' in long
     # 제목 없는 긴 표는 머리 한 줄 그대로
     assert re.search(r'<hp:tbl [^>]*rowCnt="9"', untitled) and re.findall(r'<hp:tc name="" header="(\d)"', untitled)[:3] == ["1", "1", "0"]
+
+
+def test_HWPX_떠_있는_긴_표_뒤에만_빈_문단() -> None:
+    """2.11.0 T1 — 쪽 끝에 걸린 떠 있는 긴 표(본문 7행 이상 · 칸 9행 이상)가 다음 쪽으로 밀리며 뒤 글 · 표와 겹치거나 순서가 바뀌었다
+    (11-14 완성본 한글 2024 실측). 긴 표 뒤에만 빈 문단 하나 — 작은 표(글자처럼 취급) 뒤는 그대로."""
+    def table(n: int) -> tuple:
+        return ("table", {"title": f"표 {n}", "columns": ["구분", "내용"], "rows": [[f"행{i}", "값"] for i in range(n)]})
+
+    def para(text: str) -> tuple:
+        return ("para", [(text, None, None)], 0)
+
+    P, C = plan_hwpx_service.P, plan_hwpx_service.C
+    blank = (f'<hp:p id="0" paraPrIDRef="{P["left"]}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+             f'<hp:run charPrIDRef="{C["body"]}"/></hp:p>')
+    long_fields = [("field", f"칸{i}", "값", "") for i in range(18)]  # 두 칸씩 한 줄 → 9행(8행 넘음 · 떠 있는 표)
+    section = plan_hwpx_service.section_xml([table(6), para("가운데 글"), table(7), para("뒤 글"), *long_fields, para("끝 글")],
+                                            review=False)
+    ends = [m.end() for m in re.finditer(re.escape("</hp:tbl><hp:t/></hp:run></hp:p>"), section)]
+    assert [section.startswith(blank, at) for at in ends] == [False, True, True]  # 작은 표 · 긴 본문 표 · 긴 칸 표
+    assert section.index("<hp:t>뒤 글</hp:t>") > ends[1] + len(blank)  # 뒤 글은 빈 문단 다음
+    # 문서 끝 긴 표 뒤는 빈 문단 없이 끝 — 뒤 글이 없어 겹칠 것이 없고, 쪽 바닥에서 넘어가면 빈 마지막 쪽만 생긴다(A1 검토)
+    for last in ([table(7)], long_fields):
+        tail = plan_hwpx_service.section_xml([para("앞 글"), *last], review=False)
+        assert tail.endswith("</hp:tbl><hp:t/></hp:run></hp:p></hs:sec>") and blank not in tail
+
+
+def test_입찰_제출용_평가본_목차_쪽은_원문_요구나_쪽수_여유가_있을_때만(monkeypatch: pytest.MonkeyPatch) -> None:
+    """2.11.0 D2 — 입찰 제출용 · 평가본은 표지 다음 목차 쪽(검토용 목차와 같은 줄) — 원문이 목차를 요구하거나 쪽수 상한이 없거나 40쪽 이상일 때.
+    상한이 40쪽 미만이고 요구가 없으면 넣지 않는다(빠듯한 쪽수 보호) · 사업계획서 제출용은 그대로(10-13 결정)."""
+    _fake_writer(monkeypatch)
+    draft = bid.generate(source=_source(), company=COMPANY)
+    meta = bid.export_meta(draft, company="시험회사")
+
+    def kinds(fmt: dict[str, Any], variant: str = "submit", **extra: Any) -> list[str]:
+        blocks = plan_export_service.document_blocks({**draft, "format": fmt, **extra}, draft["form"], variant=variant, meta=meta)  # type: ignore[arg-type]
+        return [b[0] for b in blocks[:3]]
+
+    ask = {"line": "◦ 표지, 목차를 포함하여 작성", "document": "제안요청서.hwp", "page": 9}
+    for fmt in ({}, {"page_limit": None}, {"page_limit": 40}, {"page_limit": 60}, {"page_limit": 30, "toc_required": ask}):
+        assert kinds(fmt) == kinds(fmt, "blind") == ["cover", "toc", "h1"], fmt
+    assert kinds({"page_limit": 30}) == kinds({"page_limit": 39}, "blind") == ["cover", "h1", "table"]
+    assert kinds({"page_limit": 30}, "review") == ["cover", "legend", "toc"]  # 검토용은 늘 그대로
+    assert kinds({}, numbered_titles=False)[:2] == ["cover", "h1"]  # 사업계획서 꼴(번호를 앱이 매김) 제출용은 목차 없음
+    # 목차 줄 = 본문 대항목 · 소항목 머리 글(쪽 번호 없음)
+    blocks = plan_export_service.document_blocks({**draft, "format": {}}, draft["form"], variant="submit", meta=meta)
+    toc = blocks[1][1]
+    assert [text for level, text in toc if level == 1] == [b[1] for b in blocks if b[0] == "h1"]
+    assert {text for level, text in toc if level == 2} <= {b[1] for b in blocks if b[0] == "h2"}
+    assert plan_export_service.blank_total({**draft, "format": {}}, draft["form"], meta) == plan_export_service.blank_total(
+        {**draft, "format": {"page_limit": 30}}, draft["form"], meta)  # 목차는 미작성 셈 밖
+    # 세 렌더러 모두 표지 다음 「목차」 — 한글 다시 읽기는 목차 줄을 대항목 겹침으로 세지 않는다
+    view = {**draft, "format": {}}
+    docx = _docx_text(plan_export_service.build_docx(view, draft["form"], title="시험", variant="submit", meta=meta))
+    assert "\n목차\n" in docx and docx.index("\n목차\n") < docx.index(toc[1][1])
+    page = plan_export_service.build_html(view, draft["form"], title="시험", variant="submit", meta=meta)
+    assert '<section class="toc"><p class="toc-title">목차</p>' in page
+    payload = plan_hwpx_service.build_hwpx(view, draft["form"], title="시험", variant="submit", meta=meta)
+    assert "목차" in _hwpx_text(payload)
+    expected = plan_export_service.blank_total(view, draft["form"], meta)
+    check = bid_quality_gate.recheck_hwpx(payload, expected=expected)
+    assert check["match"] is True and check["duplicate_majors"] == []
+
+
+def test_원문이_원본_사본을_나눠_받으면_표지_문서_종류에_원본_사본(monkeypatch: pytest.MonkeyPatch) -> None:
+    """2.11.0 T3 — `format.original_copy` 공고: 제출용(회사명 판) 「제안서(원본)」 · 평가본 「제안서(사본)」 · 검토용은 그대로.
+    평가본만 내는 공고(blind_only) · 칸 없는 옛 초안은 「제안서」."""
+    _fake_writer(monkeypatch)
+    draft = bid.generate(source=_source(), company=COMPANY)
+    meta = bid.export_meta(draft, company="시험회사")
+    split = {"blind": True, "blind_only": False, "original_copy": True}
+
+    def kind(fmt: dict[str, Any], variant: str) -> str:
+        blocks = plan_export_service.document_blocks({**draft, "format": fmt}, draft["form"], variant=variant, meta=meta)  # type: ignore[arg-type]
+        return blocks[0][1]["kind"]
+
+    assert [kind(split, v) for v in ("submit", "blind", "review")] == ["제안서(원본)", "제안서(사본)", "제안서"]
+    assert {kind(fmt, v) for fmt in ({"blind": True, "blind_only": False}, {"blind": True, "blind_only": True}, {})
+            for v in ("submit", "blind")} == {"제안서"}
+    view = {**draft, "format": split}
+    for variant, word in (("submit", "제안서(원본)"), ("blind", "제안서(사본)")):
+        assert word in _hwpx_text(plan_hwpx_service.build_hwpx(view, draft["form"], title="시험", variant=variant, meta=meta))
+        assert word in _docx_text(plan_export_service.build_docx(view, draft["form"], title="시험", variant=variant, meta=meta))
+        assert f'<p class="kind">{word}</p>' in plan_export_service.build_html(view, draft["form"], title="시험", variant=variant, meta=meta)
 
 
 def test_검토용_HWPX_회사자료_표식은_칸의_마지막_조각_뒤에() -> None:

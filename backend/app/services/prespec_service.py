@@ -218,9 +218,15 @@ def main_numbers(item: dict[str, Any]) -> list[str]:
 
 #: 본공고 첨부 뒤에 붙이는 사전규격 규격서 이름 — 늘 같아야 받아 둔 파일(`attachment_service.cache_path`)을 다시 찾는다.
 SPEC_DOC_NAME = "사전규격 규격서 {n}({no})"
+_SPEC_DOC_RE = re.compile(r"사전규격 규격서 \d+\(")
 #: 본공고 → 규격서 연결 기록 — 사전규격 저장본은 30일 뒤 정리되지만 본공고는 그 뒤에도 마감 전일 수 있다(11-03 검토).
 #: 처음 붙일 때 남기고, 저장본에서 빠진 뒤에는 이 기록으로 붙인다.
 SPEC_LINKS_FILE = PRESPEC_CACHE_FILE.parent / "spec_doc_links.json"
+
+
+def is_spec_doc(name: Any) -> bool:
+    """`SPEC_DOC_NAME` 꼴 문서 이름인가(압축 안 문서는 「압축 > 문서」의 앞 이름으로)."""
+    return bool(_SPEC_DOC_RE.match(str(name or "").split(" > ")[0]))
 
 
 def spec_docs_for(item: dict[str, Any] | None) -> list[dict[str, str]]:

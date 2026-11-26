@@ -19,6 +19,7 @@ import logging
 import re
 import threading
 import time
+from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -43,6 +44,9 @@ from app.services.plan_form_service import HUMAN_INPUT, HUMAN_INPUT_RE
 logger = logging.getLogger(__name__)
 FILE_NAME = "bid_plan_draft.json"
 DOC_KIND = "제안서"
+#: 표지 제출일 — 월 · 일은 제출하는 날 한글에서 적는다(빈칸 = 전각 U+3000 두 자 · HTML 이 빈칸을 접지 않게) · 해는 입찰 마감의 해(모르면 내려받은 해) ·
+#: 값이 있는 칸이라 미작성 셈 밖(2.11.0 D1 — 세면 승인 · 「제출용」 이름에 영영 못 간다). 사업계획서 표지는 날짜 그대로.
+SUBMIT_DATE = "{year}년\u3000\u3000월\u3000\u3000일"
 TIME_LIMIT_SECONDS = plan_draft_service.TIME_LIMIT_SECONDS
 MIN_CALL_SECONDS = plan_draft_service.MIN_CALL_SECONDS
 #: 대항목을 한꺼번에 쓴다 — 보통 5~8개라 차례로는 시간 상한에 못 든다. ponytail: 구독 한도에 걸리면 4로 줄인다.
@@ -1444,17 +1448,63 @@ _SPLIT_VOLUME_RE = re.compile(r"각각|분리|별도")
 
 #: 원문이 유사 경험 · 실적 기재를 막는 줄(「… 유사경험은 제안서상 제외하여 작성」 · 2.9.0).
 _NO_SIMILAR_RE = re.compile(r"유사\s*(?:경험|실적|경력)[^.\n]{0,40}?(?:제외하여\s*작성|기재\s*(?:하지|불가|금지)|작성\s*(?:하지|불가))")
+#: 원본 · 사본 표시(2.11.0 T3) — 평가본 규정의 원본 · 사본 구분 줄(제출 수량 줄 · 규정 줄 ±2 · 문서 끝까지) 하나에 두 말이 다 있을 때만 표지에 단다
+#: (부수만 있는 근사 「제안서 10부(업체명 미기재)」로는 달지 않는다).
+_ORIGINAL_WORD_RE = re.compile(r"원본|정본")
+_COPY_WORD_RE = re.compile(r"사본|부본")
+#: 원문이 목차(차례) 쪽을 요구 · 전제하는 줄(2.11.0 T4) — 「표지, 목차를 포함하여」 · 「표지와 목차를 제외한 각 면」 · 「표지·간지·목차」 ·
+#: 「(목차/색인 등 작성)」 · 「목차를 작성」. 「제안서 목차 및 작성 방법」 · 「목차 순서에 따라」 · 「목차(순서)를 준수」는 제시 목차대로 쓰라는 말이다.
+_TOC_ASK_RE = re.compile(r"(?:표지|간지)\s*(?:[,·ㆍ와과및]\s*|\s)(?:간지\s*[,·ㆍ]?\s*)?목\s*차|목\s*차\s*[/·]\s*색인"
+                         r"|목\s*차\s*(?:를|을)\s*(?:포함|첨부|삽입|작성)")
+#: 원문이 정한 제안서 표지 서식(2.11.0 T3b · 받아 둔 원문 490건 실측 18줄) — 「[서식 2] 제안서 표지 양식」 · 「□ 서식 2. 제안서 표지 (본교양식 준수)」 ·
+#: 「[서식 제19호] - 사업내용제안서 표지」 · 「용역제안서(표지)-(서식 5호)」 · 「[표지양식 – 서식 1]」 · 「표지 : <서식 제19호>에 따라 작성」 ·
+#: 「별지서식 내 ‘정량적 평가제안서’ 표지사용」 · 「제안서 표지 및 구성은 별지의 제안서 서식과 …」. 「(표지 및 목차 미포함) (별지 2호 서식)」 ·
+#: 「[입찰참가신청서표지]」 · 「표지, 목차를 포함하여 … 관련 서식을 사용」은 아니다.
+_COVER_FORM_RE = re.compile(r"(?:제안서|평가서)\s*[(（\[]?\s*표지[^\n]{0,15}?(?:양식|서식)"
+                            r"|(?:서식|양식)[^\n]{0,15}?(?:제안서|평가서)\s*[(（]?\s*표지"
+                            r"|표지\s*(?:양식|서식)|표지\s*[:：]\s*[<〈\[(]?\s*(?:별지\s*)?(?:서식|양식)"
+                            r"|(?:서식|양식)[^\n]{0,20}?표지\s*(?:를\s*)?사용")
+#: 「표지」 낱말 없이 표지 꼴만 있는 서식(1822113 「[별지 서식 7호]」 / 「정성제안서」 / 사업명 / 「제        안        서」 / 날짜 / 「대   표   자(인)」 ·
+#: 1822864 「【서식 제1호】」 / 「제   안   서」 / 용역명 / 「제안자명 : (인)」) — 띄어 쓴 「제 안 서」만 있는 줄 위 몇 줄 안에 서식 머리가 있고
+#: 아래 몇 줄 안에 날인 「(인)」이 있으면 표지 서식으로 본다(근사 · 받아 둔 원문 484건 실측 2건 · 「가 격 제 안 서」 · 날인 없는 서식은 아니다).
+_FORM_HEAD_RE = re.compile(r"^[\[<〈【(（]\s*(?:별지|서식|양식)[^\]>〉】)）]{0,15}?\d[^\]>〉】)）]{0,8}[\]>〉】)）]")
+_SPACED_TITLE_RE = re.compile(r"^제\s+안\s+서$")
+_SEAL_RE = re.compile(r"[(（]\s*인\s*[)）]")
+_FORM_SPAN = 6
+
+
+def _cover_shape(lines: list[str], index: int) -> str | None:
+    """이 줄이 표지 낱말 없는 표지 서식의 띄어 쓴 「제 안 서」 제목이면 「서식 머리 … 제 안 서」, 아니면 None(가장 가까운 서식 머리만 본다 —
+    서식 목록 「【서식9호】 … 【서식13호】」가 바로 위에 있어도 머리는 하나)."""
+    if not _SPACED_TITLE_RE.match(lines[index]) or not any(_SEAL_RE.search(line) for line in lines[index + 1:index + 1 + _FORM_SPAN]):
+        return None
+    head = next((line for line in reversed(lines[max(0, index - _FORM_SPAN):index]) if _FORM_HEAD_RE.match(line)), None)
+    return f"{head} … {lines[index]}" if head else None
+
+
+def _spot(line: str, doc: dict[str, Any], page: Any) -> dict[str, Any]:
+    """형식 규정 한 줄의 자리 — {line(앞 120자), document, page}(no_similar · toc_required · cover_form)."""
+    return {"line": re.sub(r"\s+", " ", line).strip()[:_NOTE_CHARS], "document": doc.get("name"), "page": page}
 
 
 def read_format(docs: list[dict[str, Any]]) -> dict[str, Any]:
     """원문의 제안서 형식 규정 → {page_limit, page_note, blind, blind_note, blind_only, landscape, ppt, two_volume, volumes, notes, where}.
     쪽수 상한은 가장 큰 값(이력서 상한보다 본문이 크다 · 요약본 · 발표 자료 상한은 빼고) · 발표 자료의 PPT 는 제안서 형식이 아니다.
-    blind_only — 평가본 규정 줄 어디에도 원본 · 사본 구분이 없다(평가본이 곧 제출 파일 · 2.10.0 D8 · 옛 초안에는 칸이 없다)."""
+    blind_only — 평가본 규정 줄 어디에도 원본 · 사본 구분이 없다(평가본이 곧 제출 파일 · 2.10.0 D8 · 옛 초안에는 칸이 없다).
+    2.11.0(옛 초안에는 칸이 없다): original_copy — 구분 줄(창) 하나에 원본(정본)과 사본(부본)이 둘 다(표지 「제안서(원본)」 · 「제안서(사본)」) ·
+    toc_required — 목차 쪽 요구 줄 · cover_form — 원문이 정한 제안서 표지 서식 줄({line, document, page} | None)."""
     out: dict[str, Any] = {"page_limit": None, "page_note": None, "blind": False, "blind_note": None, "blind_only": False, "landscape": False,
-                           "ppt": False, "two_volume": False, "volumes": [], "notes": [], "where": None, "no_similar": None}
+                           "ppt": False, "two_volume": False, "volumes": [], "notes": [], "where": None, "no_similar": None,
+                           "original_copy": False, "toc_required": None, "cover_form": None}
     volumes: list[set[str]] = [set(), set()]
     one_volume = False
     blind_split = False
+    # 구분 줄 · 규정 창 어디든 원본(정본)과 사본(부본)이 함께 있었다 — original_copy. 첫 구분 줄만 보면
+    # 「제안서 11부(원본 1부, 평가본 10부)」 뒤의 「표지에는 원본과 사본을 명시」를 놓친다(1829687 · 1822113 · 2.11.0 A2 검토).
+    copy_pair = False
+
+    def pair(text: str) -> bool:
+        return bool(_ORIGINAL_WORD_RE.search(text) and _COPY_WORD_RE.search(text))
 
     def note(line: str) -> None:
         text = re.sub(r"\s+", " ", line).strip()[:_NOTE_CHARS]
@@ -1480,12 +1530,20 @@ def read_format(docs: list[dict[str, Any]]) -> dict[str, Any]:
                     out["where"] = {"document": doc.get("name"), "page": pages[index]}
             if not out["no_similar"] and _NO_SIMILAR_RE.search(line):
                 # 「가명정보 교육 운영 유사경험은 제안서상 제외하여 작성」(11-11 3위 원문 14쪽) — 회사 실적 문장이 있으면 게이트가 알린다
-                out["no_similar"] = {"line": re.sub(r"\s+", " ", line).strip()[:_NOTE_CHARS], "document": doc.get("name"), "page": pages[index]}
-            if not blind_split and _BLIND_COPIES_RE.search(line) and _COPIES_N_RE.search(line):
+                out["no_similar"] = _spot(line, doc, pages[index])
+            if not out["toc_required"] and _TOC_ASK_RE.search(line):
+                out["toc_required"] = _spot(line, doc, pages[index])  # 제출용 · 평가본에 목차 쪽(2.11.0 D2)
+            if not out["cover_form"] and (form := line if _COVER_FORM_RE.search(line) else _cover_shape(lines, index)):
+                out["cover_form"] = _spot(form, doc, pages[index])  # 앱 표지는 앱 꼴 — 검토 목록 · /plan 이 사람에게 알린다(2.11.0 T3b)
+            if _BLIND_COPIES_RE.search(line) and _COPIES_N_RE.search(line):
                 blind_split = True  # 제출 수량 줄의 원본 · 사본 구분(규정 줄과 떨어져 있어도 · T6 검토)
-            if (not out["blind"] or not blind_split) and (rule := _blind_at(lines, index)):
+                copy_pair = copy_pair or pair(line)
+            if not (out["blind"] and copy_pair) and (rule := _blind_at(lines, index)):
                 # 규정 줄마다 원본 · 사본 구분을 본다(그 줄 · 바로 위 두 줄 · 이어 본 다음 줄 — D8) · 메모는 첫 규정만
-                blind_split = blind_split or bool(_BLIND_SPLIT_RE.search(" ".join(lines[max(0, index - 2):index + 2])))
+                window = " ".join(lines[max(0, index - 2):index + 2])
+                if _BLIND_SPLIT_RE.search(window):
+                    blind_split = True
+                    copy_pair = copy_pair or pair(window)
                 if not out["blind"]:
                     # 메모는 걸린 문장(표가 이어 붙은 긴 줄의 앞머리가 아니라)
                     out["blind"], out["blind_note"] = True, re.sub(r"\s+", " ", rule).strip()[:_NOTE_CHARS]
@@ -1506,6 +1564,7 @@ def read_format(docs: list[dict[str, Any]]) -> dict[str, Any]:
     if out["page_note"]:
         note(out["page_note"])
     out["blind_only"] = out["blind"] and not blind_split
+    out["original_copy"] = out["blind"] and copy_pair
     if volumes[0] and volumes[1] and not one_volume:
         out["two_volume"] = True
         out["volumes"] = [sorted(volumes[0])[0], sorted(volumes[1])[0]]
@@ -1705,7 +1764,9 @@ def contract_span(terms: dict[str, Any], docs: list[dict[str, Any]]) -> dict[str
 _PAPERS_HEAD_RE = re.compile(r"^(?![^\n]*현장\s*설명)\s*(?:\d{1,2}\s*[.)]|[가나다라마바사아자차카타파하]\s*[.)]|\(\d{1,2}\)|[□■○])\s*[^\n]{0,15}?"
                              r"(?:제출|구비|신청|등록|준비|지참)\s*서류(?!\s*(?:등)?\s*\)?\s*(?:에|은|는|을|를|의|와|및))"
                              # 번호 없이 쌍점으로 끝나는 머리 — 조달청 표준 공고서 「제안서 관련 제출서류:」 아래 ① 목록(1805118 · 1786460)
-                             r"|^\s*[^\n※:]{0,15}?(?:제출|구비|신청)\s*서류\s*[:：]\s*$")
+                             r"|^\s*[^\n※:]{0,15}?(?:제출|구비|신청)\s*서류\s*[:：]\s*$"
+                             # 「6-4. 기술제안서는 다음과 같이 파일명을 지정하여 제출하시기 바랍니다.」 아래 ① 목록(1822113 · 2.11.0 T6b — 받아 둔 공고문 19건이 같은 문장)
+                             r"|^\s*\d{1,2}\s*-\s*\d{1,2}\s*\.\s*[^\n]{0,10}?제안서는\s*(?:다음과|아래와)\s*같이\s*파일\s*명을\s*지정하여\s*제출")
 #: 「-」 글머리 서류 목록(「8. 입찰참가 신청서류」 아래 「- 입찰참가신청서(당 원 양식)」 · 1822864) — 머리 바로 아래 첫 줄이 짧은 이름일 때만
 #: 항목으로 받는다. 문장(「…함 · 바람 · 다」로 끝남)이나 긴 줄은 머리 아래 설명이다.
 _PAPER_DASH_ITEM_RE = re.compile(r"^\s*[-·ㆍ]\s*(?P<text>[^\n]{1,40}?)\s*$")
@@ -2439,6 +2500,13 @@ def agency_names(agency: Any) -> list[str]:
 _CERT_STRIP_RE = re.compile(rf"\s*\(\s*{plan_export_service.CERT_NO_RE.pattern}\s*\)|\s*{plan_export_service.CERT_NO_RE.pattern}")
 
 
+def blind_text(text: str, names: Iterable[str]) -> str:
+    """평가본 공고의 실적 글 가리기 — 기관 이름 → 유형(긴 이름 먼저) · 인증 번호 지움. AI 입력과 식별 낱말 검사(`identity_words`)가 함께 쓴다."""
+    for name in sorted(set(names), key=len, reverse=True):
+        text = text.replace(name, agency_kind(name))
+    return _CERT_STRIP_RE.sub("", text).strip()
+
+
 def llm_payload(pieces: dict[str, Any], *, blind: bool = False) -> dict[str, Any]:
     """**밖(LLM)으로 보내는 회사 본문은 이 함수 하나로만 만든다** (사업계획서 `llm_payload` 와 같은 허용 목록).
 
@@ -2458,11 +2526,8 @@ def llm_payload(pieces: dict[str, Any], *, blind: bool = False) -> dict[str, Any
     def row(r: dict[str, Any]) -> dict[str, Any]:
         title, summary, agency = safe(r.get("title")), safe(r.get("summary")), safe(r.get("agency"))
         if blind:
-            for name in sorted({*agency_names(r.get("agency")), *every_agency}, key=len, reverse=True):
-                kind = agency_kind(name)
-                title = title.replace(name, kind) if isinstance(title, str) else title
-                summary = summary.replace(name, kind) if isinstance(summary, str) else summary
-            title, summary = (_CERT_STRIP_RE.sub("", v).strip() if isinstance(v, str) else v for v in (title, summary))
+            names = {*agency_names(r.get("agency")), *every_agency}
+            title, summary = (blind_text(v, names) if isinstance(v, str) else v for v in (title, summary))
             agency = agency_kind(r.get("agency"))
         return {"source_id": r["id"], "title": title, "year": r.get("year"), "field": safe(r.get("field")), "agency": agency, "summary": summary}
 
@@ -2504,7 +2569,7 @@ SYSTEM_PROMPT = f"""당신은 공공기관 용역 입찰에 내는 **제안서**
 - 「확인 필요」 · 「확인이 필요합니다」 · 「담당자가 확인」 · 「(담당자 확인)」 · 근거가 없다는 설명 · 작성 사정 · 고치는 사람에게 하는 말
   (「증빙이 확인되면 추가합니다」 · 「확약 뒤 기재합니다」)은 본문에 쓰지 않습니다. 확인할 것은 blanks 에만 씁니다.
 - 숫자(횟수 · 인원 · 기간 · 목표 · 금액 · 날짜)는 제안요청서 발췌와 회사 근거 조각에 있는 것만 씁니다. 제안요청서의 기준 수치는 그대로 지키겠다고 씁니다. 꼭 필요한데 근거가 없는 숫자는 「(담당자 입력)」으로 두고 blanks 에 올립니다.
-- 기대효과 · 성과 지표 · 평가방안의 수치는 공식 요구(제안요청서가 정한 값 · 원문 인용) · 제안 목표(당사 목표 · 근거가 없으면 「(담당자 입력)」) ·
+- 기대효과 · 성과 지표 · 평가방안의 수치는 공식 요구(제안요청서가 정한 값 · 제안요청서 인용) · 제안 목표(당사 목표 · 근거가 없으면 「(담당자 입력)」) ·
   사후 측정(목표 수치 없이 측정 방법 · 시점만)으로 나눠 씁니다. 회사 실적의 과거 수치(만족도 · 수료율 · 인원)를 이 사업 목표로 옮기지 않고,
   측정 전 결과를 이미 얻은 성과처럼 쓰지 않습니다.
 - 회사에 대한 주장(실적 · 인증 · 보유 자격 · 설립 연도 · 사업영역)은 반드시 회사 근거 조각의 source_id 를 답니다(COMPANY_EVIDENCE_GROUNDED). 조각에 없는 실적 · 인력 · 장비 · 협력기관 · 수상은 쓰지 않습니다. 사업영역 · 인증 이름만으로 그 분야를 수행한 경험이 있다고 쓰지 않습니다.
@@ -2518,8 +2583,10 @@ SYSTEM_PROMPT = f"""당신은 공공기관 용역 입찰에 내는 **제안서**
 - 실적의 기관(agency)은 주관 · 발주 · 협력 중 어느 쪽인지 모릅니다 — 「OO이 발주한」으로 단정하지 않고, 「협력」이 든 기관은 발주처로 쓰지 않습니다.
   실적의 수행 역할 · 대상도 그 행 title · summary 낱말로만 씁니다 — 교육을 컨설팅으로, 운영을 설계 · 총괄로, 대상을 다른 집단으로 넓히지 않습니다
   (분야 field 는 분류 이름일 뿐 근거가 아닙니다).
-  사업(JSON)에 blind 가 있으면 원문이 회사 식별 정보를 막는 공고입니다 — 실적 기관은 agency 의 유형(대학 · 지자체 · 공공기관 …)으로만 쓰고
-  기관 이름 · 회사 이름 · 인증 번호를 짓지 않으며, 실적은 수행 역할 · 역량 중심으로 씁니다.
+  실적을 부를 때는 그 행 title 을 줄이거나 바꾸지 않습니다(아래 blind 공고는 예외).
+  사업(JSON)에 blind 가 있으면 제안요청서가 회사 식별 정보를 막는 공고입니다 — 실적 기관은 agency 의 유형(대학 · 지자체 · 공공기관 …)으로만 쓰고
+  기관 이름 · 회사 이름 · 인증 번호를 짓지 않으며, 실적은 수행 역할 · 역량 중심으로 씁니다. blind 면 사업명(title)을 쓰지 않고
+  연도 · 분야 · 대상 · 기관 유형으로 부릅니다.
 - 제안요청서가 요구하지 않은 약속은 쓰지 않습니다: 추가 교육 · 과정의 무상 · 당사 부담 개설, 전원 수료 · 수료율 보장, 사업기간 전체 전담 인력,
   외부 시스템 연동 확약, 수당 · 인건비 지급 · 지원. 확보한 것과 확보할 것을 나눠 쓰고, 제안요청서에 없는 비용 금액은 쓰지 않습니다.
 - 인력 성명 · 경력 연수 · 학력 · 자격증 번호 · 대표자 · 연락처 · 사업자등록번호 · 주소 · 매출 · 직원 수는 본문에 쓰지 않습니다(표와 칸은 따로 채웁니다). 참여인력은 역할(PM · 운영인력 · 컨설턴트 등) · 투입 방식으로 씁니다.
@@ -2527,16 +2594,25 @@ SYSTEM_PROMPT = f"""당신은 공공기관 용역 입찰에 내는 **제안서**
 - 회사 역량(skills)을 쓰는 계획은 그 source_id 를 달고, 제안요청서가 요구하지 않은 도구 · 시스템 · 챗봇 제작을 약속하지 않습니다(「이 역량으로 …를 만들어」 금지).
 - 제안요청서 문장을 그대로 베끼지 않습니다. 요구를 당사의 수행 방법으로 바꿔 쓰되, 사업명 · 과정명 · 프로그램 · 산출물 이름과 과업의 행위 · 대상 ·
   방식 낱말(「컨설팅」 · 「코칭」 · 「실증」 · 「○○ 대상」 · 「대면」)은 제안요청서 그대로 씁니다 — 관점 · 점검 · 정리 · 전달 같은 약한 말로 바꾸거나
-  과업을 「과제로 정리해 전달」로 줄이지 않습니다.
+  과업을 「과제로 정리해 전달」로 줄이지 않습니다. 의무 문구의 주체(누가) · 수단 · 주기(매월 · 분기) · 범위(전 과정 · 전원)를 줄이거나 빼지 않습니다.
 - RFP_GROUNDED 는 제안요청서의 요구 · 기준을 옮겨 말하는 문장에만 쓰고 source 에 인용한 제안요청서 문장을 그대로 둡니다. 당사의 계획 · 방법은 AI_SUGGESTION 입니다.
 - 제안요청서의 요구를 옮길 때도 발주기관 말투(「~해야 합니다」 · 「~하여야 함」)로 쓰지 않고 당사가 지키는 꼴(「당사는 ~하겠습니다」)로 씁니다.
 - 공동수급 · 하도급 여부, 투입 인원 수, 사무실 · 장비 보유처럼 회사가 정할 사항은 정하지 않습니다 — blanks 에 올립니다.
   사업(JSON)에 joint 가 있으면(공동수급 불허) 단독 수행은 공고 조건이라 수행조직 소항목에 한 번 씁니다(하도급은 여전히 회사가 정합니다).
+  작성 방법이 하도급 계획을 요구해 적을 때는 제안요청서의 하도급 조건(발주기관 사전 승인 · 하도급 계획서 제출 · 비율 상한)을 함께
+  「사전 승인을 받은 뒤에만 합니다」 꼴로 씁니다 — 하도급을 쓸지는 정하지 않습니다.
 - blanks 마다 그 값을 채울 때 필요한 자료(증빙 서류 이름 · 회사자료 칸 이름)를 proof 에 한 줄로 씁니다 — 모르면 빈 글로 둡니다.
 - 「보장 · 최고 · 유일 · 100% · 완벽 · 무조건」 같은 표현을 쓰지 않습니다. 회사를 부를 때는 「당사」 하나로 씁니다.
 - 입찰 절차 · 계약 조건(청렴계약 · 보증금 · 하자보수 · 제출 방법 · 공동수급 협정 · 협상)은 제안서 본문 내용이 아닙니다 — 소항목이 요구할 때만 씁니다.
 - 제안서를 어떻게 썼는지 · 무엇을 넣겠다는 문장(「확정형으로 썼습니다」 · 「대조표를 넣겠습니다」 · 「서식을 그대로 작성해 제출하겠습니다」)은 쓰지 않습니다. 사업을 어떻게 수행하는지만 씁니다.
 - 「제안의 특징 및 장점」 · 「추진 전략」 · 「차별성」 소항목은 이 사업에서 당사가 다르게 하는 방법(차별점)을 씁니다. 근거 없는 회사 주장은 여기서도 쓰지 않습니다.
+- 본문 · 표 칸에 「원문」이라는 낱말을 쓰지 않습니다 — 「제안요청서」(또는 「공고」 · 「과업지시서」)로 씁니다(「원문」은 자료 경계 표식이 쓰는 말입니다).
+- 아직 하지 않은 일(서류 발급 · 첨부 · 협약 · 위촉)을 끝낸 일처럼(「받아 첨부했습니다」 · 「위촉했습니다」) 쓰지 않습니다 — 제출 때 붙일 서류는
+  「붙임으로 제출합니다」로 씁니다.
+- 위촉 · 외부 · 확정 전 인력의 경력 · 이력은 단정하지 않고 선정 기준(「…경력을 갖춘 전문가를 위촉 기준으로」)으로 씁니다.
+- 작성 방법이 예시 · (안) · 계획안을 제시하라고 하면 본문에 그 예시 · 안을 직접 쓰고 「(안)」을 붙입니다 — 「협의 후 확정」으로 미루지 않으며,
+  숫자는 근거 있는 것만 씁니다.
+- 소항목 제목이 「A 및 B」 · 「A · B」면 A 와 B 를 각각 다룹니다.
 쓰는 틀:
 - 소항목마다 짧은 소제목(「○ …」)과 개조식 줄(「- …」)을 섞어 평가위원이 훑어보기 쉽게 씁니다. 한 문장에 한 뜻 · 120자 이내.
 - 과업 소항목(세부과제별 추진방안 · 주요사업내용 등)은 제안요청 사항의 과업 번호 · 이름 순서대로 하나도 빠짐없이 다룹니다 — 과업마다 「○ 과업 이름」 소제목 아래
@@ -2551,8 +2627,8 @@ SYSTEM_PROMPT = f"""당신은 공공기관 용역 입찰에 내는 **제안서**
 - 과업에 실증 · PoC · 파일럿 · 시범 운영이 있으면 대상마다 착수 전에 정할 운영안(검증 과제 · 성공 판정 기준 · 수집 증빙 · 판정 결과별 다음 조치)을
   씁니다. 판정 수치는 근거가 없으면 예시로도 짓지 않고 「착수 전 대상 기관 · 기업과 합의」로 쓰며, 결과는 「예상 결과」와 「증빙으로 확인한 성과」를
   나눠 보고한다고 씁니다.
-- 소항목 tables 에 scope 가 있으면 scope(과업별 대응)에 제안요청 과업마다 한 줄씩 씁니다: task 는 원문 과업 번호 · 이름 그대로, detail 은 당사 대응
-  한 줄, output 은 원문 산출물 이름(없으면 빈 글) — 과업을 합치지 않고, 원문에 과업 목록이 없으면 빈 목록.
+- 소항목 tables 에 scope 가 있으면 scope(과업별 대응)에 제안요청 과업마다 한 줄씩 씁니다: task 는 제안요청서 과업 번호 · 이름 그대로, detail 은 당사 대응
+  한 줄, output 은 제안요청서 산출물 이름(없으면 빈 글) — 과업을 합치지 않고, 제안요청서에 과업 목록이 없으면 빈 목록.
 - 제안요청 과업이나 작성 방법에 예산 계획 · 편성 · 집행이 있으면 그 과업의 「- 방법:」에 과업마다 드는 비목(강의 · 컨설팅 · 실증 · 운영 · 정산 등)을
   과업 이름과 짝지어 쓰고, 산출은 「수량 × 단가」 꼴로만 씁니다 — 단가 · 수량 · 금액 숫자는 쓰지 않고(사업금액은 제안요청서 글 그대로) 금액 표도
   만들지 않습니다(예산 배분안 표는 담당자가 채웁니다). 참여 수가 바뀌면 단가 · 횟수를 조정해 사업금액 안에서 유지한다고 씁니다.
@@ -2563,16 +2639,16 @@ SYSTEM_PROMPT = f"""당신은 공공기관 용역 입찰에 내는 **제안서**
   period(추진 기간)는 「n개월차」 · 「n~m개월차」(구간이 여럿이면 「 / 」로 · 사업(JSON)에 weeks 가 있으면 아래 주차)만 씁니다 — 날짜 · 「계약체결일~」 · 「2027년 n월」 같은 사건 · 달력 꼴은 쓰지 않습니다
   (개월차는 계약 · 착수부터 센 상대 기간이라 사업 시작일을 몰라도 늘 채웁니다 — 시작 날짜를 지어내지 않되, 기간 칸을 날짜 · 「(담당자 입력)」 · 빈 글로
   두지 않습니다 · months 가 있으면 그 안에서). 제안요청서가 정한 달 · 날짜 기한(「4월까지」 · 「(8월)」 · 「계약 후 10일 이내」)은
-  detail 이나 output 칸에 원문 그대로 둡니다. owner(담당)는 역할 이름(PM · 운영 담당 · 강사 · 컨설턴트)만 — 사람 이름은 쓰지 않습니다.
+  detail 이나 output 칸에 제안요청서 글 그대로 둡니다. owner(담당)는 역할 이름(PM · 운영 담당 · 강사 · 컨설턴트)만 — 사람 이름은 쓰지 않습니다.
   담당이 둘 이상이면 「주 담당 / 지원」 꼴로 씁니다(주 담당은 하나 · 위 역할 이름 한 벌).
   detail(주요 활동)은 그 과업에서 하는 일, output(산출물)은 제안요청서 산출물 이름 그대로(없으면 빈 글).
 - 사업(JSON)에 weeks 가 있으면 계약 예정일(contract_from)부터 끝날까지 weeks 주인 짧은 사업입니다: 일정표 period 와 과업 「- 일정:」 줄은
-  착수일(D) 기준 주차 「Wn」 · 「Wn~Wm」(W1 ~ W[weeks])으로 쓰고 개월차 · 「n주차」 · 달 이름은 쓰지 않습니다. 원문이 날짜로 정한 마감(결과보고 제출 · 정산)은
-  원문 날짜 그대로 detail · output 칸에 둡니다. 제안요청서 추진 일정(안)의 달이 계약 예정일보다 앞서면 그 달을 운영 기간으로 쓰지 않습니다.
-- 원문이 결과보고 제출일을 날짜로 정했으면 보고서 초안 검토와 정산을 그 날짜 앞의 마감으로 두고, 날짜로 고정한 마감은 마지막 주차(Wn) 안에만 둡니다.
+  착수일(D) 기준 주차 「Wn」 · 「Wn~Wm」(W1 ~ W[weeks])으로 쓰고 개월차 · 「n주차」 · 달 이름은 쓰지 않습니다. 제안요청서가 날짜로 정한 마감(결과보고 제출 · 정산)은
+  제안요청서 날짜 그대로 detail · output 칸에 둡니다. 제안요청서 추진 일정(안)의 달이 계약 예정일보다 앞서면 그 달을 운영 기간으로 쓰지 않습니다.
+- 제안요청서가 결과보고 제출일을 날짜로 정했으면 보고서 초안 검토와 정산을 그 날짜 앞의 마감으로 두고, 날짜로 고정한 마감은 마지막 주차(Wn) 안에만 둡니다.
   보고 · 점검 시점은 일정표 · 핵심 마감 표 · 본문에서 같은 값으로 씁니다(공고에 없는 보고를 새 의무로 만들지 않습니다).
-- 일정표가 딸리면 milestones(핵심 마감과 책임)에 원문 과업 · 보고의 핵심 마감마다 한 줄씩 씁니다: item(항목) · owner(책임 역할 — 역할 이름만 ·
-  「주 담당 / 지원」) · due(마감 기준 — 일정표 period 와 같은 꼴이거나 원문 날짜) · proof(확인 자료 — 산출물 · 서면 이름). 일정표가 없으면 빈 목록.
+- 일정표가 딸리면 milestones(핵심 마감과 책임)에 제안요청 과업 · 보고의 핵심 마감마다 한 줄씩 씁니다: item(항목) · owner(책임 역할 — 역할 이름만 ·
+  「주 담당 / 지원」) · due(마감 기준 — 일정표 period 와 같은 꼴이거나 제안요청서 날짜) · proof(확인 자료 — 산출물 · 서면 이름). 일정표가 없으면 빈 목록.
 - 추진 일정 소항목에는 「○ 선후관계」 소제목 아래 「- 병행: 과업 A와 과업 B를 같은 기간에 시작합니다」 · 「- 연결: 과업 A의 산출물(이름)이 나오면 과업 B를
   시작합니다」를 씁니다. 앞 과업 산출물(진단 결과 · 로드맵)을 쓰는 과업을 그 산출물이 나오는 기간보다 앞에 두지 않고, 같은 과업의 기간은 일정표 · 본문 ·
   다른 표에서 같은 값으로 씁니다(본문에서 앞당긴 시점도 일정표 그 과업 기간 안에).
@@ -2681,7 +2757,7 @@ def major_prompt(major: dict[str, Any], units: list[dict[str, Any]], *, source: 
     lines = [
         f"대항목 「{major['title']}」의 소항목을 씁니다. items 의 key 를 그대로 돌려 주세요.",
         "소항목(JSON): " + json.dumps(items, ensure_ascii=False),
-        "소항목 제목 · 작성 방법(제안요청서 원문 — [key] 마다):\n" + llm_client.fenced("소항목 작성 방법", guides),
+        "소항목 제목 · 작성 방법(제안요청서 — [key] 마다):\n" + llm_client.fenced("소항목 작성 방법", guides),
     ]
     if others:
         # 원문 작성 방법 글이 든 줄이라 경계 표식 안에(2.7.0 검토)
@@ -2701,15 +2777,15 @@ def major_prompt(major: dict[str, Any], units: list[dict[str, Any]], *, source: 
     if evaluation:
         lines.append("평가 기준(JSON — 평가위원이 채점하는 것):\n" + llm_client.fenced("평가 기준", json.dumps(evaluation, ensure_ascii=False)))
     elif source["evaluation"].get("text"):
-        lines.append("평가 기준(제안요청서 원문):\n" + llm_client.fenced("평가 기준", source["evaluation"]["text"]))
+        lines.append("평가 기준(제안요청서):\n" + llm_client.fenced("평가 기준", source["evaluation"]["text"]))
     if source.get("rules"):
-        lines.append("제안서 작성 지침(제안요청서 원문):\n" + llm_client.fenced("작성 지침", source["rules"]))
+        lines.append("제안서 작성 지침(제안요청서):\n" + llm_client.fenced("작성 지침", source["rules"]))
     if source.get("facts") or source.get("derived"):
         # 원문 정량값(3차 지시서 §5) — 본문에 그 수치를 쓸 때는 이 값 · 한정어 그대로(원문 표현이 모호하면 고쳐 쓰지 않는다)
         numbers = {"facts": [{k: f[k] for k in ("label", "value", "unit", "bound")} for f in source.get("facts") or []],
                    "percent_lines": [d["quote"] for d in source.get("derived") or []]}
-        lines.append("제안요청서 기준 수치(JSON — 원문에서 읽은 값 · 그 수치를 쓸 때는 값과 「이상 · 이하」를 그대로 · percent_lines 는 원문 문장이니"
-                     " 그 수치를 쓸 때 원문 표현 그대로 쓰고 계산값으로 바꾸지 않습니다):\n"
+        lines.append("제안요청서 기준 수치(JSON — 제안요청서에서 읽은 값 · 그 수치를 쓸 때는 값과 「이상 · 이하」를 그대로 · percent_lines 는 제안요청서 문장이니"
+                     " 그 수치를 쓸 때 제안요청서 표현 그대로 쓰고 계산값으로 바꾸지 않습니다):\n"
                      + llm_client.fenced("기준 수치", json.dumps(numbers, ensure_ascii=False)))
     # 회사 조각에도 회사가 손으로 적은 글(원장 요약 …)이 있다 — 같은 경계 표식 안에(2.7.0)
     lines.append("회사 근거 조각(JSON) — 회사 주장은 이 source_id 로만 뒷받침합니다:\n"
@@ -2769,8 +2845,9 @@ _CLAIM_RE = re.compile(
     r"|보유한\s*[^.,]{0,15}?(?:역량|기술|노하우|네트워크|인력|인프라|실적|경험|전문\S*|DB|데이터베이스|플랫폼|솔루션|강사|컨설턴트|협약)"
     r"|경험이\s*있"
 )
-#: 주어가 없어도 회사 주장인 꼴 — 「경험이 풍부한 전문 강사진」 · 「다년간의 노하우」.
-_CLAIM_ANYWHERE_RE = re.compile(r"경험이\s*풍부|풍부한\s*(?:경험|노하우)|다년간의?\s*(?:경험|노하우)|오랜\s*(?:경험|노하우)")
+#: 주어가 없어도 회사 주장인 꼴 — 「경험이 풍부한 전문 강사진」 · 「다년간의 노하우」 · 아직 붙이지 않은 서류를 끝낸 일처럼 쓴 「받아 첨부했습니다」(2.11.0).
+_CLAIM_ANYWHERE_RE = re.compile(r"경험이\s*풍부|풍부한\s*(?:경험|노하우)|다년간의?\s*(?:경험|노하우)|오랜\s*(?:경험|노하우)"
+                                r"|(?:발급\s*)?받아\s*첨부(?:했|하였)|첨부(?:했|하였)습니다")
 #: 지난 경험 꼴 — 역량 이름 · 사업영역 · 인증 이름만 근거로는 쓸 수 없다(11-06 심사 — 「RAG와 챗봇 기술을 개발에 적용해 왔습니다」(근거 skill: 뿐)).
 #: 「온」 뒤 빈칸 — 「활용해 온라인」 · 「활용해 온 · 오프라인」은 지난 경험이 아니다(4차 #5 · `_CLAIM_RE` 와 같은 꼴).
 _PAST_RE = re.compile(r"(?:했|하였)(?:습니다|으며|고|다|던)|(?:해|하여)\s*(?:왔|온\s+(?![·ㆍ•/]\s*오프))")
@@ -3104,7 +3181,7 @@ def proof_lines(docs: list[dict[str, Any]]) -> list[tuple[str, str, str]]:
 
 
 def annex_rows(docs: list[dict[str, Any]], *, built: tuple[str, ...] = ()) -> tuple[list[list[str]], list[str]]:
-    """받아 둔 원문 전부의 붙임 서식 머리 줄 → (「붙임 번호 · 서류명 · 원문 서식」 행, 검토 메모) · 11-06 심사 ②.
+    """받아 둔 원문 전부의 붙임 서식 머리 줄 → (「붙임 번호 · 서류명 · 서식 번호」 행, 검토 메모) · 11-06 심사 ②.
     같은 번호가 여러 번이면(서식 목록 + 서식 본문) 처음 이름을 쓰고, 괄호에 「계약상대자 대상」 · 「발표평가 … 대상」이 한 번이라도 있으면
     제출 서류에서 빼고 검토 메모 「계약 때 · 발표평가 때 제출」. `built` = 문서가 따로 만드는 서식 이름 낱말(조견표). 못 찾으면 빈 목록(그 소항목은 AI 가 쓴다).
     서식 표를 만들면 원문이 붙이라고 한 입증 자료(`proof_lines`)도 행으로 더한다 — 원문 서식이 없는 서류라 그 칸은 「—」
@@ -3426,7 +3503,7 @@ def generate(
             # 제출 서류 목록 — AI 없이 원문 서식 머리 줄로(계약 · 발표평가 때 내는 서식은 검토 메모로)
             entry["sentences"] = [_doc_sentence("제안서와 함께 내는 서류는 다음과 같습니다.")]
             entry["tables"] = [*unit["tables"], ANNEX_TABLE_KEY]
-            tables[ANNEX_TABLE_KEY] = {"key": ANNEX_TABLE_KEY, "title": "제출 서류 목록", "columns": ["붙임 번호", "서류명", "원문 서식"],
+            tables[ANNEX_TABLE_KEY] = {"key": ANNEX_TABLE_KEY, "title": "제출 서류 목록", "columns": ["붙임 번호", "서류명", "서식 번호"],
                                        "rows": annex, "by": "rules", "human_only": False, "section": unit["major_key"], "item": unit["key"]}
             if annex_later:
                 review.setdefault(unit["title"], []).extend(annex_later)
@@ -3653,6 +3730,7 @@ def generate(
         # 표지 「공고 원문」 링크(2.9.1) — 공고 저장본(최근 30일 게시)에서 빠진 뒤에도 마감 전 공고는 표지에 남게 초안에도 둔다
         "notice_url": plan_export_service.official_link(source.get("notice_url")),
         "rfp_document": source.get("document"),
+        "sources": [doc.get("name") for doc in docs],  # 쓸 때 실제로 읽은 원문 이름 — 사전규격 규격서뿐인가(`source_gap` · 2.11.0 T9)
         "requirement_set_hash": source.get("requirement_set_hash"),
         "outline_source": outline_source,
         "evaluation_total": evaluation.get("total"),
@@ -3779,7 +3857,8 @@ EVAL_WIDTHS_MM = [27.0, 44.0, 13.0, 32.0, 50.0]  # 「사업수행 능력」 · 
 #: 정량 항목 ↔ 공고문 제출서류 짝 — 이름 한글 두 글자 묶음이 이만큼 겹칠 때만(「신용평가등급」 ↔ 「기업신용등급평가서」 = 신용 · 평가 · 등급 · m6).
 PAPER_MATCH_BIGRAMS = 3
 #: 서류 이름 — 「1부」 · 「1식」 · 괄호 · 「:」 앞까지(「⑤ 국세, 지방세 완납증명서(최근 1개월 …) 1부」 → 「국세, 지방세 완납증명서」).
-_PAPER_NAME_END_RE = re.compile(r"\s*[(（:：]|\s*\d+\s*[부식통]")
+#: 「각 1부」 · 「각각 1통」의 「각」도 뗀다(「기타문서 각 1부」 → 「기타문서」 · 2.11.0 T6a) — 띄어 쓴 「각」만(「보안각서 1부」는 그대로).
+_PAPER_NAME_END_RE = re.compile(r"\s*[(（:：]|\s+각(?:각)?\s*\d+\s*[부식통]|\s*\d+\s*[부식통]")
 
 
 def _eval_blank(item: dict[str, Any]) -> str:
@@ -3808,10 +3887,22 @@ def paper_for(name: str, papers: list[dict[str, Any]]) -> str | None:
 #: 검토 「제출 서류」 묶음(2.10.0 T8 · submit1) — 입찰공고문 서류 한 줄 · ※ 제출 방법 한 줄.
 PAPER_FIELD = "공고 제출서류"
 PAPER_NOTE_FIELD = "제출 방법"
+#: 입찰공고문 제출서류를 하나도 읽지 못한 새 초안(2.11.0 T6b) — 검토 목록 한 줄 · 게이트 PAPERS_UNREAD(보통 · 판정 밖) · 보고서 엑셀이 같은 글.
+#: 제출서류는 초안을 쓸 때만 읽으므로 2.10.0 판으로 쓴 초안(papers [])은 새 머리 꼴(1822113)이어도 0건 — 다시 쓰라는 말을 끝에 둔다.
+PAPERS_UNREAD_NOTE = ("입찰공고문에서 제출서류 목록을 찾지 못했습니다(「제안요청서 참조」 · 나라장터 온라인 제출 안내뿐 · 표 꼴 · "
+                      "입찰공고문을 받지 않은 공고) — 제안요청서 · 공고문의 제출 서류 · 파일 구분 줄을 직접 확인하세요 · "
+                      "앱 2.11.0 전에 쓴 초안이면 초안을 다시 쓰면 읽힐 수 있습니다")
+
+
+def papers_unread(draft: dict[str, Any]) -> bool:
+    """제출서류 칸이 있는데 비었나 — 칸이 없는 옛 초안(2.10.0 전)은 아니다(지금 글 그대로)."""
+    return isinstance(draft.get("papers"), list) and not draft["papers"]
 #: 회사 입찰 자격 자료의 증명서 칸(화면 경로) — 유효기간을 적는 곳.
 CREDENTIALS_PATH = "회사자료 › 입찰 자격 자료 › 준비 상태"
-#: 유효기간을 짝지을 서류 — 이름이 확인서 · 증명서 · 인증서 · 등록증 · 평가서로 끝날 때만(「서약서, 보안각서, 확인서, … 각」 · 지정양식 · 보증증권은 짝 없음).
+#: 유효기간을 짝지을 서류 — 이름이 확인서 · 증명서 · 인증서 · 등록증 · 평가서로 끝날 때만(「서약서, 보안각서, 확인서, 청렴계약이행 서약서」 · 지정양식 · 보증증권은 짝 없음).
+#: 「서약서」가 든 묶음(「입찰업체 서약서 및 공동책임 확인서」 · 회사가 서명하는 서식)도 짝 없음 — T6a 로 「각」이 떨어져 확인서로 끝나게 된 이름.
 _PAPER_CERT_RE = re.compile(r"(?:확인서|증명서|인증서|등록증|평가서|면허증)$")
+_PAPER_PLEDGE = "서약서"
 #: 중소기업 · 소상공인 확인서(짝은 `eligibility_engine.sme_credential` 한 곳) · 그중 소기업 · 소상공인을 요구하는 꼴(「중소기업」의 「소기업」은 아님).
 _PAPER_SME_RE = re.compile(r"(?:중|소)\s*기업|소상공인")
 _PAPER_SMALL_RE = re.compile(r"(?<!중)소\s*기업|소상공인")
@@ -3837,7 +3928,7 @@ def paper_valid(name: str, credentials: list[Any], *, base: str, when: str) -> s
     이름(4자 이상) 포함 짝 — 엉뚱한 짝을 짓지 않게 애매하면 「없음」."""
     from app.services import eligibility_engine
 
-    if not _PAPER_CERT_RE.search(name):
+    if not _PAPER_CERT_RE.search(name) or _PAPER_PLEDGE in name:
         return ""
     if _PAPER_SME_RE.search(name) and name.endswith("확인서"):
         row = eligibility_engine.sme_credential(credentials)
@@ -3902,6 +3993,20 @@ def paper_blanks(rows: list[dict[str, str]], notes: list[dict[str, str]], blanks
             "section": SUPPLEMENT_SECTION, "proof": row["name"]}
            for row in rows if not taken(row["name"])]
     return out + [{"field": PAPER_NOTE_FIELD, "why": f"※ {note['text']} — {note['where']}", "section": SUPPLEMENT_SECTION} for note in notes]
+
+
+#: 원문이 제안서 표지 서식을 정한 공고(`format.cover_form` · 2.11.0 T3b) — 앱 표지는 앱 꼴이라 사람이 한글에서 바꾼다(검토 목록 한 줄).
+COVER_FORM_FIELD = "표지 서식"
+COVER_FORM_NOTE = "표지 — 원문 서식이 정한 칸 · 순서로 한글에서 바꾸세요(앱 표지는 앱 꼴)"
+
+
+def cover_form_blanks(draft: dict[str, Any]) -> list[dict[str, str]]:
+    """검토 목록 「표지 서식」 한 줄 — 원문 서식 줄 · 자리. 칸이 없는 옛 초안 · 서식이 없는 공고는 없음."""
+    found = (draft.get("format") or {}).get("cover_form")
+    if not isinstance(found, dict) or not found.get("line"):
+        return []
+    where = f" — {found['document']} {found['page']}쪽" if found.get("document") and found.get("page") else ""
+    return [{"field": COVER_FORM_FIELD, "why": f"{COVER_FORM_NOTE} — 원문 「{found['line']}」{where}", "section": "표지"}]
 
 
 #: 조견표 근거 소제목 고르기에서 뺄 흔한 낱말(평가 항목 이름 · 소제목에 두루 나와 짝을 가르지 못한다).
@@ -4060,6 +4165,39 @@ def source_documents(procurement_id: str, analysed: str | None = None) -> list[d
             doc["analysed"] = attachment_service.sanitize_file_name(d_outer) in keys and (not inner or d_inner == inner)
         docs.sort(key=lambda doc: not doc["analysed"])
     return docs
+
+
+def source_gap(draft: dict[str, Any], procurement_id: str, attachments: list[str] | None) -> dict[str, list[str]] | None:
+    """사전규격 규격서만 읽고 쓴 초안인데 본공고 자기 첨부가 따로 있음 — {missing: 아직 안 받은 첨부, received: 초안을 쓴 뒤 받은 첨부,
+    unread: 쓰기 전부터 받아 두었는데 글을 읽지 못한 첨부(그림 PDF · 깨진 파일 — 다시 써도 읽지 못한다)}.
+
+    attachments 는 본공고 첨부 이름(모르면 None — 검사하지 않음). 같은 문서의 .hwpx · .pdf 는 하나로 묶는다. 읽은 원문 목록(`sources`)이 없는
+    옛 초안(2.11.0 전)은 검사하지 않는다 — 「제출서류가 빔」으로 가늠하면 제출서류 꼴만 다른 공고도 걸렸다(2.11.0 검토). 네트워크 없음."""
+    from app.services import attachment_service, prespec_service
+
+    names = [name for name in attachments or [] if name and not prespec_service.is_spec_doc(name)]
+    if not names:
+        return None
+    sources = draft.get("sources")
+    if not sources or not all(prespec_service.is_spec_doc(name) for name in sources):
+        return None
+    try:
+        written = datetime.fromisoformat(str(draft.get("executed_at"))).timestamp()
+    except ValueError:
+        written = None
+    groups: dict[str, list[str]] = {}
+    for name in names:
+        groups.setdefault(re.sub(r"\.[^.]+$", "", attachment_service.sanitize_file_name(name)), []).append(name)
+    gap: dict[str, list[str]] = {"missing": [], "received": [], "unread": []}
+    for group in groups.values():
+        paths = [path for name in group if (path := cached_source(procurement_id, name))]
+        if not paths:
+            gap["missing"].append(group[0])
+        elif written is not None and all(path.stat().st_mtime <= written for path in paths):
+            gap["unread"].append(group[0])  # 쓸 때 이미 있었는데 읽은 원문 목록에 없다 — 글을 못 뽑은 파일
+        else:
+            gap["received"].append(group[0])
+    return gap
 
 
 def load_documents(procurement_id: str) -> tuple[Any, list[dict[str, Any]]]:
@@ -4227,6 +4365,20 @@ def _company_evidence(context: AnalysisContext) -> dict[str, Any]:
             "ledger_rows": [row for row in (ledger or {}).get("rows") or [] if isinstance(row, dict)]}
 
 
+def _eligibility(procurement_id: str, context: AnalysisContext) -> Any:
+    """입찰 분석 참가 자격 판정(「참여」 저장 거절과 같은 함수 · 네트워크 없음). 직접 넣은 공고는 None(결정 길도 따로 본다) ·
+    판정 엔진 예외는 제안서 결함이 아니라 「판정 못 함」(`ELIGIBILITY_ERROR` — 게이트를 막지 않음 · 2.11.0 D3)."""
+    from app.services import bid_quality_gate, eligibility_engine
+
+    if procurement_id.startswith("manual-"):
+        return None
+    try:
+        return eligibility_engine.offline_report(procurement_id, context)
+    except Exception:  # noqa: BLE001 — 자격 판정 하나가 멀쩡한 제안서 승인을 막지 않게(D3)
+        logger.exception("참가 자격 판정을 실행하지 못했습니다 (procurement_id=%s)", procurement_id)
+        return bid_quality_gate.ELIGIBILITY_ERROR
+
+
 def read_view(draft: dict[str, Any], *, context: AnalysisContext, procurement_id: str) -> dict[str, Any]:
     """화면 · 내려받기가 읽는 초안 — 일반현황 칸은 회사자료로 채우고(저장본에는 없다) 제출 전 채울 칸 수 · 낡음 ·
     품질 게이트(`quality` · 저장하지 않는 계산값 · 2.7.0)를 붙인다. 게이트가 예외를 내면 통과가 아니라 차단(GATE_ERROR · 2.8.0 B1)."""
@@ -4250,6 +4402,7 @@ def read_view(draft: dict[str, Any], *, context: AnalysisContext, procurement_id
         meta = export_meta(view, company=company)
         view["submit_blanks"] = plan_export_service.submit_blank_count(view, view.get("form") or {}, meta)
         view["stale"] = stale(draft, procurement_id)
+        view["source_gap"] = source_gap(draft, procurement_id, (notice or {}).get("attachments"))
         # 인용한 회사 근거의 상태(실적 원장 · 인증 유효기간 — 회사 자료를 읽는 곳이 여기라 계산해 넘긴다 · 2.8.0 B7)
         company_rows = _company_evidence(context)
         evidence = bid_quality_gate.evidence_status(view, **company_rows)
@@ -4260,11 +4413,13 @@ def read_view(draft: dict[str, Any], *, context: AnalysisContext, procurement_id
         rows, notes = paper_rows(draft.get("papers") or [], credentials, deadline=(view["terms"] or {}).get("deadline"),
                                  today=storage.kst_today().isoformat())
         view["submission_papers"] = {"rows": rows, "notes": notes}
-        view["blanks"] = [*(view.get("blanks") or []), *paper_blanks(rows, notes, view.get("blanks") or [])]
+        unread = [{"field": PAPER_FIELD, "why": PAPERS_UNREAD_NOTE, "section": SUPPLEMENT_SECTION}] if papers_unread(draft) else []
+        view["blanks"] = [*(view.get("blanks") or []), *paper_blanks(rows, notes, view.get("blanks") or []), *unread, *cover_form_blanks(view)]
         # 원문이 평가본을 요구하면 회사 식별 낱말(회사자료 · 실적 기관 이름 — 이번 공고 글에 있는 낱말은 뺌 · 2.10.0 D7)
         identity = (bid_quality_gate.identity_words(values, company_rows["ledger_rows"], exclude=bid_quality_gate.notice_text(view))
                     if (view.get("format") or {}).get("blind") else None)
         quality = bid_quality_gate.evaluate(view, meta=meta, notice=notice, draft_hash=draft_hash, evidence=evidence, identity=identity,
+                                            eligibility=_eligibility(procurement_id, context),
                                             approval=bid_quality_gate.load_approval(context, procurement_id))
     except Exception as exc:  # noqa: BLE001 — 검증을 못 하면 차단으로(fail-closed) · 화면 · 「초안」 내려받기는 열어 둔다(대표 결정 11-08)
         logger.exception("품질 게이트를 실행하지 못했습니다 (procurement_id=%s)", procurement_id)
@@ -4278,7 +4433,7 @@ def read_view(draft: dict[str, Any], *, context: AnalysisContext, procurement_id
 
 def export_meta(draft: dict[str, Any], *, company: str | None, now: datetime | None = None) -> dict[str, Any]:
     """표지 — 문서 종류 「제안서」 · 사업명 · 공고번호(있을 때만 · 2.7.0) · 발주기관 · 사업기간 · 사업금액(원문 글 그대로 · 있을 때만 ·
-    2.8.0 B6) · 제안사 · 제출일."""
+    2.8.0 B6) · 제안사 · 제출일(해만 · `SUBMIT_DATE` · 2.11.0 D1)."""
     from app.services import plan_export_service
 
     day = now or datetime.now(plan_export_service.KST)
@@ -4287,11 +4442,12 @@ def export_meta(draft: dict[str, Any], *, company: str | None, now: datetime | N
     terms = draft_terms(draft)
     basics = [(label, str(terms[key])) for label, key in (("사업기간", "period"), ("사업금액", "budget")) if terms.get(key)]
     link = plan_export_service.official_link(draft.get("notice_url"))
+    deadline = re.match(r"(\d{4})-", str(terms.get("deadline") or ""))  # 입찰 마감 isoformat(KST) — 2.10.0 뒤 초안만
     return {
         **({"link_url": link} if link else {}),  # 표지 맨 아래 「공고 원문」(2.9.1 · 빈칸 셈 밖)
         "kind": DOC_KIND,
         "notice": draft.get("title"),
         # 표지는 제안서를 받는 수요기관 이름 — 화면 표시값의 「(조달청 대행)」은 싣지 않는다(11-06 심사)
         "rows": [*number, ("발주기관", re.sub(r"\s*\(조달청 대행\)$", "", str(draft.get("agency") or "")) or None), *basics,
-                 ("제안사", company), ("제출일", f"{day.year}. {day.month}. {day.day}.")],
+                 ("제안사", company), ("제출일", SUBMIT_DATE.format(year=deadline.group(1) if deadline else day.year))],
     }

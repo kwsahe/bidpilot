@@ -52,7 +52,7 @@ async def lifespan(_app: FastAPI):
 
 
 #: 앱 판 — `backend/pyproject.toml` · `frontend/package.json` 과 같아야 한다(시험이 견준다 · 35차 §4-4 「1차 — 로컬 완성」).
-APP_VERSION = "2.10.0"
+APP_VERSION = "2.11.0"
 
 app = FastAPI(title="BidPilot AI API", version=APP_VERSION, lifespan=lifespan)
 

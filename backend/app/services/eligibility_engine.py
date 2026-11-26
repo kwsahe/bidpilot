@@ -17,7 +17,7 @@ import functools
 import logging
 import re
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Final, Literal
 
@@ -2586,8 +2586,11 @@ def offline_report(procurement_id: str, context: "AnalysisContext | None") -> El
     from app.services import organization_service as _orgs
     from app.services import procurement_service as _ps
 
-    cached = _ps.cached_only(include_low=True)
+    # 일정표 마감은 찾은 공고 하나에만 싣는다 — 목록 전체에 실으면 공고마다 조항 파일을 읽어 1초 넘게 걸린다(2.11.0 T10)
+    cached = _ps.cached_only(include_low=True, with_schedule=False)
     view = next((v for v in (cached.notices if cached else []) if v.notice.id == procurement_id), None)
+    if view is not None:
+        view = replace(view, notice=_ps._with_schedule(view.notice))
     parse = _load_parse(procurement_id)
     if view is None and parse is None:
         return None

@@ -7,6 +7,7 @@
 
 두 판 (담당자 결정 2026-09-30 「디자인한 DOCX + PDF」 · 10-13 「더 정렬되고 세련되게」):
 - **제출용** — 표식 · 회색 글자 · 근거 · 메모 · 요약 상자 · 목차 · 머리말 없음. 「(담당자 입력)」은 갈색 점선 밑줄.
+  입찰 제안서 제출용 · 평가본은 표지 다음 목차 쪽이 있다(2.11.0 D2 · `toc_page`).
 - **검토용** — AI 덧붙임은 회색 글자 + 왼쪽 세로줄 · [공고] · [회사] 표식과 근거 · 범례 · 목차 · 요약 상자 · 끝에 검토 메모.
 
 모양은 `docs/reports/2026-10-30_plan_doc_design/SPEC.md`(36차 §3-F) 하나를 따른다. **내용은 바꾸지 않는다** — 문장 글 ·
@@ -470,13 +471,24 @@ def field_rows(fields: list[tuple[str, str, str]]) -> list[list[tuple[str, str, 
     return rows
 
 
+#: 입찰 제출용 · 평가본 목차 쪽(2.11.0 D2) — 원문 쪽수 상한이 이보다 작으면 원문이 목차를 요구할 때만 넣는다(빠듯한 쪽수 보호).
+TOC_MIN_PAGES = 40
+
+
+def toc_page(fmt: dict[str, Any]) -> bool:
+    """입찰 제출용 · 평가본에 목차 쪽을 넣는가 — 원문 요구(`toc_required`)거나 쪽수 상한이 없거나 `TOC_MIN_PAGES` 이상(2.11.0 D2)."""
+    limit = fmt.get("page_limit")
+    return bool(fmt.get("toc_required")) or not limit or limit >= TOC_MIN_PAGES
+
+
 def document_blocks(draft: dict[str, Any], form: dict[str, Any], *, variant: Variant, meta: dict[str, Any]) -> list[Block]:
     """초안 → 문서 블록(제출용 · 검토용). meta: notice · task · company · date.
 
     블록: ("cover", dict) · ("legend",) · ("toc", [(층, 글)]) · ("h1", 글) · ("h2", 글, AI 문장 수, 문장 수) · ("summary", [줄]) ·
     ("field", 이름, 값, 출처) · ("photo", 글) · 글 블록 (sub · item · dash · label · para, [(글, 유형, 근거)…], 깊이) ·
     ("table", 표) · ("memo_h", 글) · ("memo", 글, 깊이) · ("memo_table", 표).
-    범례 · 목차 · 요약 상자 · 검토 메모는 검토용만(담당자 결정 10-13 · SPEC §11 · §14).
+    범례 · 목차 · 요약 상자 · 검토 메모는 검토용만(담당자 결정 10-13 · SPEC §11 · §14) — 입찰 제출용 · 평가본 목차는 `toc_page` 일 때(2.11.0 D2) ·
+    원본 · 사본을 나눠 받는 공고(`format.original_copy`)는 표지 문서 종류에 「(원본)」 · 「(사본)」(2.11.0 T3).
     """
     review = variant == "review"
     if variant == "blind":
@@ -578,9 +590,15 @@ def document_blocks(draft: dict[str, Any], form: dict[str, Any], *, variant: Var
 
     # 표지 값도 제어문자를 지운다 — 과제명에 제어문자 하나면 DOCX 가 500 이었다(30차 R29-04)
     cover = {k: _clean(v) if isinstance(v, str) else v for k, v in meta.items()}
+    fmt = draft.get("format") or {}
+    if not review and fmt.get("original_copy") and cover.get("kind"):
+        # 원문이 원본 · 사본을 나눠 받는 평가본 공고 — 회사명 판 = 원본 · 평가본 = 사본(2.11.0 T3 · 평가본만 내는 공고 · 옛 초안은 칸이 없어 그대로)
+        cover["kind"] = f"{cover['kind']}({'사본' if variant == 'blind' else '원본'})"
     blocks: list[Block] = [("cover", {**cover, "variant": VARIANT_LABELS[variant]})]
     if review:
         blocks += [("legend",), ("toc", toc)]
+    elif draft.get("numbered_titles") and toc and toc_page(fmt):
+        blocks.append(("toc", toc))  # 입찰 제출용 · 평가본 — 표지 다음 목차 쪽(2.11.0 D2 · 사업계획서 제출용은 그대로 · 10-13 결정)
     blocks += body
     if review:
         blocks += _memo_blocks(draft)
@@ -664,9 +682,10 @@ def cover_rows(info: dict[str, Any]) -> list[tuple[str, Any]]:
 
 #: 평가본(11-06 B-3) — 회사를 알아볼 수 있는 칸을 뺐는데 그 절에 남는 칸이 하나도 없을 때만 넣는 자리표(2.10.0 D6).
 BLIND_MARK = "(평가본 — 표기하지 않음)"
-#: 일반현황 칸 중 회사를 알아볼 수 있는 것(상호 · 대표자 · 사업자번호 · 주소 · 연락처 · 홈페이지 + 설립일 · 주요 연혁 · 2.10.0 D5) —
+#: 일반현황 칸 중 회사를 알아볼 수 있는 것(상호 · 대표자 · 사업자번호 · 주소 · 연락처 · 홈페이지 + 설립일 · 주요 연혁 · 2.10.0 D5 +
+#: 주요 실적 — 값이 원장 사업명이라 공개 계약 정보로 회사를 짐작할 수 있다 · 2.11.0 D4) —
 #: `FIELD_MAP` 의 회사 값 열쇠. 보유 인증 이름 칸은 남긴다(평가에 쓰임 · 식별 여부는 식별 낱말 검사가 알린다).
-_BLIND_KEYS = frozenset({"name", "representative", "business_number", "address", "phone", "website", "opened_on", "history"})
+_BLIND_KEYS = frozenset({"name", "representative", "business_number", "address", "phone", "website", "opened_on", "history", "performance"})
 _BLIND_COVER = frozenset({"제안사", "기업명"})
 #: 등록 · 인증 · 확인 번호(「제2000-123호」 · 「제0000-2000-00000호」 꼴) — 평가본 본문에서 회사자료 번호를 지우고(D5) 식별 검사가 찾는다(D7).
 #: 붙임표 없는 법령 번호(「법률 제12345호」)는 아니다.
@@ -1384,7 +1403,7 @@ def build_docx(draft: dict[str, Any], form: dict[str, Any], *, title: str, varia
         state["prev"] = 6
         for level, text in entries:
             p = paragraph("BP 목차 1" if level == 1 else "BP 목차 2", 8.5 if level == 1 else 0, 0)
-            _runs(p, text, review=True)
+            _runs(p, text, review=review)  # 입찰 제출용 · 평가본에도 목차(2.11.0 D2)
             state["prev"] = 0
         state["new_page"] = True
 

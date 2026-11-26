@@ -1314,6 +1314,77 @@ def test_평가본_낱말이나_먼_제출_수량_줄의_원본_구분도_구분
     assert other["blind_only"] is True
 
 
+def test_원본_사본_표시는_구분을_세운_줄에_두_말이_다_있을_때만() -> None:
+    """2.11.0 T3 — 평가본 규정의 원본 · 사본 구분을 세운 줄(제출 수량 줄 · 규정 줄 ±2)에 원본(정본)과 사본(부본)이 둘 다 있으면
+    표지에 「(원본)」 · 「(사본)」(받아 둔 원문 484건 중 33건 · 모두 원문에 두 말이 있음 · 첫 구분 줄만 보던 때 22건). 부수만 · 한쪽 말만 · 평가본만 내는 공고는 아니다."""
+    rule = "- 제안사를 식별할 수 있는 정보(업체명 등)는 포함하지 않음"
+    filler = "\n".join(f"{n}. 기타 사항" for n in range(1, 30))
+
+    def copy(text: str) -> bool:
+        return bid.read_format([_doc(text)])["original_copy"]
+
+    assert copy(f"2) 제안서 원본 1부, 사본 8부\n{rule}") is True  # 제출 수량 줄
+    assert copy("○ 본 용역 제안서 10부, 원본 업체명 표기, 사본 9부 업체명 삭제,") is True  # 규정 줄 자체
+    assert copy(f"나. 제안서 8부(정본 1부, 부본 7부)\n{filler}\n{rule}") is True  # 정본 · 부본 · 떨어진 수량 줄
+    assert copy("제안서 10부(업체명 미기재)") is False  # 부수만(근사로 구분 있음이지만 표지에는 달지 않는다)
+    assert copy(f"ㅇ 수량: 사업제안서 각 9부(원본 각 1부 별도)\n{filler}\n{rule}") is False  # 원본만
+    assert copy(f"① 제안서 11부(원본 1부, 평가본 10부)\n{rule}") is False  # 평가본 · 평가용은 사본 낱말이 아니다
+    # 첫 구분 줄에 사본 낱말이 없어도 뒤 규정 줄이 원본 · 사본을 적으면 단다(1829687 꼴 · 첫 줄에서 멈추면 놓친다)
+    late = "※ 제안서 표지에는 원본과 사본을 명시하여야 하며, 사본(평가본)에는 업체명 기재 금지"
+    assert copy(f"① 제안서 11부(원본 1부, 평가본 10부)\n{filler}\n{late}") is True
+    assert copy(f"① 제안서 11부(원본 1부, 평가본 10부)\n{rule}\n{filler}\n2) 제안서 원본 1부, 사본 10부") is True  # 뒤 수량 줄
+    assert copy(rule) is False and bid.read_format([_doc(rule)])["blind_only"] is True  # 평가본만 내는 공고
+    assert copy("2) 제안서 원본 1부, 사본 8부") is False  # 평가본 규정이 없으면(같은 내용 원본 · 사본) 판이 하나
+    assert bid.read_layout([_paged(DONGGUK)])["format"]["original_copy"] is False
+
+
+def test_목차_쪽_요구와_표지_서식_줄() -> None:
+    """2.11.0 T4 · T3b — 원문이 목차(차례) 쪽을 요구 · 전제하는 줄과 제안서 표지 서식 줄(받아 둔 원문 줄 꼴 · {line, document, page})."""
+    def toc(line: str) -> str | None:
+        found = bid.read_format([_doc(f"가. 제안서 작성 일반\n{line}")])["toc_required"]
+        return found and found["line"]
+
+    asks = ["◦ 표지, 목차를 포함하여 제시한 목차별로 관련 서식을 사용하여 작성하고", "5) 제안서는 표지와 목차를 제외한 각 면(쪽)에는 일련번호를 부여한다.",
+            "ㅇ 제안서는 50페이지 이내로 한글, MS-Office 등으로 작성(표지 목차, 첨부 제외)", "◦제안서의 용지는 A4 크기로 좌철 제본하되, 표지·간지·목차·별지 등을 구분하여",
+            "* 제안 장비에 대한 증빙자료를 쉽게 찾을 수 있도록 구성(목차/색인 등 작성)", "제안서에는 목차를 작성하여야 함",
+            "다. 총 분량은 표지, 간지, 목차 등을 포함하여 50페이지 내외로 작성하여야 한다."]
+    assert [toc(line) for line in asks] == asks
+    # 제시 목차대로 쓰라는 말 · 과업 산출물의 「표지 및 주요목차」는 목차 쪽 요구가 아니다
+    for line in ("□ 제안서 목차 및 작성 방법", "가. 제안서의 구성 및 목차는 붙임 목차의 순서에 따라 작성함.", "※ 제안서 구성 및 목차(순서)를 반드시 준수할 것.",
+                 "・오프라인 책자 자료의 표지 및 주요목차 약식 콘텐츠", "아. 추가 제안사항이 있는 경우 제안 목차 항목에 포함 또는 별도의 항목을 추가하여",
+                 "제안서 목차 구성에 따라 각각 세분해서"):
+        assert toc(line) is None, line
+    found = bid.read_format([_doc("가. 일반\n◦ 표지, 목차를 포함하여 작성")])["toc_required"]
+    assert found == {"line": "◦ 표지, 목차를 포함하여 작성", "document": "제안요청서.hwp", "page": 1}
+
+    def cover(line: str) -> str | None:
+        found = bid.read_format([_doc(f"가. 제안서 서식\n{line}")])["cover_form"]
+        return found and found["line"]
+
+    forms = ["[서식 2] 제안서 표지 양식", "□ 서식 2. 제안서 표지 (본교양식 준수)", "[서식 제19호] - 사업내용제안서 표지", "◦ 표지 : <서식 제19호>에 따라 작성",
+             "용역제안서(표지)-(서식 5호) ※ 회사명 표기 1부, 미표기 7부", "제안서(기술제안서)[표지양식 – 서식 1]", "- 별지서식 내 ‘정량적 평가제안서’ 표지사용",
+             "[별지 제1호 서식] 제안서 표지", "5.2.2.2. 제안서는 A4 세로 방향 작성을 원칙으로 하며, 제안서 표지 및 구성은 별지의 제안서 서식과 제안서 목차를 따른다."]
+    assert [cover(line) for line in forms] == forms
+    for line in ("ㅇ제안서 1식(A4 50페이지 이내, 표지 및 목차 미포함) (별지 2호 서식)", "[입찰참가신청서표지]",
+                 "◦ 표지, 목차를 포함하여 제시한 목차별로 관련 서식을 사용하여 작성하고", "※ 제안서 평가용 표지 및 내용에 제안업체명 표기 금지"):
+        assert cover(line) is None, line
+    # 「표지」 낱말 없이 표지 꼴만 있는 서식 — 서식 머리 + 띄어 쓴 「제 안 서」 + 날인(1822113 · 1822864 꼴)
+    def shape(text: str) -> str | None:
+        found = bid.read_format([_doc(text)])["cover_form"]
+        return found and found["line"]
+
+    assert shape("[별지 서식 7호]\n정성제안서\n정성제안서\n사이버테러수사대 가상자산·AI 수사워크숍\n제        안        서\n2026.   .\n"
+                 "기  관  명\n대   표   자(인)") == "[별지 서식 7호] … 제 안 서"
+    assert shape("【서식 제1호】\n제   안   서\n용역명 : 인공지능 교육 운영\n제안자명 :            (인)\n【서식 제2호】\n일반 현황") == "【서식 제1호】 … 제 안 서"
+    # 서식 목록이 바로 위에 있어도 머리는 가장 가까운 하나
+    assert shape("【서식12호】보안각서\n【서식13호】서약서\n【서식1호】\n제  안  서\n제안자명 :   (인)") == "【서식1호】 … 제 안 서"
+    assert shape("[별지 서식 14호]\n가 격 제 안 서\n사 업 명\n대 표 자 :      (인)") is None  # 가격 제안서
+    assert shape("【서식1호】\n제  안  서\n제안과제명\n제안기관\n제안담당\n연 락 처") is None  # 날인 없는 서식
+    assert shape("1. 개요\n제   안   서\n대 표 자 (인)") is None  # 서식 머리 없음
+    blank = bid.read_format([_doc("제안서는 50쪽 이내")])
+    assert blank["toc_required"] is None and blank["cover_form"] is None and blank["original_copy"] is False
+
+
 def test_형식_규정_PPT_가로_두_권_요약본_쪽수의_아닌_꼴() -> None:
     def fmt(text: str) -> dict:
         return bid.read_format([_doc(text)])

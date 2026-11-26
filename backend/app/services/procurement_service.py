@@ -951,7 +951,7 @@ def _merge_pinned(views: list[NoticeView]) -> list[NoticeView]:
     return marked + restored
 
 
-def cached_only(*, include_low: bool = False) -> ProcurementResult | None:
+def cached_only(*, include_low: bool = False, with_schedule: bool = True) -> ProcurementResult | None:
     """저장된 목록만 읽는다. **네트워크를 절대 부르지 않고 TTL 도 보지 않는다.**
 
     「이미 받아 둔 것으로만 센다」가 계약인 호출자(집계·요약)를 위한 것이다.
@@ -964,9 +964,10 @@ def cached_only(*, include_low: bool = False) -> ProcurementResult | None:
     몇 배를 센다. 실제로 캐시 108건 · 기본 목록 8건이라 「새 공고 78건」을 눌러 들어가면
     8건짜리 목록이 나왔다.
 
-    캐시가 아예 없으면 None. 호출자는 「아직 받아온 적이 없다」로 표시한다.
+    캐시가 아예 없으면 None. 호출자는 「아직 받아온 적이 없다」로 표시한다. `with_schedule=False` 는 `load_cache` 와 같다
+    (공고마다 조항 파일을 읽지 않음 — 공고 하나만 볼 호출자 · 2.11.0).
     """
-    cached = load_cache()
+    cached = load_cache(with_schedule=with_schedule)
     if cached is None:
         return None
     return _narrow(replace(cached, notices=_merge_pinned(cached.notices)), include_low)

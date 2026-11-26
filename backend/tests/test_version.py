@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_판은_세_곳이_같다() -> None:
     pyproject = tomllib.loads((ROOT / "backend" / "pyproject.toml").read_text(encoding="utf-8"))
     package = json.loads((ROOT / "frontend" / "package.json").read_text(encoding="utf-8"))
-    assert APP_VERSION == pyproject["project"]["version"] == package["version"] == "2.10.0"
+    assert APP_VERSION == pyproject["project"]["version"] == package["version"] == "2.11.0"
 
 
 def test_health_가_판과_규칙_판을_싣는다() -> None:

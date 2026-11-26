@@ -910,6 +910,19 @@ export interface BidFormatRules {
   two_volume: boolean;
   volumes?: string[];
   notes?: string[];
+  /** (2.11.0 T3) 평가본 규정이 원본 · 사본을 나눠 받음 — 표지 「제안서(원본)」 · 「제안서(사본)」. 옛 초안에는 없다 */
+  original_copy?: boolean;
+  /** (2.11.0 T4) 원문이 목차 쪽을 요구 · 전제하는 줄 — 제출용 · 평가본에 목차 쪽 */
+  toc_required?: BidFormatSpot | null;
+  /** (2.11.0 T3b) 원문이 정한 제안서 표지 서식 줄 — 앱 표지는 앱 꼴이라 사람이 한글에서 바꾼다 */
+  cover_form?: BidFormatSpot | null;
+}
+
+/** 형식 규정 한 줄과 자리(백엔드 `bid_proposal_service._spot`). */
+export interface BidFormatSpot {
+  line: string;
+  document: string | null;
+  page: number | null;
 }
 
 /** 쓰기 전에 「이 양식으로 씁니다」 — 제안서 목차 · 평가표 · 형식 규정(AI 없이 · 백엔드 `outline_preview`). */

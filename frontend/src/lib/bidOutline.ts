@@ -83,10 +83,15 @@ export function evaluationLine(evaluation: BidOutlinePreview["evaluation"]): Out
   return { text: `${label}${points} — 조견표로 넣습니다`, warn: false };
 }
 
-/** 형식 규정 줄 — 앱이 맞추는 것(쪽수 · 평가본)과 직접 맞춰야 할 것(가로 · PPT · 두 권). */
-export function formatLines(format: BidFormatRules | null | undefined): FormatLine[] {
+/** 이미 쓴 초안이 2.11.0 형식 칸(원본 · 사본 · 목차 요구) 전에 쓰였을 때 — 내려받는 파일은 초안을 쓸 때 저장한 형식을 따른다. */
+export const BEFORE_RULE_NOTE = "지금 초안은 이 규칙 전에 써서 받는 파일에 아직 없을 수 있습니다(다시 쓰면 들어갑니다)";
+
+/** 형식 규정 줄 — 앱이 맞추는 것(쪽수 · 평가본)과 직접 맞춰야 할 것(가로 · PPT · 두 권).
+ *  `saved` = 이미 쓴 초안의 저장 형식(초안이 없으면 undefined) — 원본 · 사본 칸이 없으면 2.11.0 전 초안이라 두 「앱이 넣는다」 줄에 그 말을 붙인다. */
+export function formatLines(format: BidFormatRules | null | undefined, saved?: Partial<BidFormatRules> | null): FormatLine[] {
   if (!format) return [];
   const lines: FormatLine[] = [];
+  const before = saved != null && saved.original_copy === undefined ? ` · ${BEFORE_RULE_NOTE}` : "";
   if (format.page_limit) lines.push({ text: `${format.page_limit}쪽 이내로 냅니다 — 소항목 분량을 그에 맞춥니다`, manual: false });
   if (format.blind) {
     lines.push(
@@ -104,11 +109,22 @@ export function formatLines(format: BidFormatRules | null | undefined): FormatLi
       manual: true,
     });
   }
+  // 2.11.0 T3 · D2 — 원본 · 사본 표시와 목차 쪽은 앱이 넣는다(서버 `plan_export_service.document_blocks`)
+  if (format.original_copy) {
+    lines.push({ text: `표지에 원본 · 사본을 적습니다 — 「제출용」은 「제안서(원본)」, 「평가본」은 「제안서(사본)」${before}`, manual: false });
+  }
+  if (format.toc_required) lines.push({ text: `원문이 목차를 요구합니다 — 제출용 · 평가본 표지 다음에 목차 쪽(쪽 번호 없이)을 넣습니다${before}`, manual: false });
   if (format.landscape) lines.push({ text: "A4 가로로 내야 합니다 — 받은 파일은 세로라 한글 · 워드에서 쪽 방향을 바꾸세요", manual: true });
   if (format.ppt) lines.push({ text: "발표 자료(PPT) 꼴로 내야 합니다 — 이 초안을 바탕으로 발표 자료를 직접 만드세요", manual: true });
   if (format.two_volume) {
     const volumes = format.volumes?.length ? `(${format.volumes.join(" · ")})` : "";
     lines.push({ text: `정량 · 정성 제안서를 따로 냅니다${volumes} — 이 초안은 정성(사업내용) 제안서입니다`, manual: true });
+  }
+  const cover = format.cover_form;
+  if (cover?.line?.trim()) {
+    // 2.11.0 T3b — 앱 표지는 앱 꼴이다(검토 목록 「표지 서식」 줄과 같은 말)
+    const where = cover.document && cover.page ? ` · ${documentLabel(cover.document)} ${cover.page}쪽` : "";
+    lines.push({ text: `원문이 제안서 표지 서식을 정했습니다(「${cover.line.trim()}」${where}) — 한글에서 그 서식의 칸 · 순서로 표지를 바꾸세요(앱 표지는 앱 꼴)`, manual: true });
   }
   return lines;
 }

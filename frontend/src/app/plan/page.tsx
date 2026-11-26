@@ -665,7 +665,7 @@ function BidSteps({ current }: { current: 1 | 2 | 3 | null }) {
 }
 
 /** 「이 제안서 양식」(11-06 B-2) — 쓰기 전에 원문이 정한 목차 · 평가표 · 형식 규정을 보인다. 처음 펼칠 때만 읽는다(읽기만 · 열람자도). */
-function BidOutlinePanel({ noticeId, ctx }: { noticeId: string; ctx: AnalysisContextParams }) {
+function BidOutlinePanel({ noticeId, ctx, saved }: { noticeId: string; ctx: AnalysisContextParams; saved?: BidPlanView["format"] }) {
   const [opened, setOpened] = useState(false);
   return (
     <details className="group border-t border-cosmos-border pt-2" data-bid-outline-panel onToggle={(event) => event.currentTarget.open && setOpened(true)}>
@@ -673,12 +673,12 @@ function BidOutlinePanel({ noticeId, ctx }: { noticeId: string; ctx: AnalysisCon
         이 제안서 양식 <span aria-hidden="true" className="group-open:hidden">▸</span>
         <span aria-hidden="true" className="hidden group-open:inline">▾</span>
       </summary>
-      {opened && <BidOutlineBody noticeId={noticeId} ctx={ctx} />}
+      {opened && <BidOutlineBody noticeId={noticeId} ctx={ctx} saved={saved} />}
     </details>
   );
 }
 
-function BidOutlineBody({ noticeId, ctx }: { noticeId: string; ctx: AnalysisContextParams }) {
+function BidOutlineBody({ noticeId, ctx, saved }: { noticeId: string; ctx: AnalysisContextParams; saved?: BidPlanView["format"] }) {
   const [preview, setPreview] = useState<BidOutlinePreview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
@@ -712,7 +712,7 @@ function BidOutlineBody({ noticeId, ctx }: { noticeId: string; ctx: AnalysisCont
   if (!preview) return <p role="status" className="pt-1 text-[12.5px] text-cosmos-muted">원문에서 제안서 양식을 읽는 중…</p>;
   const outline = outlineLine(preview);
   const evaluation = evaluationLine(preview.evaluation);
-  const rules = formatLines(preview.format);
+  const rules = formatLines(preview.format, saved); // 내려받는 파일은 저장 초안 형식 — 2.11.0 전 초안이면 그 말을 붙인다
   const auto = rules.filter((line) => !line.manual);
   const manual = rules.filter((line) => line.manual);
   const tone = (warn: boolean) => (warn ? "text-cosmos-amber" : "text-cosmos-text");
@@ -1330,7 +1330,7 @@ function BidWriter({
             ? `요구사항을 읽지 못했습니다 — ${countFailed}`
             : "요구사항을 확인하는 중…"}
       </p>
-      <BidOutlinePanel noticeId={noticeId} ctx={ctx} />
+      <BidOutlinePanel noticeId={noticeId} ctx={ctx} saved={doc?.format} />
       <div className="flex flex-wrap items-center gap-2">
         <WriterButtons status={status} busy={busy} elapsed={elapsed} extraBlock={blockReason} onWrite={(writer) => void write(writer)} evidenceCount={null} />
         {!closedBlock && <PlanBlockLine reason={blockReason} />}

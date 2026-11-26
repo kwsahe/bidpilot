@@ -262,7 +262,7 @@ def test_검사_줄마다_위치와_고치는_법_품질_칸(monkeypatch: pytest
     draft = bid.generate(source=_source(), company=COMPANY)
     quality = _quality(draft)
     # 게이트 판 4 — 2.10.0 주차 일정 · REMOTE_SWAP · SCHEDULE_BODY_GAP(D1 · D2)
-    assert quality["gate_version"] == gate.GATE_VERSION == 4 and quality["checked_at"] and quality["hwpx_check"] is None
+    assert quality["gate_version"] == gate.GATE_VERSION == 5 and quality["checked_at"] and quality["hwpx_check"] is None
     assert quality["review_blanks"] == len(draft["blanks"]) > 0
     for finding in quality["findings"]:
         assert "location" in finding and finding["action"], finding
@@ -843,6 +843,36 @@ def test_표지에_사업기간_사업금액_원문_글이_있을_때만(monkeyp
     assert _quality(draft)["terms"] == {"period": "2027년 1월 1일 ~ 2027년 12월 10일", "end": "2027-12-10", "budget": "275,000,000원(부가세 포함)"}
     # 표지 줄이 늘어도 빈칸 수는 그대로(값이 있을 때만 줄)
     assert _quality(draft)["submit_blanks"] == plan_export_service.submit_blank_count(draft, draft["form"], bid.export_meta(draft, company="가상교육"))
+
+
+def test_표지_제출일은_해만_적고_월_일은_빈칸(monkeypatch: pytest.MonkeyPatch) -> None:
+    """2.11.0 D1 — 내려받은 날짜가 표지에 찍혀 제출하는 날과 달랐다(11-14 완성본). 해는 입찰 마감의 해(모르면 내려받은 해) ·
+    월 · 일은 전각 빈칸 두 자. 값이 있는 칸이라 미작성 셈 · PDF 검사 셈 밖(세면 승인 · 「제출용」 이름에 못 감). 사업계획서 표지는 날짜 그대로."""
+    from datetime import datetime
+
+    from app.services import plan_hwpx_service
+
+    _fake_writer(monkeypatch)
+    draft = bid.generate(source=_source(), company=COMPANY)
+    now = datetime(2026, 11, 16, tzinfo=plan_export_service.KST)
+    meta = bid.export_meta(draft, company="가상교육", now=now)
+    date = "2026년\u3000\u3000월\u3000\u3000일"
+    assert dict(meta["rows"])["제출일"] == date
+    # 입찰 마감이 있으면 그 해(12월에 받아 1월에 내는 공고)
+    later = {**draft, "terms": {**draft["terms"], "deadline": "2027-01-05T10:00:00+09:00"}}
+    assert dict(bid.export_meta(later, company="가상교육", now=now)["rows"])["제출일"] == "2027년\u3000\u3000월\u3000\u3000일"
+    # 미작성 셈 밖 — 표지 빈칸 0 · 날짜 글은 미작성 꼴이 아니다(게이트 · 한글 다시 읽기 · PDF 검사가 같은 수)
+    assert plan_export_service.block_blanks(("cover", meta)) == 0
+    assert plan_form_service.unwritten_count(date) == 0 and gate._pdf_unwritten(date) == 0
+    # 세 렌더러가 글 그대로 싣는다(HTML 이 빈칸을 접지 않음)
+    assert date in plan_export_service.build_html(draft, draft["form"], title="t", variant="submit", meta=meta)
+    section = zipfile.ZipFile(io.BytesIO(plan_hwpx_service.build_hwpx(draft, draft["form"], title="t", variant="submit", meta=meta))).read(
+        "Contents/section0.xml").decode("utf-8")
+    assert f"<hp:t>{date}</hp:t>" in section
+    doc = Document(io.BytesIO(plan_export_service.build_docx(draft, draft["form"], title="t", variant="submit", meta=meta)))
+    assert any(cell.text == date for table in doc.tables for row in table.rows for cell in row.cells)
+    # 사업계획서 표지는 내려받은 날짜 그대로
+    assert plan_export_service.export_meta({}, {}, notice="공고", company="회사", now=now)["date"] == "2026. 11. 16."
 
 
 def test_본문의_사업금액_끝날이_원문과_다르면_중요이고_승인은_무효(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -1448,7 +1478,7 @@ def _weekly_draft(monkeypatch: pytest.MonkeyPatch, rows: list[dict[str, str]] = 
 
 
 def test_짧은_사업은_주차로_쓰라고_지시하고_사업_JSON_에_계약_예정일과_주차를_싣는다(monkeypatch: pytest.MonkeyPatch) -> None:
-    for phrase in ("「Wn~Wm」", "개월차 · 「n주차」 · 달 이름은 쓰지 않습니다", "원문 날짜 그대로", "계약 예정일보다 앞서면",
+    for phrase in ("「Wn~Wm」", "개월차 · 「n주차」 · 달 이름은 쓰지 않습니다", "제안요청서 날짜 그대로", "계약 예정일보다 앞서면",
                    "마지막 주차(Wn) 안에만", "「주 담당 / 지원」", "milestones", "「○ 선후관계」", "「- 병행:", "「- 연결:",
                    "판단 시점", "발주기관과 협의해 정하는 대안", "압축안은 기본안과 다른 조치와 날짜 마감"):
         assert phrase in bid.SYSTEM_PROMPT, phrase
@@ -2469,6 +2499,49 @@ def test_제출서류는_초안에_남고_화면_빈칸_묶음에_유효기간�
     assert again["submission_papers"] == {"rows": [], "notes": []} and "GATE_ERROR" not in _codes(again["quality"])
 
 
+def test_제출서류_0건이면_검토_목록_한_줄과_보통_경고이고_판정은_그대로(api: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """2.11.0 T6b — 새 초안인데 입찰공고문 제출서류를 하나도 읽지 못하면 검토 「제출 서류」 한 줄 · 게이트 PAPERS_UNREAD(보통 · 사실 확인) ·
+    보고서 엑셀이 같은 글. 상태 · 자동 작성 검사는 그대로(제출서류는 판정 밖 · 2.10.0 D10) · 옛 초안(칸 없음)은 지금 그대로."""
+    params = {"organization_id": ORG, "evidence_scope": "internal"}
+    draft = _weekly_draft(monkeypatch, source=_dongguk_source())
+    _store(draft)
+    read = api.get(f"/api/proposal/{PID}/plan-draft", params=params).json()
+    assert "PAPERS_UNREAD" not in _codes(read["quality"])  # 읽은 공고는 경고 없음
+    _store({**draft, "papers": []})
+    got = api.get(f"/api/proposal/{PID}/plan-draft", params=params).json()
+    rows = [b for b in got["blanks"] if b["field"] == bid.PAPER_FIELD]
+    assert rows == [{"field": bid.PAPER_FIELD, "why": bid.PAPERS_UNREAD_NOTE, "section": bid.SUPPLEMENT_SECTION}]
+    assert bid.PAPERS_UNREAD_NOTE.endswith("초안을 다시 쓰면 읽힐 수 있습니다")  # 2.10.0 판 초안(papers [] · 1822113)은 다시 쓰면 읽힌다
+    unread =[f for f in got["quality"]["findings"] if f["code"] == "PAPERS_UNREAD"]
+    assert len(unread) == 1 and unread[0]["severity"] == "MINOR" and unread[0]["axis"] == "fact" and unread[0]["action"]
+    assert got["quality"]["status"] == read["quality"]["status"] and got["quality"]["generation"] == read["quality"]["generation"]
+    assert got["quality"]["review_blanks"] == len(got["blanks"]) and got["submit_blanks"] == read["submit_blanks"]
+    assert _sheet_rows(gate.quality_workbook(got))["제출 서류"][1][1] == bid.PAPERS_UNREAD_NOTE
+    # 옛 초안 — 줄 · 경고 없음 · 엑셀은 예전 글
+    _store({key: value for key, value in draft.items() if key != "papers"})
+    old = api.get(f"/api/proposal/{PID}/plan-draft", params=params).json()
+    assert not any(b["field"] == bid.PAPER_FIELD for b in old["blanks"]) and "PAPERS_UNREAD" not in _codes(old["quality"])
+    assert _sheet_rows(gate.quality_workbook(old))["제출 서류"][1][1].startswith("공고문 제출서류를 읽지 못했습니다")
+
+
+def test_원문_표지_서식은_검토_목록_한_줄(api: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """2.11.0 T3b — 원문이 제안서 표지 서식을 정한 공고는 앱 표지(앱 꼴)를 사람이 한글에서 바꾼다 — 읽을 때 검토 목록 「표지 서식」 한 줄."""
+    params = {"organization_id": ORG, "evidence_scope": "internal"}
+    draft = _weekly_draft(monkeypatch, source=_dongguk_source())
+    assert draft["format"]["cover_form"] is None  # 동국대 원문에는 표지 서식이 없다(「표지 및 간지 포함 25장」은 쪽수)
+    cover = {"line": "□ 서식 2. 제안서 표지 (본교양식 준수)", "document": "2. 제안요청서.hwp", "page": 25}
+    _store({**draft, "format": {**draft["format"], "cover_form": cover}})
+    got = api.get(f"/api/proposal/{PID}/plan-draft", params=params).json()
+    rows = [b for b in got["blanks"] if b["field"] == bid.COVER_FORM_FIELD]
+    assert rows == [{"field": bid.COVER_FORM_FIELD, "section": "표지",
+                     "why": f"{bid.COVER_FORM_NOTE} — 원문 「□ 서식 2. 제안서 표지 (본교양식 준수)」 — 2. 제안요청서.hwp 25쪽"}]
+    assert got["quality"]["review_blanks"] == len(got["blanks"]) and "GATE_ERROR" not in _codes(got["quality"])
+    # 옛 초안(칸 없음) · 서식 없는 공고는 줄이 없다 — 제출 전 채울 칸 수(제출용 문서 셈)는 같다
+    _store({**draft, "format": {k: v for k, v in draft["format"].items() if k != "cover_form"}})
+    again = api.get(f"/api/proposal/{PID}/plan-draft", params=params).json()
+    assert not any(b["field"] == bid.COVER_FORM_FIELD for b in again["blanks"]) and again["submit_blanks"] == got["submit_blanks"]
+
+
 def test_담당자_항목의_필요한_자료는_AI_가_적으면_남고_검토용_표에_칸이_붙는다(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "proof" in bid.SYSTEM_PROMPT
     original = None
@@ -2605,6 +2678,28 @@ def test_PDF_검사_조견표_행마다_실제_쪽_적은_쪽과_대조() -> Non
     assert gate.eval_pages(old, pages) == ([], [])
 
 
+def test_PDF_검사_목차_쪽은_조견표_머리_찾기에서_뺀다() -> None:
+    """2.11.0 D2 · T5a — 쪽 번호 없는 목차 쪽(앱 제출용 목차 · 사람이 넣은 「< 목 차 >」)은 머리 줄이 본문과 같아 조견표 행이 모두 목차 쪽으로
+    대어졌다(11-14 완성본 01 · 03 · 04 · 07 · 08위). 첫 두 줄(빈 줄 뺌)이 목차 · 차례인 쪽만 뺀다."""
+    entries = f"{bid.EVAL_TITLE}\nⅠ. 제안 개요\n1. 제안 목적\n2. 제안 특징\nⅡ. 수행 계획\n1. 추진 전략"
+    table = f"{bid.EVAL_TITLE}\n사업 이해 이해도 10점 Ⅰ-1(4쪽)\n수행 계획 추진 전략 20점 Ⅱ-1(6쪽), Ⅰ-2"
+    body = ["Ⅰ. 제안 개요\n1. 제안 목적 본문", "2. 제안 특징 본문", "Ⅱ. 수행 계획\n1. 추진 전략 본문"]
+    for head in ("목차", "< 목 차 >", "목 차", "차례", "〈목차〉", "\n제안서 머리 글\n< 목 차 >"):
+        rows, found = gate.eval_pages(_eval_pages_view(), ["제안서 표지", f"{head}\n{entries}", table, *body])
+        assert [r["pages"] for r in rows] == ["Ⅰ-1 4쪽", "Ⅱ-1 6쪽 · Ⅰ-2 5쪽"], head
+        assert not any(f["code"] == "PDF_EVAL_PAGE" for f in found), head
+    # 조견표 쪽 아래쪽에 칸 이름이 줄바꿈돼 「목차」만 남은 줄(02위 꼴)은 목차 쪽이 아니다 — 그 쪽의 본문 머리를 그대로 찾는다
+    wrapped = f"{bid.EVAL_TITLE}\n구분\n평가항목\n배점\n제안서 해당\n목차\n이해도 Ⅰ-1(2쪽) 추진 전략 Ⅱ-1(4쪽)\nⅠ. 제안 개요\n1. 제안 목적 본문"
+    rows, found = gate.eval_pages(_eval_pages_view(), ["제안서 표지", wrapped, *body[1:]])
+    assert [r["pages"] for r in rows] == ["Ⅰ-1 2쪽", "Ⅱ-1 4쪽 · Ⅰ-2 3쪽"] and not any(f["code"] == "PDF_EVAL_PAGE" for f in found)
+    # 목차와 조견표가 한 쪽이면 그 쪽만 빼고 본문 쪽을 찾는다 — 적은 쪽 대조는 그대로(Ⅱ-1 에 9쪽이라 적으면 잡힌다 · 2.11.0 A2 검토)
+    one = f"목차\n{entries}\n{bid.EVAL_TITLE}\n사업 이해 이해도 10점 Ⅰ-1(3쪽)\n수행 계획 추진 전략 20점 Ⅱ-1(9쪽), Ⅰ-2"
+    rows, found = gate.eval_pages(_eval_pages_view(), ["제안서 표지", one, *body])
+    assert [r["pages"] for r in rows] == ["Ⅰ-1 3쪽", "Ⅱ-1 5쪽 · Ⅰ-2 4쪽"]
+    wrong = [f for f in found if f["code"] == "PDF_EVAL_PAGE"]
+    assert len(wrong) == 1 and "Ⅱ-1 — 적은 쪽 9 · 실제 5쪽" in wrong[0]["detail"]
+
+
 def test_PDF_검사_좁은_표_칸에서_갈린_담당자_입력과_칸_글_식별_낱말() -> None:
     # 「(담당자」 · 「입력)」 사이에 옆 칸 글이 끼어도 한 칸으로 센다 · 온전한 표시는 두 번 세지 않는다
     page = "구분 성명 학력\nPM (담당자 소속 경력\n입력) (담당자 입력)\n운영 (담당자 입력)"
@@ -2615,6 +2710,88 @@ def test_PDF_검사_좁은_표_칸에서_갈린_담당자_입력과_칸_글_식�
     split = {**_pdf_read(["성명 담당 업무\n가나 교육 운영\n다21 출결"]), "cells": ["가나다21\n교육 운영"]}
     view = {"format": {"blind": True, "blind_only": True}, "tables": []}
     assert "BLIND_IDENT_LEFT" in {f["code"] for f in gate.pdf_findings(split, view, identity=[("실적 기관", "가나다21")])}
+
+
+def _unwritten_of(read: dict[str, Any]) -> int:
+    return next((f["count"] for f in gate.pdf_findings(read, {"format": {}, "tables": []}, identity=None) if f["code"] == "PDF_UNWRITTEN"), 0)
+
+
+def test_PDF_검사_표_칸에서_갈린_담당자_입력은_칸마다_센다() -> None:
+    """2.11.0 T5b — 쪽 글에서 옆 칸과 섞여 「(담당 (담당」으로 갈린 칸(11-14 02위 0 · 칸에는 49)을 표 칸 글(칸 안 줄바꿈을 빈칸 없이 이음) +
+    표 밖 글로 센다 · 쪽 글 셈보다 적게 세지 않는다(큰 쪽)."""
+    page = "구분 성명\nPM (담당 (담당\n자 입력) 자 입력)"
+    assert _unwritten_of(_pdf_read([page])) == 0  # 쪽 글만으로는 못 셈(지금까지)
+    split = {**_pdf_read([page]), "cells": ["(담당자입력)\n(담당자 입력)"], "outside": ["구분 성명"]}
+    assert _unwritten_of(split) == 2
+    # 표 밖 글에 남은 칸도 더한다 · 칸 하나가 통째 「미정」이면 1
+    assert _unwritten_of({**split, "outside": ["구분 성명 (담당자 입력)"]}) == 3
+    assert _unwritten_of({**split, "cells": ["(담당자입력)\n미정"]}) == 2
+    # 표를 덜 잡았으면(칸 · 표 밖이 비어도) 쪽 글 셈 그대로 — 큰 쪽
+    full = "PM (담당자 입력)\n운영 (담당자 입력)\n교육 (담당자 입력)"
+    assert _unwritten_of({**_pdf_read([full]), "cells": [""], "outside": [""]}) == 3
+    # 표 밖 글이 없는 옛 결과는 쪽 글만(지금과 같음) · 쪽마다 따로
+    assert _unwritten_of({**_pdf_read([full]), "cells": ["(담당자입력)"]}) == 3
+    two = {**_pdf_read([page, full]), "cells": ["(담당자입력)\n(담당자입력)", ""], "outside": ["구분 성명", full]}
+    found = gate.pdf_findings(two, {"format": {}, "tables": []}, identity=None)
+    blank = next(f for f in found if f["code"] == "PDF_UNWRITTEN")
+    assert blank["count"] == 5 and "1쪽 · 2쪽" in blank["detail"]
+
+
+def test_PDF_검사_미작성_칸이_앱_초안보다_적으면_참고() -> None:
+    """2.11.0 T5c — 같은 초안의 PDF 인데 앱 빈칸보다 적게 읽으면 못 읽은 칸일 수 있다(참고 · 채운 칸과 가르지 못함)."""
+    view = {"format": {}, "tables": []}
+    read = _pdf_read(["(담당자 입력) (담당자 입력)"])
+    fewer = next(f for f in gate.pdf_findings(read, view, identity=None, expected_blanks=5) if f["code"] == "PDF_BLANKS_FEWER")
+    assert fewer["severity"] == "INFO" and fewer["axis"] == "fact" and "5칸 · PDF 2칸" in fewer["detail"] and fewer["action"]
+    for expected in (2, 1, 0, None):  # 같음 · 더 많음 · 앱 빈칸 없음 · 모름 → 없음
+        assert "PDF_BLANKS_FEWER" not in {f["code"] for f in gate.pdf_findings(read, view, identity=None, expected_blanks=expected)}
+    partial = {**read, "total": 40, "partial": True}  # 앞쪽만 읽었으면 당연히 적다
+    assert "PDF_BLANKS_FEWER" not in {f["code"] for f in gate.pdf_findings(partial, view, identity=None, expected_blanks=5)}
+    # check_pdf 는 앱 초안 빈칸(quality.submit_blanks)을 넘긴다 — 평가본 · 회사명 판을 함께 받는 공고 · 품질 없음은 견주지 않는다
+    def codes(fmt: dict[str, Any], quality: Any) -> set[str]:
+        result = gate.check_pdf(_pdf(text="Plan"), {"format": fmt, "tables": [], "quality": quality}, identity=None, draft_hash="h1")
+        return {f["code"] for f in result["findings"]}
+
+    assert "PDF_BLANKS_FEWER" in codes({}, {"submit_blanks": 9})
+    assert "PDF_BLANKS_FEWER" in codes({"blind": True, "blind_only": True}, {"submit_blanks": 9})
+    assert "PDF_BLANKS_FEWER" not in codes({"blind": True, "blind_only": False}, {"submit_blanks": 9})
+    assert "PDF_BLANKS_FEWER" not in codes({}, None) | codes({}, {"submit_blanks": None})
+    assert gate.check_pdf(_pdf(text="Plan"), {"format": {}, "tables": [], "quality": {"submit_blanks": 9}}, identity=None,
+                          draft_hash="h1")["state"] == "ok"  # 참고라 상태는 그대로
+
+
+def test_PDF_검사_글자_겹침() -> None:
+    """2.11.0 T5d — 한글이 쪽 끝 긴 표를 다음 쪽으로 밀며 뒤 글을 앞 쪽에 겹쳐 찍은 꼴(11-14 09위 17쪽 28쌍)."""
+    def word(x0: float, x1: float, top: float) -> dict[str, float]:
+        return {"x0": x0, "x1": x1, "top": top, "bottom": top + 10}
+
+    assert gate._overlap_pairs([word(72, 120, 100), {"x0": 80, "x1": 130, "top": 102, "bottom": 112}]) == 1
+    assert gate._overlap_pairs([word(72, 120, 100), word(120, 160, 100), word(162, 200, 100)]) == 0  # 맞닿은 이웃 낱말
+    assert gate._overlap_pairs([word(72, 120, 100), word(118, 160, 100)]) == 0  # 3pt 이하 겹침
+    assert gate._overlap_pairs([word(72, 120, 100), word(72, 120, 115), word(72, 120, 107.5)]) == 0  # 윗줄 · 아랫줄(세로 겹침 3pt 이하)
+    assert gate._overlap_pairs([word(72, 120, 100), word(80, 130, 104), word(90, 140, 106), word(72, 300, 200)]) == 3
+    assert gate._overlap_pairs([]) == 0
+    found = gate.pdf_findings({**_pdf_read(["본문", "본문"]), "overlaps": [0, 5]}, {"format": {}, "tables": []}, identity=None)
+    overlap = next(f for f in found if f["code"] == "PDF_OVERLAP")
+    assert overlap["severity"] == "MAJOR" and overlap["axis"] == "input" and overlap["count"] == 1 and overlap["action"]
+    assert "2쪽" in overlap["detail"] and "5쌍" in overlap["detail"] and overlap["location"] == "PDF 2쪽"
+    # 겹침 없음 · 옛 결과(칸 없음)는 없음
+    assert "PDF_OVERLAP" not in {f["code"] for f in gate.pdf_findings({**_pdf_read(["본문"]), "overlaps": [0]}, {"format": {}}, identity=None)}
+    assert "PDF_OVERLAP" not in {f["code"] for f in gate.pdf_findings(_pdf_read(["본문"]), {"format": {}}, identity=None)}
+
+
+def test_PDF_검사_쪽_끝에_표_제목만_남음() -> None:
+    """2.11.0 T5e — 긴 표 제목 · 칸 이름 줄만 쪽 끝에 남고 표 내용은 다음 쪽(11-14 01 · 07 · 08위 · 근사라 보통)."""
+    head = "< 참여인력 현황 >\n구분 성명 소속"
+    nxt = f"{head}\nPM (담당자 입력)"
+    found = gate.pdf_findings(_pdf_read([f"본문\n{head}\n- 3 -", nxt]), {"format": {}, "tables": []}, identity=None)
+    orphan = next(f for f in found if f["code"] == "PDF_TABLE_ORPHAN")
+    assert orphan["severity"] == "MINOR" and orphan["axis"] == "input" and "1쪽" in orphan["detail"] and orphan["action"]
+    assert gate._orphan_titles(["본문\n< 예산 배분안 >\n\n3 / 40", "표"]) == [1]  # 제목만 맨 끝(뒤에 쪽 번호 · 빈 줄만)
+    assert gate._orphan_titles([f"본문\n{head}\n가 1\n나 2\n다 3", "다음"]) == []  # 제목 뒤 표 행이 이어짐
+    assert gate._orphan_titles(["본문", f"본문\n{head}"]) == []  # 마지막 쪽은 다음 쪽이 없다
+    assert gate._orphan_titles(["본문\n<참고>\n글", "다음"]) == []  # 꺾쇠 뒤 빈칸 없는 글은 표 제목 꼴이 아님
+    assert gate._orphan_titles(["본문\n〈 표 제목 〉", "다음"]) == [1]
 
 
 def test_PDF_검사는_앞쪽만_읽어도_쪽수는_전체로_센다() -> None:
@@ -2650,6 +2827,8 @@ def test_PDF_검사_쪽수_A4_미작성_식별_링크_예산(monkeypatch: pytest
     clean = gate.pdf_findings(_pdf_read(["표지", good_budget] + ["본문"] * 23, links=[view["notice_url"]]), view, identity=words)
     assert {f["severity"] for f in clean} <= {"INFO"}, clean
     assert "PDF_TABLE_LOOK" in {f["code"] for f in clean}  # 표 잘림은 사람이 쪽 그림으로(submit5 참고 줄)
+    look = next(f for f in clean if f["code"] == "PDF_TABLE_LOOK")  # 글자 겹침 · 쪽 끝 표 제목은 2.11.0 부터 앱이 근사로 본다(T5d · T5e)
+    assert "겹친 곳" not in look["detail"] and "근사" in look["detail"]
     # 링크 주소에 XML 이스케이프(&amp;)가 남은 꼴도 같은 공고(T8 검토)
     escaped = gate.pdf_findings(_pdf_read(["본문"], links=[view["notice_url"].replace("&", "&amp;")]), view, identity=None)
     assert "PDF_LINK_CUT" not in {f["code"] for f in escaped}
@@ -2667,9 +2846,10 @@ def test_PDF_검사_쪽수_A4_미작성_식별_링크_예산(monkeypatch: pytest
     assert unread[0]["code"] == "PDF_UNREADABLE" and unread[0]["severity"] == "BLOCKER"
 
 
-def _pdf(text: str = "SampleEdu", *, box: tuple[int, int] = (595, 842), uri: str | None = None, author: str = "") -> bytes:
-    """손으로 쓴 최소 PDF(ASCII · Helvetica · 링크 주석 · 문서 정보 Author)."""
-    stream = f"BT /F1 12 Tf 72 720 Td ({text}) Tj ET".encode()
+def _pdf(text: str = "SampleEdu", *, box: tuple[int, int] = (595, 842), uri: str | None = None, author: str = "",
+         content: str | None = None) -> bytes:
+    """손으로 쓴 최소 PDF(ASCII · Helvetica · 링크 주석 · 문서 정보 Author · `content` 면 쪽 내용 스트림을 그대로)."""
+    stream = (content or f"BT /F1 12 Tf 72 720 Td ({text}) Tj ET").encode()
     objects = [b"<< /Type /Catalog /Pages 2 0 R >>", b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
                (f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {box[0]} {box[1]}] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R"
                 + (" /Annots [7 0 R]" if uri else "") + " >>").encode(),
@@ -2704,6 +2884,19 @@ def test_PDF_읽기는_pdfplumber_로_쪽_크기_링크_문서_정보() -> None:
     assert broken["state"] == "unreadable" and broken["state_label"] == "검사 못 함" and broken["findings"][0]["code"] == "PDF_UNREADABLE"
     ok = gate.check_pdf(_pdf(text="Plan"), {"format": {"page_limit": 3}, "tables": []}, identity=None, draft_hash="h1")
     assert ok["state"] == "ok" and ok["state_label"] == "통과"
+
+
+def test_PDF_읽기는_표_칸_글_표_밖_글_겹친_낱말을_쪽마다_담는다() -> None:
+    """2.11.0 T5b · T5d — 선 칸 안 두 줄은 빈칸 없이 이은 한 칸 · 칸 밖 글은 표 밖 글 · 같은 자리에 두 번 찍은 글은 겹친 낱말 한 쌍."""
+    table = ("0.5 w 72 560 200 80 re S 172 560 m 172 640 l S BT /F1 10 Tf 80 620 Td (AB) Tj ET BT /F1 10 Tf 80 600 Td (CD) Tj ET "
+             "BT /F1 12 Tf 72 720 Td (OUT) Tj ET")  # 두 칸 표(pdfplumber 는 한 칸 상자를 표로 치지 않는다)
+    read = gate.read_pdf(_pdf(content=table))
+    assert read["ok"] and read["cells"] == ["ABCD"] and read["outside"] == ["OUT"] and read["overlaps"] == [0]
+    plain = gate.read_pdf(_pdf(text="Plan"))
+    assert plain["cells"] == [""] and plain["outside"] == plain["pages"] and plain["overlaps"] == [0]  # 표 없는 쪽은 표 밖 글 = 쪽 글
+    stacked = "BT /F1 12 Tf 72 720 Td (AAAA) Tj ET BT /F1 12 Tf 76 715 Td (BBBB) Tj ET"
+    assert gate.read_pdf(_pdf(content=stacked))["overlaps"] == [1]
+    assert gate.read_pdf(b"%PDF-1.4 broken")["overlaps"] == []
 
 
 def test_API_한글에서_저장한_PDF_검사는_보고서에_남고_판정은_그대로(api: TestClient) -> None:

@@ -255,6 +255,10 @@ def _p(runs: list[Run], para: str, *, page_break: bool = False, ctrl: str = "") 
             f"{head}{_runs(runs)}</hp:p>")
 
 
+# 떠 있는 긴 표 뒤 빈 문단(2.11.0 T1 · `_Writer.table` 이 넣고 `section_xml` 이 문서 끝에서만 뺀다)
+_TABLE_GAP = _p([], "left")
+
+
 class _Cell:
     def __init__(self, paragraphs: list[tuple[list[Run], str]], *, border: str = "cell", span: int = 1, height_mm: float = 7.0) -> None:
         self.paragraphs, self.border, self.span, self.height = paragraphs, border, span, height_mm
@@ -321,6 +325,11 @@ class _Writer:
         self.parts.append(f'<hp:p id="0" paraPrIDRef="{P[host]}" styleIDRef="0" pageBreak="{int(self.page_break)}" columnBreak="0" '
                           f'merged="0"><hp:run charPrIDRef="{C["body"]}">{tbl}<hp:t/></hp:run></hp:p>')
         self.page_break = False
+        if not whole:
+            # 떠 있는 긴 표 뒤 빈 문단 — 쪽 끝에 걸린 긴 표가 다음 쪽으로 밀리며 뒤 글 · 표가 앞 쪽에서 흘러 겹치거나 순서가 바뀌었다
+            # (2.11.0 T1 · 11-14 완성본 09 · 02 · 08위 한글 2024 실측 — 빈 문단으로 풀림). 다시 읽기(`hwpx_paragraphs`)는 빈 문단을 뺀다.
+            # ponytail: 본문 글자(11pt) 높이 한 줄 — 더 낮은 글자로 줄여도 겹침이 풀리는지는 한글로 다시 떠 볼 것
+            self.parts.append(_TABLE_GAP)
 
 
 def _labeled(text: str, char: str) -> list[Run]:
@@ -392,6 +401,9 @@ def section_xml(blocks: list[pe.Block], *, review: bool) -> str:
             runs = [(text[:found + 1], "memo_bold"), (text[found + 1:], "memo")] if found is not None else [(text, "memo")]
             w.para(runs, "memo_deep" if depth else "memo")
         w.prev_kind = kind
+    if w.parts and w.parts[-1] == _TABLE_GAP:
+        # 문서 끝 긴 표 뒤 빈 문단은 뺀다 — 뒤 글이 없어 겹침을 막을 몫이 없고, 표가 쪽 바닥에서 끝나면 빈 마지막 쪽만 생긴다(2.11.0 A1 검토)
+        w.parts.pop()
     return f'{_DECL}<hs:sec {_XMLNS}>{"".join(w.parts)}</hs:sec>'
 
 
